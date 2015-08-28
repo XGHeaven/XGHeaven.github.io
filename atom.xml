@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://xgheaven.github.io/"/>
-  <updated>2015-08-27T06:37:27.000Z</updated>
+  <updated>2015-08-28T05:46:58.000Z</updated>
   <id>http://xgheaven.github.io/</id>
   
   <author>
@@ -13,6 +13,43 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Mac 是否区分大小写]]></title>
+    <link href="http://xgheaven.github.io/2015/08/28/Mac-%E6%98%AF%E5%90%A6%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
+    <id>http://xgheaven.github.io/2015/08/28/Mac-是否区分大小写/</id>
+    <published>2015-08-28T05:18:18.000Z</published>
+    <updated>2015-08-28T05:46:58.000Z</updated>
+    <content type="html"><![CDATA[<!-- toc -->
+<h3 id="真的是区分大小写么？">真的是区分大小写么？</h3><p>熟悉过Linux的同学一定知道，在Linux中，文件是区分大小写的。<br>而对于相同祖先的Mac OS来说，应该也是如此。大家想当然的认为是这样的。</p>
+<p>可是，事实却不是这样的。</p>
+<p>在Mac OS中，默认是不区分大小写的。<br>这个大家可以进行如下的实验</p>
+<pre><code>$ echo <span class="literal">a</span> &gt; <span class="literal">a</span>
+$ echo <span class="literal">A</span> &gt; <span class="literal">A</span>
+$ ls
+</code></pre><p>大家可以看一下结果，是不是</p>
+<pre><code><span class="literal">a</span>
+</code></pre><p>这样的么？</p>
+<p>说明Mac OS确实是不区分大小写的。</p>
+<h3 id="我想要区分大小写怎么办？">我想要区分大小写怎么办？</h3><p>前面我说过了，默认是不区分，但是我们可以更改文件分区来区分大小写。</p>
+<p><img src="mac-partition.jpg" alt="Mac 分区"><br><em>我是用的我的一个移动硬盘来看的分区，所以会在window的格式上有对勾，请不要在意😂</em></p>
+<p>如图，默认是<strong>日志式</strong>，你可以选择<strong>区分大小写，日志式</strong>就可以了</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<!-- toc -->
+<h3 id="真的是区分大小写么？">真的是区分大小写么？</h3><p>熟悉过Linux的同学一定知道，在Linux中，文件是区分大小写的。<br>而对于相同祖先的Mac OS来说，应该也是如此。大家想当然的认为是这样的。</p>
+<p>可是，事实却]]>
+    </summary>
+    
+      <category term="Mac" scheme="http://xgheaven.github.io/tags/Mac/"/>
+    
+      <category term="分区" scheme="http://xgheaven.github.io/tags/%E5%88%86%E5%8C%BA/"/>
+    
+      <category term="大小写" scheme="http://xgheaven.github.io/tags/%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
+    
+      <category term="Mac" scheme="http://xgheaven.github.io/categories/Mac/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[我的博客0.0.0版正式上线]]></title>
