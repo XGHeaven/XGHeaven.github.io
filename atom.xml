@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://xgheaven.github.io/"/>
-  <updated>2015-08-29T06:29:00.000Z</updated>
+  <updated>2015-10-03T16:46:26.000Z</updated>
   <id>http://xgheaven.github.io/</id>
   
   <author>
@@ -13,6 +13,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Nodejs EventEmitter 解读]]></title>
+    <link href="http://xgheaven.github.io/2015/10/04/nodejs-eventemitter/"/>
+    <id>http://xgheaven.github.io/2015/10/04/nodejs-eventemitter/</id>
+    <published>2015-10-03T16:25:46.000Z</published>
+    <updated>2015-10-03T16:46:26.000Z</updated>
+    <content type="html"><![CDATA[<!-- toc -->
+<h3 id="events_moudle">events moudle</h3><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitterl</span><br></pre></td></tr></table></figure></p>
+<p>然而在源码当中有这样的一句话<br><figure class="highlight js"><figcaption><span>events.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = EventEmitter;</span><br><span class="line">EventEmitter.EventEmitter = EventEmitter;</span><br></pre></td></tr></table></figure></p>
+<p>所以<code>require(&#39;events&#39;).EventEmitter</code>和<code>require(&#39;events&#39;)</code>是一样的。所以以后大家可以直接写</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="Class_EventEmitter">Class EventEmitter</h3><p>在源码中，构造函数极其的简单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EventEmitter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	EventEmitter.init.call(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<!-- toc -->
+<h3 id="events_moudle">events moudle</h3><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的<br><figure class="highlight javascript"><table><tr><td c]]>
+    </summary>
+    
+      <category term="EventEmitter" scheme="http://xgheaven.github.io/tags/EventEmitter/"/>
+    
+      <category term="node.js" scheme="http://xgheaven.github.io/tags/node-js/"/>
+    
+      <category term="Node.js" scheme="http://xgheaven.github.io/categories/Node-js/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Http2 在 Nodejs 中的初尝试]]></title>
