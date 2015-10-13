@@ -2242,17 +2242,33 @@ ol,
 dl {
   margin: 0 0 1.75em 0; }
 
-a,
-a:hover,
-a:active,
-a:visited {
-  cursor: pointer;
-  color: #64b5f6;
+a {
+  position: relative;
   text-decoration: none; }
-
-a:hover {
-  color: #64b5f6;
-  text-decoration: underline; }
+  a:before {
+    position: absolute;
+    content: " ";
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: #64b5f6;
+    transition: all 0.5s; }
+  a,
+  a:hover,
+  a:active,
+  a:visited {
+    cursor: pointer;
+    color: #64b5f6; }
+    a:before,
+    a:hover:before,
+    a:active:before,
+    a:visited:before {
+      transform: scaleX(0); }
+  a:hover {
+    color: #64b5f6; }
+    a:hover:before {
+      transform: scaleX(1); }
 
 table {
   width: 100%;
@@ -2542,6 +2558,8 @@ blockquote {
     width: 30px;
     height: 30px;
     color: #88909a; }
+    #header .header-right-picture:before {
+      height: 0; }
     #header .header-right-picture .header-picture {
       display: block;
       width: 30px;
@@ -2560,6 +2578,8 @@ blockquote {
     #header .header-title .header-title-link {
       color: #88909a;
       font-weight: normal; }
+      #header .header-title .header-title-link:before {
+        background: #88909a; }
       #header .header-title .header-title-link:hover,
       #header .header-title .header-title-link:active {
         color: #6e7681;
@@ -2688,6 +2708,12 @@ blockquote {
         color: #ebebeb;
         display: block;
         height: 100%; }
+        #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:before {
+          background: transparent;
+          height: 100%;
+          border: 1px solid #ebebeb;
+          border-left: none;
+          border-right: none; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover,
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
@@ -3021,8 +3047,9 @@ blockquote {
 
 .archive .archive-title {
   color: #5d686f; }
-  .archive .archive-title:hover {
-    text-decoration: underline; }
+  .archive .archive-title a:before {
+    background: #5d686f;
+    height: 2px; }
 
 .archive .archive-posts {
   list-style: none; }
@@ -3031,8 +3058,8 @@ blockquote {
     .archive .archive-posts .archive-post .archive-post-title {
       margin-left: 10px;
       color: #5d686f; }
-      .archive .archive-posts .archive-post .archive-post-title:hover {
-        text-decoration: underline; }
+      .archive .archive-posts .archive-post .archive-post-title:before {
+        background: #5d686f; }
     .archive .archive-posts .archive-post .archive-post-date {
       color: #9eabb3; }
     .archive .archive-posts .archive-post::before {
@@ -3858,6 +3885,8 @@ a.link-unstyled a.link:active {
   padding: 0;
   line-height: 60px;
   clear: both; }
+  .post-actions-wrap .post-action-btn:before {
+    height: 0; }
   .post-actions-wrap ul.post-actions {
     float: left;
     padding-left: 0;
@@ -4037,12 +4066,16 @@ a.link-unstyled a.link:active {
     margin: 0;
     word-break: initial;
     overflow: hidden; }
+    .postShorten .postShorten-header .postShorten-title a:before {
+      background: black; }
     .postShorten .postShorten-header .postShorten-title:hover {
       text-decoration: none; }
   .postShorten .postShorten-meta {
     line-height: 1.5em; }
     .postShorten .postShorten-meta a {
       color: #9eabb3; }
+      .postShorten .postShorten-meta a:before {
+        background: #9eabb3; }
   .postShorten .postShorten-meta,
   .postShorten .postShorten-readingtime {
     color: #9eabb3; }
@@ -4163,6 +4196,9 @@ a.tag,
   margin: 0;
   margin-right: 4px;
   margin-bottom: 7px; }
+  a.tag:before,
+  .tag:before {
+    background: transparent; }
 
 a.tag--default,
 .tag--default {
