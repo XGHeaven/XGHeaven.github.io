@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://xgheaven.github.io/"/>
-  <updated>2015-10-03T19:03:09.000Z</updated>
+  <updated>2015-11-13T16:13:24.000Z</updated>
   <id>http://xgheaven.github.io/</id>
   
   <author>
@@ -13,6 +13,129 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Use ES6 With Babel6 in Nodejs]]></title>
+    <link href="http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/"/>
+    <id>http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/</id>
+    <published>2015-11-13T07:49:56.000Z</published>
+    <updated>2015-11-13T16:13:24.000Z</updated>
+    <content type="html"><![CDATA[<!-- toc -->
+<h1 id="什么是Babel">什么是<code>Babel</code></h1><p>相信很多新手没有听说过<code>Babel</code>和<code>ES6</code>，如果你是老手的话，那么请自动忽略~</p>
+<h2 id="ES6">ES6</h2><p><code>ES6</code>也就是<code>ECMAScript 6</code>，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~</p>
+<h2 id="Babel">Babel</h2><p>然而虽然<code>ES6</code>很棒，但是现在几乎没有浏览器或者Node（我记得5.0已经全部支持了es6，可是为啥我试着却不行。。。似乎要开启全部的harmony）能够完全支持es6的代码，那么问题来了，如果我想体验一下es6的代码，怎么办？？</p>
+<p>一个很简单的思路便是：</p>
+<blockquote>
+<p>我写个程序，将es6代码转换成es5代码进行运行不就好了，很棒  </p>
+</blockquote>
+<p>而<code>Babel</code>就是干的这个事情。</p>
+<h1 id="babel5_和_babel6_的区别">babel5 和 babel6 的区别</h1><p>对于<code>Babel</code>来说，现在有了两个版本，一个是5，一个是6，那么两者有什么区别呢？</p>
+<ul>
+<li>5对新手更加友好，因为只需要安装一个<code>babel</code>就可以了，而6需要安装比较多的东西和插件才可以。</li>
+<li>相比5来说，6将命令行工具和API分开来了，最直观的感觉就是，当你想在代码中运行es6代码的话，需要安装<code>babel-core</code>，而如果你想在终端编译es6或者是运行es6版本的REPL的话，需要安装<code>babel-cli</code></li>
+<li>也许有人问，原先的<code>babel</code>去哪了？是这样的，这个<code>babel</code>的package到了6版本之后虽然还是能安装，但是已经不具有任何的有效的代码了。取而代之的是一段提示文字，提示你需要安装<code>babel-core</code>或者<code>babel-cli</code>。所以你在babel6的情况下，完全不需要安装<code>babel</code></li>
+<li>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require hook的话，你回发现代码无法运行：  <figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>就是因为babel6整体插件化了，如果你想使用es6语法，需要手动加载相关插件。</p>
+<p>这里有一篇文章，建议看一下<a href="http://jamesknelson.com/the-six-things-you-need-to-know-about-babel-6/" target="_blank" rel="external">《The Six Things You Need To Know About Babel 6》</a></p>
+<hr>
+<h1 id="Quick_Start">Quick Start</h1><h2 id="建立空文件夹_babel6">建立空文件夹 babel6</h2><p>建立空文件夹babel6作为本次的目录，并<code>npm init</code></p>
+<h2 id="安装Babel6">安装<code>Babel6</code></h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="operator"><span class="keyword">install</span> babel-core <span class="comment">--save</span></span></span><br></pre></td></tr></table></figure>
+<p>如果觉得慢，可以使用淘宝镜像<code>cnpm</code>。<br>此时，基础的babel6就安装完成了，如果你想安装babel5，那么执行如下的代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="operator"><span class="keyword">install</span> babel@<span class="number">5</span> <span class="comment">--save</span></span></span><br></pre></td></tr></table></figure>
+<p>即可使用babel5，那么在后文的中，统一使用babel6</p>
+<p><img src="install-babel6.gif" alt="安装babel6"></p>
+<h2 id="require_hook">require hook</h2><p>安装好之后，问题来了，如何使用呢？</p>
+<p>相信使用过<code>coffee</code>的人一定知道<code>register</code>，那么在babel中同样不例外，也可以使用同样的方法。</p>
+<figure class="highlight coffeescript"><figcaption><span>start.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./app'</span>);</span><br></pre></td></tr></table></figure>
+<p>大家可能以为这样我就可以在<code>app.js</code>中优雅的使用es6了，在babel5中确实是这样的，但是在babel6中，却不一样了。</p>
+<p>如果你这样写完，并没有任何作用，因为你缺少一个插件。</p>
+<h2 id="安装插件">安装插件</h2><p>如果想使用<code>es6</code>语法，必须安装一个插件<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> babel-preset-es2015</span><br></pre></td></tr></table></figure></p>
+<p>然后在文件夹下面创建一个叫<code>.babelrc</code>的文件，并写入如下代码：<br><figure class="highlight json"><figcaption><span>.babelrc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	"<span class="attribute">presets</span>": <span class="value">[<span class="string">"es2015"</span>]</span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面你就可以很优雅的书写你的es6代码了。<br><img src="install-es2015.gif" alt="安装es2015插件"></p>
+<h2 id="书写优雅的ES6代码">书写优雅的<code>ES6</code>代码</h2><p>下面我们写一段优雅的代码</p>
+<figure class="highlight coffeescript"><figcaption><span>app.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="reserved">let</span> first = <span class="function"><span class="params">(size, ...args)</span> =&gt;</span> [...args].slice(<span class="number">0</span>, size);</span><br><span class="line"></span><br><span class="line"><span class="reserved">export</span> <span class="reserved">default</span> first;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(first(<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="Run_it">Run it</h2><p>直接运行，不说话~~~<br><img src="run-it.gif" alt="Run it"></p>
+<hr>
+<h1 id="内容解释">内容解释</h1><h2 id="-babelrc">.babelrc</h2><p>什么是<code>.babelrc</code>文件呢？熟悉linux的同学一定知道，rc结尾的文件通常代表运行时自动加载的文件，配置等等的，类似bashrc,zshrc。同样babelrc在这里也是有同样的作用的，而且在babel6中，这个文件必不可少。</p>
+<ul>
+<li>里面可以对babel命令进行配置，以后在使用babel的cli的时候，可以少写一些配置</li>
+<li>还有一个<code>env</code>字段，可以对<code>BABEL_ENV</code>或者<code>NODE_ENV</code>指定的不同的环境变量，进行不同的编译操作</li>
+</ul>
+<h5 id="“presets”">“presets”</h5><p>这个是babel6新加的，就是代表需要启动什么样的预设转码，在babel6中，预设了6种，分别是</p>
+<ul>
+<li>es2015</li>
+<li>stage-0</li>
+<li>stage-1</li>
+<li>stage-2</li>
+<li>stage-3</li>
+<li>react</li>
+</ul>
+<p>至于如何安装，请查看<a href="http://babeljs.io/docs/plugins/" target="_blank" rel="external">balel官网</a></p>
+<p>而且，对<code>.babelrc</code>的设置，你可以存放在package.json中的。如下：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="collection">&#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="string">"babel"</span>: <span class="collection">&#123;</span><br><span class="line">		<span class="string">"presets"</span>: <span class="collection">[<span class="string">"es2015"</span>]</span></span><br><span class="line">	&#125;</span>,</span><br><span class="line">	...</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="require_hook-1">require hook</h2><p>require hook 的作用就是替换原先的require，以便在加载自动对代码进行编译，运行。</p>
+<p>其实这个做的便是重写<code>require.extensions</code>中对应的扩展名的加载程序，并且默认会判断这个文件是否是<code>node_modules</code>中的模块，如果是的话，那么将不会进行转换。否则的话，会进行转换。</p>
+<h1 id="总结">总结</h1><p>这是我的第一篇关于es6的教程，如果大家有什么不好的地方，请及时想我反馈</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<!-- toc -->
+<h1 id="什么是Babel">什么是<code>Babel</code></h1><p>相信很多新手没有听说过<code>Babel</code>和<code>ES6</code>，如果你是老手的话，那么请自动忽略~</p>
+<h2 id="ES6]]>
+    </summary>
+    
+      <category term="ECMAScript 6" scheme="http://xgheaven.github.io/tags/ECMAScript-6/"/>
+    
+      <category term="Node.js" scheme="http://xgheaven.github.io/tags/Node-js/"/>
+    
+      <category term="Node.js" scheme="http://xgheaven.github.io/categories/Node-js/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[关于大学生当中的互联网发展的感想]]></title>
+    <link href="http://xgheaven.github.io/2015/11/13/About-Internet-In-College/"/>
+    <id>http://xgheaven.github.io/2015/11/13/About-Internet-In-College/</id>
+    <published>2015-11-12T16:22:35.000Z</published>
+    <updated>2015-11-12T17:03:47.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="大学牲&amp;程序猿">大学牲&amp;程序猿</h1><h1 id="我为什么要写这篇文章">我为什么要写这篇文章</h1><p>我是一名<code>大学牲</code>，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。</p>
+<p>可事实证明是，虽然高考在某一些方面确实是会扼杀部分的才能，而更多的是能够区分不同的人。</p>
+<p>当我作为一个一般的学生进入一般的大学的时候，真正的体会到了那种好大学和坏大学的区别。</p>
+<blockquote>
+<p>好大学，都是一种朴素的情绪，任何事情都是踏踏实实的来做。</p>
+</blockquote>
+<p>或许这篇文章是给我自己的，让自己时刻去警醒。</p>
+<h1 id="互联网在技术上的浮躁情绪">互联网在技术上的浮躁情绪</h1><p>而在我们的大学，到处都充斥着一种浮躁的情绪。在计算机方面：</p>
+<ul>
+<li>比谁懂得多，你懂mysql，不行我也要懂。你会nodejs，我也去学。他会前端，我也去学。他会Python，我也去学，结果到头来，你确实是知道了很多，但是不得不说，你仅仅是懂，如果让你去仔细写一个项目的话，根本不行。</li>
+<li><p>在我们社团中，虽然我很尊重我们的技术副站长，可是总是充斥着一种如果你不学会前端，后端，运维，装逼，瞎扯，看B站，几乎都不好意思出现在社团中。而且，不管你懂得深不深，只要你懂，你就可以在社团中瞎扯了。虽然我不反对对全栈技术的支持，但是我反对这种只为了广度，而没有深度的学习。今天看着他们搭建服务器，讲想看看mysql，明天看着他们写api，就想学学node，后天看着前端妹子漂亮，然后就去写HTML，可是最后呢？你知道了很多，但是如果给你一周的时间，你能完成什么东西呢？</p>
+<blockquote>
+<p>是的，你必须要有坚实方向感，如果你是iOS工程师，先干好自己的事情，然后再去学习其他的。如果你是前端开发工程师，你要着眼于前端，而其他内容都是你所需要了解即可。不要因为这一刻我买了苹果手机，坚定了写iOS程序的愿望，然后看着舍友都会写前端，然后就果断跳去前端的阵营。<br>记住，学精不等于学会</p>
+</blockquote>
+</li>
+<li><p>但是，在我们社团中，还充斥这一种学会等于学精的感觉。我很讨厌。</p>
+</li>
+<li>其次体现在创业上，很多项目都是一时兴起，后面全都靠的是摸索。</li>
+</ul>
+<h1 id="这种浮躁情绪在大学生中的体现">这种浮躁情绪在大学生中的体现</h1><p>或许这种体现，就是浅尝辄止，无法深入下去。对于我而言，我发现我很多东西都是接触过，但是没有深入研究过。而这种感觉总让我感觉不舒服，难受。我宁愿没有接触过那些东西。</p>
+<h1 id="如果解决这种浮躁情绪">如果解决这种浮躁情绪</h1><p>或许这种情绪的来源在于大家对自己地位的在意。比如说，当我自己接触过之后，就可以和他们聊起来，当时自己接触的非常浅，每当有别人来尝试这个东西的时候，就会担心他学的比自己好，自己原本厉害的形象被损毁，然后不得不再去寻找其他的可以装逼的技术。从而在这里产生了一个恶性循环。让自己越来越深的陷入了这个循环中。无法自拔。</p>
+<h1 id="如何更好的在这种环境中生活">如何更好的在这种环境中生活</h1><p>留给自己的话，认真，认真，认真对待每一件事情。<br>你会成功的！加油。</p>
+<p>假设自己已经学通了，所有的部分，而且很深刻，还会担心别人超过自己么？自己之所以担心别人超过自己，都是因为对自己的不自信，相信自己，找到你和别人的不足，努力去奋斗。保持一种学习的心态，不要浅尝辄止。而且要学会和别人分享。自己总是觉得别人没有走自己的老路，觉得不舒服。可是，还没有想好如何安慰自己这个心态。。。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h1 id="大学牲&amp;程序猿">大学牲&amp;程序猿</h1><h1 id="我为什么要写这篇文章">我为什么要写这篇文章</h1><p>我是一名<code>大学牲</code>，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好]]>
+    </summary>
+    
+      <category term="互联网" scheme="http://xgheaven.github.io/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
+    
+      <category term="大学" scheme="http://xgheaven.github.io/tags/%E5%A4%A7%E5%AD%A6/"/>
+    
+      <category term="随笔" scheme="http://xgheaven.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="随笔" scheme="http://xgheaven.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Nodejs EventEmitter 解读]]></title>
