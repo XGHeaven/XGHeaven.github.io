@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://xgheaven.github.io/"/>
-  <updated>2015-11-15T06:20:43.000Z</updated>
+  <updated>2015-11-18T08:21:12.000Z</updated>
   <id>http://xgheaven.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/"/>
     <id>http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/</id>
     <published>2015-11-13T07:49:56.000Z</published>
-    <updated>2015-11-15T06:20:43.000Z</updated>
+    <updated>2015-11-18T08:21:12.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
 <h1 id="什么是Babel">什么是<code>Babel</code></h1><p>相信很多新手没有听说过<code>Babel</code>和<code>ES6</code>，如果你是老手的话，那么请自动忽略~</p>
 <h2 id="ES6">ES6</h2><p><code>ES6</code>也就是<code>ECMAScript 6</code>，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~</p>
@@ -92,7 +92,10 @@
 <p>坑1：上文讲到，babel6默认是无法编译es6文件的，需要你手动安装<code>es2015</code>的preset，同样，全局模式下，也需要这个preset。</p>
 </blockquote>
 <p>那么问题来了，我们怎么安装这个preset呢？global？所以这是一个坑，我在babel的<a href="https://github.com/babel/babel/issues/2816" target="_blank" rel="external">issue</a>中找到这样的一条。作者给出这样的回答：我们处理preset和plugin是依据于输入的文件，而你直接运行CLI是没有输入文件的，也就无法定位preset和plugin的位置。言下之意就是不要全局安装，虽然我们给你了你全局安装的方式。然后作者关闭了issue，表示很无奈。。。。</p>
-<p>所以，如果大家想体验一下es6的REPL的话，建议安装babel5</p>
+<blockquote>
+<p>解决方案1： 经过寻找，找到一种解决方案，就是创建一个空项目，安装<code>babel-preset-es2015</code>，并写入对应的配置进入<code>.babelrc</code>，然后在这个目录下运行<code>babel-node</code>即可正常运行</p>
+</blockquote>
+<p>不过这种方式太麻烦了，所以，如果大家想体验一下es6的REPL的话，建议安装babel5</p>
 <figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">npm</span> install <span class="keyword">babel@5 </span>-g</span><br></pre></td></tr></table></figure>
 <h3 id="babel-doctor">babel-doctor</h3><p>就是检查babel状况的，<br>主要检查以下几个内容</p>
 <ul>
