@@ -15,18 +15,18 @@
     <meta name="description" content="目录HTTP2 简介前言准备工作通过翻墙打开Google.com测试浏览器是否支持http2Chrome通过 net-intervals 查看是否支持如果不支持，请尝试打开http2开关否则的话，我也不知道了firefox其他浏览器建立Nodejs工作目录，并安装依赖使用openssl生成密钥和证书创建服务器(start-server 分支)访问 https://localhost/尝试服务器推（">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Http2 在 Nodejs 中的初尝试">
-<meta property="og:url" content="http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/index.html">
+<meta property="og:url" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/index.html">
 <meta property="og:site_name" content="XGHeaven's Blog">
 <meta property="og:description" content="目录HTTP2 简介前言准备工作通过翻墙打开Google.com测试浏览器是否支持http2Chrome通过 net-intervals 查看是否支持如果不支持，请尝试打开http2开关否则的话，我也不知道了firefox其他浏览器建立Nodejs工作目录，并安装依赖使用openssl生成密钥和证书创建服务器(start-server 分支)访问 https://localhost/尝试服务器推（">
-<meta property="og:image" content="http://xgheaven.github.io/see-google-network.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/enable-protocol.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/net-internals-http2.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/prepare-work.gif">
-<meta property="og:image" content="http://xgheaven.github.io/start-server.gif">
-<meta property="og:image" content="http://xgheaven.github.io/through-localhost.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/invalid-https.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/server-push-alert.jpg">
-<meta property="og:image" content="http://xgheaven.github.io/server-push-network.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/see-google-network.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/enable-protocol.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/net-internals-http2.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/prepare-work.gif">
+<meta property="og:image" content="http://blog.xgheaven.cn/start-server.gif">
+<meta property="og:image" content="http://blog.xgheaven.cn/through-localhost.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/invalid-https.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/server-push-alert.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/server-push-network.jpg">
 <meta property="og:updated_time" content="2015-08-29T06:29:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Http2 在 Nodejs 中的初尝试">
@@ -320,17 +320,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -399,17 +399,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -435,17 +435,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i><span class="">在 Google Plus 搜索</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i><span>在 Facebook 搜索</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i><span>在 Twitter 搜索</span>
             </a>
         </li>

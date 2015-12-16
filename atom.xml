@@ -3,9 +3,9 @@
   <title><![CDATA[XGHeaven's Blog]]></title>
   
   <link href="/atom.xml" rel="self"/>
-  <link href="http://xgheaven.github.io/"/>
+  <link href="http://blog.xgheaven.cn/"/>
   <updated>2015-11-18T08:21:12.000Z</updated>
-  <id>http://xgheaven.github.io/</id>
+  <id>http://blog.xgheaven.cn/</id>
   
   <author>
     <name><![CDATA[XGHeaven]]></name>
@@ -16,8 +16,8 @@
   
   <entry>
     <title><![CDATA[Use ES6 With Babel6 in Nodejs]]></title>
-    <link href="http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/"/>
-    <id>http://xgheaven.github.io/2015/11/13/use-babel6-in-nodejs/</id>
+    <link href="http://blog.xgheaven.cn/2015/11/13/use-babel6-in-nodejs/"/>
+    <id>http://blog.xgheaven.cn/2015/11/13/use-babel6-in-nodejs/</id>
     <published>2015-11-13T07:49:56.000Z</published>
     <updated>2015-11-18T08:21:12.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
@@ -114,18 +114,18 @@
 <h2 id="ES6]]>
     </summary>
     
-      <category term="ECMAScript 6" scheme="http://xgheaven.github.io/tags/ECMAScript-6/"/>
+      <category term="ECMAScript 6" scheme="http://blog.xgheaven.cn/tags/ECMAScript-6/"/>
     
-      <category term="Node.js" scheme="http://xgheaven.github.io/tags/Node-js/"/>
+      <category term="Node.js" scheme="http://blog.xgheaven.cn/tags/Node-js/"/>
     
-      <category term="Node.js" scheme="http://xgheaven.github.io/categories/Node-js/"/>
+      <category term="Node.js" scheme="http://blog.xgheaven.cn/categories/Node-js/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[关于大学生当中的互联网发展的感想]]></title>
-    <link href="http://xgheaven.github.io/2015/11/13/About-Internet-In-College/"/>
-    <id>http://xgheaven.github.io/2015/11/13/About-Internet-In-College/</id>
+    <link href="http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/"/>
+    <id>http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/</id>
     <published>2015-11-12T16:22:35.000Z</published>
     <updated>2015-11-12T17:03:47.000Z</updated>
     <content type="html"><![CDATA[<h1 id="大学牲&amp;程序猿">大学牲&amp;程序猿</h1><h1 id="我为什么要写这篇文章">我为什么要写这篇文章</h1><p>我是一名<code>大学牲</code>，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。</p>
@@ -156,20 +156,20 @@
     <![CDATA[<h1 id="大学牲&amp;程序猿">大学牲&amp;程序猿</h1><h1 id="我为什么要写这篇文章">我为什么要写这篇文章</h1><p>我是一名<code>大学牲</code>，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好]]>
     </summary>
     
-      <category term="互联网" scheme="http://xgheaven.github.io/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
+      <category term="互联网" scheme="http://blog.xgheaven.cn/tags/%E4%BA%92%E8%81%94%E7%BD%91/"/>
     
-      <category term="大学" scheme="http://xgheaven.github.io/tags/%E5%A4%A7%E5%AD%A6/"/>
+      <category term="大学" scheme="http://blog.xgheaven.cn/tags/%E5%A4%A7%E5%AD%A6/"/>
     
-      <category term="随笔" scheme="http://xgheaven.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
+      <category term="随笔" scheme="http://blog.xgheaven.cn/tags/%E9%9A%8F%E7%AC%94/"/>
     
-      <category term="随笔" scheme="http://xgheaven.github.io/categories/%E9%9A%8F%E7%AC%94/"/>
+      <category term="随笔" scheme="http://blog.xgheaven.cn/categories/%E9%9A%8F%E7%AC%94/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Nodejs EventEmitter 解读]]></title>
-    <link href="http://xgheaven.github.io/2015/10/04/nodejs-eventemitter/"/>
-    <id>http://xgheaven.github.io/2015/10/04/nodejs-eventemitter/</id>
+    <link href="http://blog.xgheaven.cn/2015/10/04/nodejs-eventemitter/"/>
+    <id>http://blog.xgheaven.cn/2015/10/04/nodejs-eventemitter/</id>
     <published>2015-10-03T16:25:46.000Z</published>
     <updated>2015-10-03T19:03:09.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
@@ -271,18 +271,18 @@
 <h1 id="events_moudle"><code>events</code> moudle</h1><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的<br><figure class="highlight javascript"><ta]]>
     </summary>
     
-      <category term="EventEmitter" scheme="http://xgheaven.github.io/tags/EventEmitter/"/>
+      <category term="EventEmitter" scheme="http://blog.xgheaven.cn/tags/EventEmitter/"/>
     
-      <category term="node.js" scheme="http://xgheaven.github.io/tags/node-js/"/>
+      <category term="node.js" scheme="http://blog.xgheaven.cn/tags/node-js/"/>
     
-      <category term="Node.js" scheme="http://xgheaven.github.io/categories/Node-js/"/>
+      <category term="Node.js" scheme="http://blog.xgheaven.cn/categories/Node-js/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Http2 在 Nodejs 中的初尝试]]></title>
-    <link href="http://xgheaven.github.io/2015/08/29/http2%E5%9C%A8nodejs%E4%B8%AD%E7%9A%84%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
-    <id>http://xgheaven.github.io/2015/08/29/http2在nodejs中的初尝试/</id>
+    <link href="http://blog.xgheaven.cn/2015/08/29/http2%E5%9C%A8nodejs%E4%B8%AD%E7%9A%84%E5%88%9D%E5%B0%9D%E8%AF%95/"/>
+    <id>http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/</id>
     <published>2015-08-29T04:38:36.000Z</published>
     <updated>2015-08-29T06:29:00.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
@@ -340,18 +340,18 @@
 ]]>
     </summary>
     
-      <category term="HTTP2" scheme="http://xgheaven.github.io/tags/HTTP2/"/>
+      <category term="HTTP2" scheme="http://blog.xgheaven.cn/tags/HTTP2/"/>
     
-      <category term="Node.js" scheme="http://xgheaven.github.io/tags/Node-js/"/>
+      <category term="Node.js" scheme="http://blog.xgheaven.cn/tags/Node-js/"/>
     
-      <category term="HTTP2" scheme="http://xgheaven.github.io/categories/HTTP2/"/>
+      <category term="HTTP2" scheme="http://blog.xgheaven.cn/categories/HTTP2/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[Mac 是否区分大小写]]></title>
-    <link href="http://xgheaven.github.io/2015/08/28/Mac-%E6%98%AF%E5%90%A6%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
-    <id>http://xgheaven.github.io/2015/08/28/Mac-是否区分大小写/</id>
+    <link href="http://blog.xgheaven.cn/2015/08/28/Mac-%E6%98%AF%E5%90%A6%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
+    <id>http://blog.xgheaven.cn/2015/08/28/Mac-是否区分大小写/</id>
     <published>2015-08-28T05:18:18.000Z</published>
     <updated>2015-08-28T05:47:29.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
@@ -375,20 +375,20 @@ $ ls
 <p>可是，事实却]]>
     </summary>
     
-      <category term="Mac" scheme="http://xgheaven.github.io/tags/Mac/"/>
+      <category term="Mac" scheme="http://blog.xgheaven.cn/tags/Mac/"/>
     
-      <category term="分区" scheme="http://xgheaven.github.io/tags/%E5%88%86%E5%8C%BA/"/>
+      <category term="分区" scheme="http://blog.xgheaven.cn/tags/%E5%88%86%E5%8C%BA/"/>
     
-      <category term="大小写" scheme="http://xgheaven.github.io/tags/%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
+      <category term="大小写" scheme="http://blog.xgheaven.cn/tags/%E5%A4%A7%E5%B0%8F%E5%86%99/"/>
     
-      <category term="Mac" scheme="http://xgheaven.github.io/categories/Mac/"/>
+      <category term="Mac" scheme="http://blog.xgheaven.cn/categories/Mac/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[我的博客0.0.0版正式上线]]></title>
-    <link href="http://xgheaven.github.io/2015/08/27/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A20-0-0%E7%89%88%E6%AD%A3%E5%BC%8F%E4%B8%8A%E7%BA%BF/"/>
-    <id>http://xgheaven.github.io/2015/08/27/我的博客0-0-0版正式上线/</id>
+    <link href="http://blog.xgheaven.cn/2015/08/27/%E6%88%91%E7%9A%84%E5%8D%9A%E5%AE%A20-0-0%E7%89%88%E6%AD%A3%E5%BC%8F%E4%B8%8A%E7%BA%BF/"/>
+    <id>http://blog.xgheaven.cn/2015/08/27/我的博客0-0-0版正式上线/</id>
     <published>2015-08-27T05:58:08.000Z</published>
     <updated>2015-08-27T06:37:27.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
@@ -415,9 +415,9 @@ $ ls
 <li>使用了<em>tranquilpeak</em>主题，<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-them]]>
     </summary>
     
-      <category term="blog" scheme="http://xgheaven.github.io/tags/blog/"/>
+      <category term="blog" scheme="http://blog.xgheaven.cn/tags/blog/"/>
     
-      <category term="Blog Event" scheme="http://xgheaven.github.io/categories/Blog-Event/"/>
+      <category term="Blog Event" scheme="http://blog.xgheaven.cn/categories/Blog-Event/"/>
     
   </entry>
   
