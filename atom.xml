@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.xgheaven.cn/"/>
-  <updated>2016-01-14T17:38:08.000Z</updated>
+  <updated>2016-02-04T19:50:35.000Z</updated>
   <id>http://blog.xgheaven.cn/</id>
   
   <author>
@@ -13,6 +13,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[My Blog of 0.1.0]]></title>
+    <link href="http://blog.xgheaven.cn/2016/02/05/my-blog-of-0-1-0/"/>
+    <id>http://blog.xgheaven.cn/2016/02/05/my-blog-of-0-1-0/</id>
+    <published>2016-02-04T19:35:51.000Z</published>
+    <updated>2016-02-04T19:50:35.000Z</updated>
+    <content type="html"><![CDATA[<!-- TOC -->
+<p>经过长时间的进展，几乎没有写过什么博客，就这样迎来了 <code>0.1.0</code> 版本。</p>
+<h3 id="u65B0_u589E"><a href="#u65B0_u589E" class="headerlink" title="新增"></a>新增</h3><ol>
+<li>友情链接</li>
+<li>链接 hover 动画</li>
+</ol>
+<h3 id="u66F4_u65B0"><a href="#u66F4_u65B0" class="headerlink" title="更新"></a>更新</h3><ol>
+<li>更新主题(<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-theme" target="_blank" rel="external">tranquilpeak</a>)更新至 <code>1.6.2</code></li>
+<li>跟随潮流，使用《功夫熊猫3》海报背景</li>
+<li>在列表页面，更新为全文显示，以前是只显示部分内容</li>
+</ol>
+<h3 id="u4FEE_u590D"><a href="#u4FEE_u590D" class="headerlink" title="修复"></a>修复</h3><p>其实已经忘了修复了什么了，就这样吧~~</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<!-- TOC -->
+<p>经过长时间的进展，几乎没有写过什么博客，就这样迎来了 <code>0.1.0</code> 版本。</p>
+<h3 id="u65B0_u589E"><a href="#u65B0_u589E" class="headerlink" title="]]>
+    </summary>
+    
+      <category term="blog" scheme="http://blog.xgheaven.cn/tags/blog/"/>
+    
+      <category term="Blog Event" scheme="http://blog.xgheaven.cn/categories/Blog-Event/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Lodash v4.0.0 简易更新日志]]></title>
@@ -126,7 +157,7 @@
     <link href="http://blog.xgheaven.cn/2015/11/13/use-babel6-in-nodejs/"/>
     <id>http://blog.xgheaven.cn/2015/11/13/use-babel6-in-nodejs/</id>
     <published>2015-11-13T07:49:56.000Z</published>
-    <updated>2015-11-18T08:21:12.000Z</updated>
+    <updated>2016-02-04T18:22:08.000Z</updated>
     <content type="html"><![CDATA[<!-- toc -->
 <h1 id="u4EC0_u4E48_u662FBabel"><a href="#u4EC0_u4E48_u662FBabel" class="headerlink" title="什么是Babel"></a>什么是<code>Babel</code></h1><p>相信很多新手没有听说过<code>Babel</code>和<code>ES6</code>，如果你是老手的话，那么请自动忽略~</p>
 <h2 id="ES6"><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h2><p><code>ES6</code>也就是<code>ECMAScript 6</code>，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~</p>
