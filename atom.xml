@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.xgheaven.cn/"/>
-  <updated>2016-02-04T19:50:35.000Z</updated>
+  <updated>2016-02-05T16:55:25.000Z</updated>
   <id>http://blog.xgheaven.cn/</id>
   
   <author>
@@ -19,19 +19,25 @@
     <link href="http://blog.xgheaven.cn/2016/02/05/my-blog-of-0-1-0/"/>
     <id>http://blog.xgheaven.cn/2016/02/05/my-blog-of-0-1-0/</id>
     <published>2016-02-04T19:35:51.000Z</published>
-    <updated>2016-02-04T19:50:35.000Z</updated>
+    <updated>2016-02-05T16:55:25.000Z</updated>
     <content type="html"><![CDATA[<!-- TOC -->
 <p>经过长时间的进展，几乎没有写过什么博客，就这样迎来了 <code>0.1.0</code> 版本。</p>
 <h3 id="u65B0_u589E"><a href="#u65B0_u589E" class="headerlink" title="新增"></a>新增</h3><ol>
 <li>友情链接</li>
 <li>链接 hover 动画</li>
+<li>Changelog 页面，以后的所有的 Changelog 都在这个页面下展示</li>
 </ol>
 <h3 id="u66F4_u65B0"><a href="#u66F4_u65B0" class="headerlink" title="更新"></a>更新</h3><ol>
 <li>更新主题(<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-theme" target="_blank" rel="external">tranquilpeak</a>)更新至 <code>1.6.2</code></li>
 <li>跟随潮流，使用《功夫熊猫3》海报背景</li>
 <li>在列表页面，更新为全文显示，以前是只显示部分内容</li>
 </ol>
-<h3 id="u4FEE_u590D"><a href="#u4FEE_u590D" class="headerlink" title="修复"></a>修复</h3><p>其实已经忘了修复了什么了，就这样吧~~</p>
+<h3 id="u4FEE_u590D"><a href="#u4FEE_u590D" class="headerlink" title="修复"></a>修复</h3><ol>
+<li>disqus 无法通过 http 获取到对应的脚本，只能通过 https</li>
+</ol>
+<h3 id="u9057_u7559"><a href="#u9057_u7559" class="headerlink" title="遗留"></a>遗留</h3><ol>
+<li>disqus 的 css 依旧受到上面问题的困扰</li>
+</ol>
 ]]></content>
     <summary type="html">
     <![CDATA[<!-- TOC -->

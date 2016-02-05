@@ -2560,6 +2560,8 @@ blockquote {
     width: 30px;
     height: 30px;
     color: #88909a; }
+    #header .header-right-picture:before {
+      background: transparent; }
     #header .header-right-picture .header-picture {
       display: block;
       width: 30px;
@@ -2581,6 +2583,8 @@ blockquote {
       #header .header-title .header-title-link:hover, #header .header-title .header-title-link:active {
         color: #6e7681;
         text-decoration: none; }
+        #header .header-title .header-title-link:hover:before, #header .header-title .header-title-link:active:before {
+          background: #6e7681; }
   #header.header-up {
     -webkit-transform: translate3d(0, -55px, 0);
     -moz-transform: translate3d(0, -55px, 0);
