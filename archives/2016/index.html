@@ -11,7 +11,7 @@
     
     
     
-        <link rel="alternate" type="application/atom+xml" title="RSS" href="../../atom.xml">
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
     <meta name="description">
 <meta property="og:type" content="blog">
@@ -34,7 +34,7 @@
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="../../assets/css/style-h0nfggbrtkojcdgm6aibpyar5fktvm9pvc64u5luv4kw4kgaoc9721bkhkco.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/style-h0nfggbrtkojcdgm6aibpyar5fktvm9pvc64u5luv4kw4kgaoc9721bkhkco.min.css" type="text/css">
     <!--STYLES END-->
     
     
@@ -62,12 +62,12 @@
 <header id="header" data-behavior="1">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <h1 class="header-title">
-        <a class="header-title-link" href="../../ ">XGHeaven&#39;s Blog</a>
+        <a class="header-title-link" href="/ ">XGHeaven&#39;s Blog</a>
     </h1>
     
         
             <a  class="header-right-picture "
-                href="../../#about">
+                href="/#about">
         
         
             <img class="header-picture" src="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
@@ -83,7 +83,7 @@
 <nav id="sidebar" data-behavior="1">
     
         <div class="sidebar-profile">
-            <a href="../../#about">
+            <a href="/#about">
                     <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
             </a>
             <span class="sidebar-profile-name">XGHeaven</span>
@@ -95,7 +95,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../ "
+                         href="/ "
                         
                     >
                 
@@ -107,7 +107,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../all-categories"
+                         href="/all-categories"
                         
                     >
                 
@@ -119,7 +119,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../all-tags"
+                         href="/all-tags"
                         
                     >
                 
@@ -131,7 +131,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../all-archives"
+                         href="/all-archives"
                         
                     >
                 
@@ -143,7 +143,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../#about"
+                         href="/#about"
                         
                     >
                 
@@ -155,7 +155,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../friend-link"
+                         href="/friend-link"
                         
                     >
                 
@@ -247,7 +247,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../atom.xml"
+                         href="/atom.xml"
                         
                     >
                 
@@ -259,7 +259,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="../../changelog"
+                         href="/changelog"
                         
                     >
                 
@@ -288,7 +288,185 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="../../2016/02/05/index.html">
+                        <a class="link-unstyled" href="/2016/03/06/the-first-ddns-for-gitlab/">
+                            使用 DDNS 将 Gitlab 暴露到公网中的第一次尝试
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sun Mar 06 2016 00:05:08 GMT+0800">
+	
+		    3月 06, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Gitlab/">Gitlab</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前沿"><span class="toc-text">前沿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#准备工作"><span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在路由器中设置_DDNS"><span class="toc-text">在路由器中设置 DDNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置端口转发"><span class="toc-text">配置端口转发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么要将_80_映射到_8000，而_ssh_却不用？"><span class="toc-text">为什么要将 80 映射到 8000，而 ssh 却不用？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#为什么我一切都配置好了，为啥还是不行？"><span class="toc-text">为什么我一切都配置好了，为啥还是不行？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置_Gitlab_中的_external_url"><span class="toc-text">配置 Gitlab 中的 external_url</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Over"><span class="toc-text">Over</span></a></li></ol>
+<h3 id="前沿">前沿</h3><p>我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。</p>
+<p>在这里，我记录一下其中遇到的一些问题。</p>
+<h3 id="准备工作">准备工作</h3><ul>
+<li>花生壳帐号（有一个免费或者收费的域名）</li>
+<li>路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器）</li>
+<li>一个域名</li>
+<li>一台刚刚安装完成并且成功启动的 Gitlab 服务器</li>
+</ul>
+<p>至于如何申请花生壳，我就不在这里多说了，不过我要说一点，在花生壳里面，你注册的时候会给你一个免费的域名。这个域名有一个神奇的名字，叫过<code>壳域名</code>，我第一次没有意识到，这个就是免费域名，找了好久，也没有找到在哪里。😂</p>
+<h3 id="在路由器中设置_DDNS">在路由器中设置 DDNS</h3><p>进入路由器设置，寻找 DDNS 或者 动态域名解析，选择花生壳服务，填写相关的用户名和密码，以及送与的免费的域名地址。</p>
+<p>链接测试，路由器显示链接成功，并且进入花生壳域名管理，查看域名解析的情况。</p>
+<p>如果失败了，请查看是否免费的域名填写错误，或者密码用户名错误等等。</p>
+<p>此时，如果你运行如下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping your.deamon.com</span><br></pre></td></tr></table></figure>
+<p>会正常的 <code>ping</code> 到自己的主机。</p>
+<h3 id="配置端口转发">配置端口转发</h3><p>当解析成功的时候，仅仅说明域名可以正常的找到这台路由器，但是还不能找到路由器内部的主机。</p>
+<p>所以我们需要将路由器的部分端口映射到内部的服务器的主机的端口，这就是端口转发</p>
+<p>根据需要，将服务器的 80 映射到路由器的 8000。<br>因为 Gitlab 需要 ssh 服务端口，所以还需要将 20 端口映射到路由器上。</p>
+<h4 id="为什么要将_80_映射到_8000，而_ssh_却不用？">为什么要将 80 映射到 8000，而 ssh 却不用？</h4><p>这是因为，我们的网络都是接入到外部运营商提供的网络，而运营商不允许用户私自搭建服务器（至于为啥，谁知道这群运营商怎么想的）。所以会封锁 80 端口。</p>
+<p>这也就会产生一个很神奇的现象，如果你映射 80 端口，你在内网中，可以通过域名正常，但是你在外网，却不能访问。</p>
+<p>为啥呢？根据 <code>计算机网络</code> 中所说的，获取目标 <code>ip</code>，之后，发现是局域网，于是就直接不走运营商了。。。。</p>
+<p>弄完之后，就可以在地址中输入 <code>http://your.domain.com:8000</code> 访问 Gitlab 了。</p>
+<h4 id="为什么我一切都配置好了，为啥还是不行？">为什么我一切都配置好了，为啥还是不行？</h4><p>答案：请尝试关闭防火墙，或者将端口加入白名单。</p>
+<p>PS: 因为服务器是 Centos 7， 所以采用了 <code>firewall</code> 的管理方式，而不是以前的 <code>iptables</code>，这一点需要注意。</p>
+<h3 id="配置_Gitlab_中的_external_url">配置 Gitlab 中的 <code>external_url</code></h3><p>在安装之后，你还需要配置 <code>external_url</code> 来在 repo 中正确显示url。</p>
+<p>之所以没有从 host 中获取 URL ，是因为，很多情况下，git 仓库和前端管理是分离的，所以你需要自己去配置。</p>
+<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="external">Configuring the external URL for GitLab</a></p>
+<p>然后按照教程 <code>gitlab-ctl reconfigure</code> 即可</p>
+<h3 id="Over">Over</h3><p>至此，在添加了 Gitlab 成员之后，我就可以洗洗睡了，晚安~~~</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2016/03/06/the-first-ddns-for-gitlab/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/02/16/pure-function/">
+                            函数式编程之纯函数
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Tue Feb 16 2016 21:30:28 GMT+0800">
+	
+		    2月 16, 2016
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Functional-Programming/">Functional Programming</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#纯函数"><span class="toc-text">纯函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解释"><span class="toc-text">解释</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I/O_在纯函数中的例外"><span class="toc-text">I/O 在纯函数中的例外</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#和纯函数相关的_——_纯表达式"><span class="toc-text">和纯函数相关的 —— 纯表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#简介-1"><span class="toc-text">简介</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用处"><span class="toc-text">用处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参考文章"><span class="toc-text">参考文章</span></a></li></ol>
+<p>在学习 React/Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？</p>
+<h3 id="纯函数">纯函数</h3><h4 id="简介">简介</h4><p>纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。</p>
+<p>简而言之，就是这个与外界交换数据的方式只有 <code>参数值</code> 和 <code>返回值</code> 。</p>
+<p>也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。</p>
+<h4 id="定义">定义</h4><p>首先纯函数要满足以下两个条件：</p>
+<ol>
+<li>函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并不依赖任何可能随着程序运行而改变的或者在不同程序中结果不同的隐藏的信息或者状态。也不能隐式依赖任何从 I/O 设备的输入。</li>
+<li>这些计算结果不能引起任何副作用或者输出。例如改变可变对象，或者是输出到 I/O 设备。</li>
+</ol>
+<blockquote>
+<p>计算结果不需要全部依赖输入的参数值。但是，绝对不能依赖除了参数值以外的东西。<br>函数可以返回多重结果（类似py里的元组），那么对于任意一个返回值，都需要满足上面的条件。（这个感觉显得有点多余）<br>如果其中的参数是被引用的，那么修改引用的参数将会导致外部变量修改，从而导致函数变得非纯。（这不是废话么）</p>
+</blockquote>
+<h4 id="解释">解释</h4><p>看上面的那几条，肯定会变得很糊涂，那么我稍微总结了以下内容：</p>
+<ol>
+<li>最最基本的判定方法，就是看参数相同是否结果相同。不相同，是非纯函数。</li>
+<li>在满足 <code>1</code> 的前提下，同时保证输入相同，并且这个函数不管在什么地方，是什么时候运行，结果都并不是完全相同。那么则为非纯函数。<blockquote>
+<p>那么意味着函数内不得使用获取时间，获取进程ID，获取环境变量等等会根据时间环境而变化的内容。例如 <code>Date.now()</code> <code>process.env</code> <code>Math.random()</code></p>
+</blockquote>
+</li>
+<li>换句话说，纯函数内不得使用非纯函数</li>
+<li>纯函数不得与 I/O 产生任何交互，不得从 I/O 输入或者输出，甚至包括网络流。<blockquote>
+<p>也就说不能读取输出文件，读取输出终端内容，不得请求API内容等等，前提，这些是隐式调用的，后文会讲到特例。</p>
+</blockquote>
+</li>
+<li>不得产生函数副作用，所谓函数副作用就是指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量）或修改参数。</li>
+</ol>
+<h3 id="I/O_在纯函数中的例外">I/O 在纯函数中的例外</h3><p>如果一个函数跟 I/O 产生交互，除非满足以下内容，才不会导致函数变的不纯：</p>
+<p><strong> 这些 I/O 操作是显式通过函数参数或者返回值来传入和传出的，并且当输入内容不合法的时候，I/O 操作失败 </strong></p>
+<p>其中第一点确保了 I/O 操作的函数返回不同值，是因为输入的内容不同。并且必须要作为函数的参数或者返回值。<br>第二点确保了当输入作为函数的参数的时候，必须根据不同的 I/O 动作而改变。也就是针对不同的输入有不同的反应。</p>
+<blockquote>
+<p>说明一下，这里的第二点，其实是保证了函数的行为的可预测性，因为输入不同，可能其中包含着很多非法操作，而对于函数来说，面对这些非法操作，没有定义如何去处理，所以统一认为操作失败，这样就增加了行为的可预测性。</p>
+</blockquote>
+<h3 id="和纯函数相关的_——_纯表达式">和纯函数相关的 —— 纯表达式</h3><h4 id="简介-1">简介</h4><p>类似一个纯函数，就是不论在什么时候，什么地点，执行了多少次纯表达式，结果都不变。</p>
+<p>在这里，我就不详细介绍了，很明显的一点，一个常量肯定是纯表达式。</p>
+<h3 id="用处">用处</h3><p>讲了这么多，可是纯表达式在什么地方会使用到呢？</p>
+<p>就我所知，大约有以下几个地方：</p>
+<ul>
+<li>Redux 的 Reducer</li>
+<li>Scala</li>
+<li>wolfarm</li>
+</ul>
+<h3 id="优点">优点</h3><p>优点在不同的语言中有不同的用处，但是最重要的几点就是：</p>
+<ul>
+<li>简单，便于测试</li>
+<li>无状态，可以采用缓存的方式加速计算</li>
+<li>纯函数相互组合，还是纯函数（类似于高中所学的奇函数偶函数）</li>
+</ul>
+<h3 id="参考文章">参考文章</h3><ul>
+<li><a href="https://en.wikipedia.org/wiki/Pure_function" target="_blank" rel="external">Wiki</a></li>
+<li><a href="http://america.pink/pure-function_3618964.html" target="_blank" rel="external">Pure function</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/scala-quickstart/50726" target="_blank" rel="external">纯函数和非纯函数</a></li>
+<li><a href="http://blog.csdn.net/popy007/article/details/8508776" target="_blank" rel="external">C++函数式编程（二）纯函数</a></li>
+</ul>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2016/02/16/pure-function/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2016/02/05/my-blog-of-0-1-0/">
                             My Blog of 0.1.0
                         </a>
                     
@@ -302,7 +480,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="../../categories/index.html">Blog Event</a>
+    <a class="category-link" href="/categories/Blog-Event/">Blog Event</a>
 
 
     
@@ -341,7 +519,7 @@
                     
                     
                         <p>
-                            <a href="../../2016/02/05/my-blog-of-0-1-0/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2016/02/05/my-blog-of-0-1-0/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -358,7 +536,7 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="../../2016/01/15/index.html">
+                        <a class="link-unstyled" href="/2016/01/15/lodash-v4-0-0-changelog/">
                             Lodash v4.0.0 简易更新日志
                         </a>
                     
@@ -372,7 +550,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="../../categories/index.html">Lo-Dash</a>
+    <a class="category-link" href="/categories/Lo-Dash/">Lo-Dash</a>
 
 
     
@@ -446,7 +624,7 @@
                     
                     
                         <p>
-                            <a href="../../2016/01/15/lodash-v4-0-0-changelog/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2016/01/15/lodash-v4-0-0-changelog/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -463,7 +641,7 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="../../2016/01/09/index.html">
+                        <a class="link-unstyled" href="/2016/01/09/osx-save-dialog-without-favorites/">
                             OSX 在保存对话框中没有收藏(Favorites)分类
                         </a>
                     
@@ -477,7 +655,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="../../categories/index.html">Mac</a>
+    <a class="category-link" href="/categories/Mac/">Mac</a>
 
 
     
@@ -503,7 +681,7 @@
                     
                     
                         <p>
-                            <a href="../../2016/01/09/osx-save-dialog-without-favorites/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2016/01/09/osx-save-dialog-without-favorites/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -572,10 +750,10 @@
 </div>
 
         
-<div id="cover" style="background-image:url('../../static/images/20160204-KongfuPanda3.jpg');"></div>
+<div id="cover" style="background-image:url('/static/images/20160204-KongfuPanda3.jpg');"></div>
     </body>
     <!--SCRIPTS-->
-<script src="../../assets/js/scrip-kfclrha7sqfhhrwwa1ang3vfficpwmlkengxtt8qiludgwqbj2ghchswa5ta.min.js" type="text/javascript"></script>
+<script src="/assets/js/scrip-kfclrha7sqfhhrwwa1ang3vfficpwmlkengxtt8qiludgwqbj2ghchswa5ta.min.js" type="text/javascript"></script>
 <!--SCRIPTS END-->
 
 
