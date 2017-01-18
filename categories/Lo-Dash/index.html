@@ -13,28 +13,25 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description">
-<meta property="og:type" content="blog">
+    <meta property="og:type" content="blog">
 <meta property="og:title" content="XGHeaven's Blog">
 <meta property="og:url" content="http://blog.xgheaven.cn/categories/Lo-Dash/index.html">
 <meta property="og:site_name" content="XGHeaven's Blog">
-<meta property="og:description">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="XGHeaven's Blog">
-<meta name="twitter:description">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
         
     
     
-        <meta property="og:image" content="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
     
     
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/style-h0nfggbrtkojcdgm6aibpyar5fktvm9pvc64u5luv4kw4kgaoc9721bkhkco.min.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/style-h0nfggbrtkojcdgm6aibpyar5fktvm9pvc64u5luv4kw4kgaoc9721bkhkco.min.css">
     <!--STYLES END-->
     
     
@@ -67,10 +64,10 @@
     
         
             <a  class="header-right-picture "
-                href="/#about">
+                href="#about">
         
         
-            <img class="header-picture" src="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
         
         </a>
     
@@ -84,7 +81,7 @@
     
         <div class="sidebar-profile">
             <a href="/#about">
-                    <img class="sidebar-profile-picture" src="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
             </a>
             <span class="sidebar-profile-name">XGHeaven</span>
         </div>
@@ -143,7 +140,7 @@
             <li class="sidebar-button">
                 
                     <a  class="sidebar-button-link "
-                         href="/#about"
+                         href="#about"
                         
                     >
                 
@@ -313,30 +310,30 @@
                 <div class="postShorten-content" itemprop="articleBody">
                     <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#主要更新"><span class="toc-text">主要更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除的方法"><span class="toc-text">移除的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重命名的方法"><span class="toc-text">重命名的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分离出的方法"><span class="toc-text">分离出的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他的小修改"><span class="toc-text">其他的小修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
 <p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。<br>简单的翻译了一下官方的更新日志。</p>
-<h3 id="主要更新">主要更新</h3><ul>
+<h3 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h3><ul>
 <li>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</li>
 <li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="external"><code>IE6-8</code></a> 的支持</li>
 <li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="external"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="external"><code>es6-shim</code></a></li>
 <li>移除了大部分的 <code>thisArg</code> 参数</li>
 </ul>
-<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objects = [&#123; <span class="string">'a'</span>: <span class="number">1</span> &#125;, &#123; <span class="string">'a'</span>: <span class="number">2</span> &#125;];</span><br><span class="line"><span class="keyword">var</span> context = &#123; <span class="string">'b'</span>: <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span><span class="params">(item)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> item.a + <span class="keyword">this</span>.b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 3.10.1</span></span><br><span class="line">_.map(objects, <span class="keyword">callback</span>, context);</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 4.0.0</span></span><br><span class="line">_.map(objects, _.bind(<span class="keyword">callback</span>, context));</span><br></pre></td></tr></table></figure>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> objects = [&#123; <span class="string">'a'</span>: <span class="type">1 </span>&#125;, &#123; <span class="string">'a'</span>: <span class="type">2 </span>&#125;];</div><div class="line"><span class="keyword">var</span> context = &#123; <span class="string">'b'</span>: <span class="type">5 </span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span></span>(item) &#123;</div><div class="line">  <span class="keyword">return</span> item.a + <span class="built_in">this</span>.b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// in 3.10.1</span></div><div class="line"><span class="literal">_</span>.map(objects, <span class="keyword">callback</span>, context);</div><div class="line"></div><div class="line"><span class="comment">// in 4.0.0</span></div><div class="line"><span class="literal">_</span>.map(objects, <span class="literal">_</span>.bind(<span class="keyword">callback</span>, context));</div></pre></td></tr></table></figure>
 <ul>
 <li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// in 3.10.1</span></span><br><span class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/array/chunk'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 4.0.0</span></span><br><span class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/chunk'</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// in 3.10.1</span></div><div class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/array/chunk'</span>);</div><div class="line"></div><div class="line"><span class="comment">// in 4.0.0</span></div><div class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/chunk'</span>);</div></pre></td></tr></table></figure>
 <ul>
 <li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="external">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="external">_.minBy</a></p>
 </li>
 <li><p>添加了足足 80 个方法</p>
 </li>
 </ul>
-<h3 id="移除的方法">移除的方法</h3><ul>
+<h3 id="移除的方法"><a href="#移除的方法" class="headerlink" title="移除的方法"></a>移除的方法</h3><ul>
 <li>移除了 <code>_.support</code></li>
 <li>移除了 <code>_.findWhere</code> ，用 <code>_.find</code> 来替代(with iteratee shorthand)</li>
 <li>移除了 <code>_.where</code> ，用 <code>_.filter</code> 来替代(with iteratee shorthand)</li>
 <li>移除了 <code>_.pluck</code> ，用 <code>_.map</code> 来替代(with iteratee shorthand)</li>
 </ul>
-<h3 id="重命名的方法">重命名的方法</h3><ul>
+<h3 id="重命名的方法"><a href="#重命名的方法" class="headerlink" title="重命名的方法"></a>重命名的方法</h3><ul>
 <li>重命名 <code>_.first</code> 为 <code>_.head</code></li>
 <li>重命名 <code>_.indexBy</code> 为 <code>_.keyBy</code></li>
 <li>重命名 <code>_.invoke</code> 为 <code>_.invokeMap</code></li>
@@ -349,7 +346,7 @@
 <li>重命名 <code>_.trimLeft</code> &amp; <code>_.trimRight</code> 为 <code>_.trimStart</code> &amp; <code>_.trimEnd</code></li>
 <li>重命名 <code>_.trunc</code> 为 <code>_.truncate</code></li>
 </ul>
-<h3 id="分离出的方法">分离出的方法</h3><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
+<h3 id="分离出的方法"><a href="#分离出的方法" class="headerlink" title="分离出的方法"></a>分离出的方法</h3><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
 <ul>
 <li>分离出 <code>_.indexOf</code> &amp; <code>_.lastIndexOf</code> 为 <code>_.sortedIndexOf</code> &amp; <code>_.sortedLastIndexOf</code></li>
 <li>分离出 <code>_.max</code> &amp; <code>_.min</code> 为 <code>_.maxBy</code> &amp; <code>_.minBy</code></li>
@@ -359,7 +356,7 @@
 <li>分离出 <code>_.sortedLastIndex</code> 为 <code>_.sortedLastIndexBy</code></li>
 <li>分离出 <code>_.uniq</code> 为 <code>_.sortedUniq</code>, <code>_.sortedUniqBy</code>, &amp; <code>_.uniqBy</code></li>
 </ul>
-<h3 id="其他的小修改">其他的小修改</h3><ul>
+<h3 id="其他的小修改"><a href="#其他的小修改" class="headerlink" title="其他的小修改"></a>其他的小修改</h3><ul>
 <li>将 <code>_.sortByAll</code> 融合到了 <code>_.sortBy</code></li>
 <li>改变这个类别 <code>_.at</code> 为 <em>“Object”</em></li>
 <li>改变这个类别 <code>_.bindAll</code> 为 <em>“Utility”</em></li>
@@ -368,7 +365,7 @@
 <li>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</li>
 <li><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</li>
 </ul>
-<h3 id="总结">总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
 
                     
                         
@@ -401,7 +398,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2016 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2017 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
@@ -419,7 +416,7 @@
             <i class="fa fa-remove"></i>
         </div>
         
-            <img id="about-card-picture" src="http://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
         
             <h4 id="about-card-name">XGHeaven</h4>
         
@@ -448,7 +445,7 @@
 <div id="cover" style="background-image:url('/static/images/20160204-KongfuPanda3.jpg');"></div>
     </body>
     <!--SCRIPTS-->
-<script src="/assets/js/scrip-kfclrha7sqfhhrwwa1ang3vfficpwmlkengxtt8qiludgwqbj2ghchswa5ta.min.js" type="text/javascript"></script>
+<script src="/assets/js/scrip-kfclrha7sqfhhrwwa1ang3vfficpwmlkengxtt8qiludgwqbj2ghchswa5ta.min.js"></script>
 <!--SCRIPTS END-->
 
 
