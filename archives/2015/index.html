@@ -322,7 +322,7 @@
 <li>5对新手更加友好，因为只需要安装一个<code>babel</code>就可以了，而6需要安装比较多的东西和插件才可以。</li>
 <li>相比5来说，6将命令行工具和API分开来了，最直观的感觉就是，当你想在代码中运行es6代码的话，需要安装<code>babel-core</code>，而如果你想在终端编译es6或者是运行es6版本的REPL的话，需要安装<code>babel-cli</code></li>
 <li>也许有人问，原先的<code>babel</code>去哪了？是这样的，这个<code>babel</code>的package到了6版本之后虽然还是能安装，但是已经不具有任何的有效的代码了。取而代之的是一段提示文字，提示你需要安装<code>babel-core</code>或者<code>babel-cli</code>。所以你在babel6的情况下，完全不需要安装<code>babel</code></li>
-<li>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require hook的话，你回发现代码无法运行：  <figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</div></pre></td></tr></table></figure>
+<li>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require hook的话，你回发现代码无法运行：  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>就是因为babel6整体插件化了，如果你想使用es6语法，需要手动加载相关插件。</p>
@@ -336,7 +336,7 @@
 <p><img src="install-babel6.gif" alt="安装babel6"></p>
 <h2 id="require-hook"><a href="#require-hook" class="headerlink" title="require hook"></a>require hook</h2><p>安装好之后，问题来了，如何使用呢？</p>
 <p>相信使用过<code>coffee</code>的人一定知道<code>register</code>，那么在babel中同样不例外，也可以使用同样的方法。</p>
-<figure class="highlight coffeescript"><figcaption><span>start.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</div><div class="line"></div><div class="line"><span class="built_in">require</span>(<span class="string">'./app'</span>);</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><figcaption><span>start.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">require</span>(<span class="string">'babel-core/register'</span>);</div><div class="line"></div><div class="line"><span class="built_in">require</span>(<span class="string">'./app'</span>);</div></pre></td></tr></table></figure>
 <p>大家可能以为这样我就可以在<code>app.js</code>中优雅的使用es6了，在babel5中确实是这样的，但是在babel6中，却不一样了。</p>
 <p>如果你这样写完，并没有任何作用，因为你缺少一个插件。</p>
 <h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>如果想使用<code>es6</code>语法，必须安装一个插件<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="keyword">install</span> babel-preset-es2015</div></pre></td></tr></table></figure></p>
