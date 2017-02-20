@@ -6,35 +6,32 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="XGHeaven&#39;s Blog">
-    <title>关于大学生当中的互联网发展的感想 - XGHeaven&#39;s Blog</title>
+    <title>Lodash v4.0.0 简易更新日志 - XGHeaven&#39;s Blog</title>
     <meta name="author" content="XGHeaven">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="大学牲&amp;amp;程序猿我为什么要写这篇文章我是一名大学牲，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。
-可事实证明是，虽然高考在某一些方面确实是会扼杀部分的才能，而更多的是能够区分不同的人。
-当我作为一个一般的学生进入一般的大学的时候，真正的体会到了那种好大学和坏大学的区别。
-
-好大学，都是一种朴素的情">
+    <meta name="description" content="在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 4.0，这次更新了很多的内容，包括了不兼容更新，方法分离，函数重命名等等操作，下面我们来一一分析一下。简单的翻译了一下官方的更新日志。
+主要更新
+不再支持 Bower &amp;amp; Component，而是使用 npm，到发稿为止，已经无法在 bower 找到相关 Lo-Dash 的内容
+移除了对 IE6-8 的">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="关于大学生当中的互联网发展的感想">
-<meta property="og:url" content="http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/index.html">
+<meta property="og:title" content="Lodash v4.0.0 简易更新日志">
+<meta property="og:url" content="http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/index.html">
 <meta property="og:site_name" content="XGHeaven's Blog">
-<meta property="og:description" content="大学牲&amp;amp;程序猿我为什么要写这篇文章我是一名大学牲，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。
-可事实证明是，虽然高考在某一些方面确实是会扼杀部分的才能，而更多的是能够区分不同的人。
-当我作为一个一般的学生进入一般的大学的时候，真正的体会到了那种好大学和坏大学的区别。
-
-好大学，都是一种朴素的情">
-<meta property="og:updated_time" content="2015-11-12T17:03:47.000Z">
+<meta property="og:description" content="在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 4.0，这次更新了很多的内容，包括了不兼容更新，方法分离，函数重命名等等操作，下面我们来一一分析一下。简单的翻译了一下官方的更新日志。
+主要更新
+不再支持 Bower &amp;amp; Component，而是使用 npm，到发稿为止，已经无法在 bower 找到相关 Lo-Dash 的内容
+移除了对 IE6-8 的">
+<meta property="og:updated_time" content="2016-01-14T17:38:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于大学生当中的互联网发展的感想">
-<meta name="twitter:description" content="大学牲&amp;amp;程序猿我为什么要写这篇文章我是一名大学牲，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。
-可事实证明是，虽然高考在某一些方面确实是会扼杀部分的才能，而更多的是能够区分不同的人。
-当我作为一个一般的学生进入一般的大学的时候，真正的体会到了那种好大学和坏大学的区别。
-
-好大学，都是一种朴素的情">
+<meta name="twitter:title" content="Lodash v4.0.0 简易更新日志">
+<meta name="twitter:description" content="在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 4.0，这次更新了很多的内容，包括了不兼容更新，方法分离，函数重命名等等操作，下面我们来一一分析一下。简单的翻译了一下官方的更新日志。
+主要更新
+不再支持 Bower &amp;amp; Component，而是使用 npm，到发稿为止，已经无法在 bower 找到相关 Lo-Dash 的内容
+移除了对 IE6-8 的">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
@@ -50,6 +47,17 @@
     <link rel="stylesheet" href="/assets/css/style-0dsuye28jy1gprlameh8tasidbgok8pmddedh0oyluw91suzafrs5c77vd8r.min.css">
     <!--STYLES END-->
     
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
     
     <script type="text/javascript">
     var _hmt = _hmt || [];
@@ -297,19 +305,19 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            关于大学生当中的互联网发展的感想
+            Lodash v4.0.0 简易更新日志
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Fri Nov 13 2015 00:22:35 GMT+0800">
+    <time itemprop="datePublished" content="Thu Jan 14 2016 16:26:35 GMT+0000">
 	
-		    11月 13, 2015
+		    1月 14, 2016
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/随笔/">随笔</a>
+    <a class="category-link" href="/categories/Lo-Dash/">Lo-Dash</a>
 
 
     
@@ -318,29 +326,64 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="大学牲-amp-程序猿"><a href="#大学牲-amp-程序猿" class="headerlink" title="大学牲&amp;程序猿"></a>大学牲&amp;程序猿</h1><h1 id="我为什么要写这篇文章"><a href="#我为什么要写这篇文章" class="headerlink" title="我为什么要写这篇文章"></a>我为什么要写这篇文章</h1><p>我是一名<code>大学牲</code>，你别不相信，在来大学之前，我坚信自己是一个好学生，热爱学习，懂得学习。我之所以没有考到好的学校，不是因为自己能力不行，是因为自己不在意而已。</p>
-<p>可事实证明是，虽然高考在某一些方面确实是会扼杀部分的才能，而更多的是能够区分不同的人。</p>
-<p>当我作为一个一般的学生进入一般的大学的时候，真正的体会到了那种好大学和坏大学的区别。</p>
-<blockquote>
-<p>好大学，都是一种朴素的情绪，任何事情都是踏踏实实的来做。</p>
-</blockquote>
-<p>或许这篇文章是给我自己的，让自己时刻去警醒。</p>
-<h1 id="互联网在技术上的浮躁情绪"><a href="#互联网在技术上的浮躁情绪" class="headerlink" title="互联网在技术上的浮躁情绪"></a>互联网在技术上的浮躁情绪</h1><p>而在我们的大学，到处都充斥着一种浮躁的情绪。在计算机方面：</p>
-<ul>
-<li>比谁懂得多，你懂mysql，不行我也要懂。你会nodejs，我也去学。他会前端，我也去学。他会Python，我也去学，结果到头来，你确实是知道了很多，但是不得不说，你仅仅是懂，如果让你去仔细写一个项目的话，根本不行。</li>
-<li><p>在我们社团中，虽然我很尊重我们的技术副站长，可是总是充斥着一种如果你不学会前端，后端，运维，装逼，瞎扯，看B站，几乎都不好意思出现在社团中。而且，不管你懂得深不深，只要你懂，你就可以在社团中瞎扯了。虽然我不反对对全栈技术的支持，但是我反对这种只为了广度，而没有深度的学习。今天看着他们搭建服务器，讲想看看mysql，明天看着他们写api，就想学学node，后天看着前端妹子漂亮，然后就去写HTML，可是最后呢？你知道了很多，但是如果给你一周的时间，你能完成什么东西呢？</p>
-<blockquote>
-<p>是的，你必须要有坚实方向感，如果你是iOS工程师，先干好自己的事情，然后再去学习其他的。如果你是前端开发工程师，你要着眼于前端，而其他内容都是你所需要了解即可。不要因为这一刻我买了苹果手机，坚定了写iOS程序的愿望，然后看着舍友都会写前端，然后就果断跳去前端的阵营。<br>记住，学精不等于学会</p>
-</blockquote>
-</li>
-<li><p>但是，在我们社团中，还充斥这一种学会等于学精的感觉。我很讨厌。</p>
-</li>
-<li>其次体现在创业上，很多项目都是一时兴起，后面全都靠的是摸索。</li>
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#主要更新"><span class="toc-text">主要更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除的方法"><span class="toc-text">移除的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重命名的方法"><span class="toc-text">重命名的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分离出的方法"><span class="toc-text">分离出的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他的小修改"><span class="toc-text">其他的小修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+<p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。<br>简单的翻译了一下官方的更新日志。</p>
+<h3 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h3><ul>
+<li>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</li>
+<li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="external"><code>IE6-8</code></a> 的支持</li>
+<li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="external"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="external"><code>es6-shim</code></a></li>
+<li>移除了大部分的 <code>thisArg</code> 参数</li>
 </ul>
-<h1 id="这种浮躁情绪在大学生中的体现"><a href="#这种浮躁情绪在大学生中的体现" class="headerlink" title="这种浮躁情绪在大学生中的体现"></a>这种浮躁情绪在大学生中的体现</h1><p>或许这种体现，就是浅尝辄止，无法深入下去。对于我而言，我发现我很多东西都是接触过，但是没有深入研究过。而这种感觉总让我感觉不舒服，难受。我宁愿没有接触过那些东西。</p>
-<h1 id="如果解决这种浮躁情绪"><a href="#如果解决这种浮躁情绪" class="headerlink" title="如果解决这种浮躁情绪"></a>如果解决这种浮躁情绪</h1><p>或许这种情绪的来源在于大家对自己地位的在意。比如说，当我自己接触过之后，就可以和他们聊起来，当时自己接触的非常浅，每当有别人来尝试这个东西的时候，就会担心他学的比自己好，自己原本厉害的形象被损毁，然后不得不再去寻找其他的可以装逼的技术。从而在这里产生了一个恶性循环。让自己越来越深的陷入了这个循环中。无法自拔。</p>
-<h1 id="如何更好的在这种环境中生活"><a href="#如何更好的在这种环境中生活" class="headerlink" title="如何更好的在这种环境中生活"></a>如何更好的在这种环境中生活</h1><p>留给自己的话，认真，认真，认真对待每一件事情。<br>你会成功的！加油。</p>
-<p>假设自己已经学通了，所有的部分，而且很深刻，还会担心别人超过自己么？自己之所以担心别人超过自己，都是因为对自己的不自信，相信自己，找到你和别人的不足，努力去奋斗。保持一种学习的心态，不要浅尝辄止。而且要学会和别人分享。自己总是觉得别人没有走自己的老路，觉得不舒服。可是，还没有想好如何安慰自己这个心态。。。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> objects = [&#123; <span class="string">'a'</span>: <span class="type">1 </span>&#125;, &#123; <span class="string">'a'</span>: <span class="type">2 </span>&#125;];</div><div class="line"><span class="keyword">var</span> context = &#123; <span class="string">'b'</span>: <span class="type">5 </span>&#125;;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span></span>(item) &#123;</div><div class="line">  <span class="keyword">return</span> item.a + <span class="built_in">this</span>.b;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// in 3.10.1</span></div><div class="line"><span class="literal">_</span>.map(objects, <span class="keyword">callback</span>, context);</div><div class="line"></div><div class="line"><span class="comment">// in 4.0.0</span></div><div class="line"><span class="literal">_</span>.map(objects, <span class="literal">_</span>.bind(<span class="keyword">callback</span>, context));</div></pre></td></tr></table></figure>
+<ul>
+<li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// in 3.10.1</span></div><div class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/array/chunk'</span>);</div><div class="line"></div><div class="line"><span class="comment">// in 4.0.0</span></div><div class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">'lodash/chunk'</span>);</div></pre></td></tr></table></figure>
+<ul>
+<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="external">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="external">_.minBy</a></p>
+</li>
+<li><p>添加了足足 80 个方法</p>
+</li>
+</ul>
+<h3 id="移除的方法"><a href="#移除的方法" class="headerlink" title="移除的方法"></a>移除的方法</h3><ul>
+<li>移除了 <code>_.support</code></li>
+<li>移除了 <code>_.findWhere</code> ，用 <code>_.find</code> 来替代(with iteratee shorthand)</li>
+<li>移除了 <code>_.where</code> ，用 <code>_.filter</code> 来替代(with iteratee shorthand)</li>
+<li>移除了 <code>_.pluck</code> ，用 <code>_.map</code> 来替代(with iteratee shorthand)</li>
+</ul>
+<h3 id="重命名的方法"><a href="#重命名的方法" class="headerlink" title="重命名的方法"></a>重命名的方法</h3><ul>
+<li>重命名 <code>_.first</code> 为 <code>_.head</code></li>
+<li>重命名 <code>_.indexBy</code> 为 <code>_.keyBy</code></li>
+<li>重命名 <code>_.invoke</code> 为 <code>_.invokeMap</code></li>
+<li>重命名 <code>_.modArgs</code> 为 <code>_.overArgs</code></li>
+<li>重命名 <code>_.padLeft</code> &amp; <code>_.padRight</code> 为 <code>_.padStart</code> &amp; <code>_.padEnd</code></li>
+<li>重命名 <code>_.pairs</code> 为 <code>_.为Pairs</code></li>
+<li>重命名 <code>_.rest</code> 为 <code>_.tail</code></li>
+<li>重命名 <code>_.restParam</code> 为 <code>_.rest</code></li>
+<li>重命名 <code>_.sortByOrder</code> 为 <code>_.orderBy</code></li>
+<li>重命名 <code>_.trimLeft</code> &amp; <code>_.trimRight</code> 为 <code>_.trimStart</code> &amp; <code>_.trimEnd</code></li>
+<li>重命名 <code>_.trunc</code> 为 <code>_.truncate</code></li>
+</ul>
+<h3 id="分离出的方法"><a href="#分离出的方法" class="headerlink" title="分离出的方法"></a>分离出的方法</h3><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
+<ul>
+<li>分离出 <code>_.indexOf</code> &amp; <code>_.lastIndexOf</code> 为 <code>_.sortedIndexOf</code> &amp; <code>_.sortedLastIndexOf</code></li>
+<li>分离出 <code>_.max</code> &amp; <code>_.min</code> 为 <code>_.maxBy</code> &amp; <code>_.minBy</code></li>
+<li>分离出 <code>_.omit</code> &amp; <code>_.pick</code> 为 <code>_.omitBy</code> &amp; <code>_.pickBy</code></li>
+<li>分离出 <code>_.sample</code> 为 <code>_.sampleSize</code></li>
+<li>分离出 <code>_.sortedIndex</code> 为 <code>_.sortedIndexBy</code></li>
+<li>分离出 <code>_.sortedLastIndex</code> 为 <code>_.sortedLastIndexBy</code></li>
+<li>分离出 <code>_.uniq</code> 为 <code>_.sortedUniq</code>, <code>_.sortedUniqBy</code>, &amp; <code>_.uniqBy</code></li>
+</ul>
+<h3 id="其他的小修改"><a href="#其他的小修改" class="headerlink" title="其他的小修改"></a>其他的小修改</h3><ul>
+<li>将 <code>_.sortByAll</code> 融合到了 <code>_.sortBy</code></li>
+<li>改变这个类别 <code>_.at</code> 为 <em>“Object”</em></li>
+<li>改变这个类别 <code>_.bindAll</code> 为 <em>“Utility”</em></li>
+<li>在 <code>master</code> 分支下，将 <code>./lodash.js</code> 移动到 <code>./dist/lodash.js</code></li>
+<li>在 <code>npm</code> 分支下，将 <code>./index.js</code> 移动到 <code>./lodash.js</code></li>
+<li>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</li>
+<li><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
 
             
                 
@@ -353,7 +396,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/互联网/">互联网</a> <a class="tag tag--primary tag--small t-link" href="/tags/大学/">大学</a> <a class="tag tag--primary tag--small t-link" href="/tags/随笔/">随笔</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/changelog/">changelog</a> <a class="tag tag--primary tag--small t-link" href="/tags/lodash/">lodash</a>
 
             </div>
         
@@ -362,7 +405,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/13/use-babel6-in-nodejs/"  data-tooltip="Use ES6 With Babel6 in Nodejs">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/04/my-blog-of-0-1-0/"  data-tooltip="My Blog of 0.1.0">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -370,7 +413,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/10/04/nodejs-eventemitter/" data-tooltip="Nodejs EventEmitter 解读">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/09/osx-save-dialog-without-favorites/" data-tooltip="OSX 在保存对话框中没有收藏(Favorites)分类">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -385,17 +428,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -408,7 +451,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
             
                 <i class="fa fa-list"></i>
             </a>
@@ -443,7 +486,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/13/use-babel6-in-nodejs/"  data-tooltip="Use ES6 With Babel6 in Nodejs">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/02/04/my-blog-of-0-1-0/"  data-tooltip="My Blog of 0.1.0">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -451,7 +494,7 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/10/04/nodejs-eventemitter/" data-tooltip="Nodejs EventEmitter 解读">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/09/osx-save-dialog-without-favorites/" data-tooltip="OSX 在保存对话框中没有收藏(Favorites)分类">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right"></i>
@@ -466,17 +509,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -489,7 +532,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
             
                 <i class="fa fa-list"></i>
             </a>
@@ -502,17 +545,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/">
                 <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
             </a>
         </li>
@@ -567,9 +610,9 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://blog.xgheaven.cn/2015/11/13/About-Internet-In-College/';
+                 this.page.url = 'http://blog.xgheaven.cn/2016/01/14/lodash-v4-0-0-changelog/';
                  
-                    this.page.identifier = '2015/11/13/About-Internet-In-College/';
+                    this.page.identifier = '2016/01/14/lodash-v4-0-0-changelog/';
                                   
              };
             (function() {
