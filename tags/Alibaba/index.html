@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="XGHeaven&#39;s Blog">
-    <title>归档: 2017/6 - XGHeaven&#39;s Blog</title>
+    <title>标签: Alibaba - XGHeaven&#39;s Blog</title>
     <meta name="author" content="XGHeaven">
     
     
@@ -15,7 +15,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="XGHeaven's Blog">
-<meta property="og:url" content="http://blog.xgheaven.cn/archives/2017/06/index.html">
+<meta property="og:url" content="http://blog.xgheaven.cn/tags/Alibaba/index.html">
 <meta property="og:site_name" content="XGHeaven's Blog">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="XGHeaven's Blog">
@@ -357,95 +357,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/09/all-in-one-timer/">
-                            All in One - Timer
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Jun 09 2017 00:50:14 GMT+0800">
-	
-		    6月 09, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/All-in-One/">All in One</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="All-in-one-Timer-定时器"><a href="#All-in-one-Timer-定时器" class="headerlink" title="All in one - Timer 定时器"></a>All in one - Timer 定时器</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-in-one-Timer-定时器"><span class="toc-text">All in one - Timer 定时器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Golang"><span class="toc-text">Golang</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timer"><span class="toc-text">Timer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ticker"><span class="toc-text">Ticker</span></a></li></ol></li></ol>
-<p>这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。</p>
-<p>首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。</p>
-<p>首先先从 golang 语言讲起来</p>
-<h1 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h1><p>在 golang 中单次定时器和循环定时器分别是 Timer 和 Ticker。这两个都是一个结构体，结构如下</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Timer <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time</div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">type</span> Ticker <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time <span class="comment">// The channel on which the ticks are delivered.</span></div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>其中 <code>C</code> 是一个 只读的 Time 类型的 channel，定时器根据传入的时间设置，定时向这个 channel 输入时间。你需要做的是等待这个 channel 中的数据。</p>
-<p>每一个结构体都有如下方法：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></div><div class="line"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></div></pre></td></tr></table></figure>
-<p>首先 Timer 和 Ticker 的区别不是很大，下面我们将两者的共性以 Timer 来讲述， 后面会针对两者不同的内容进行讲解。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">2</span>)</div><div class="line">  	time := &lt;- timer.C</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>参数接受一个时间参数，表示多久后向 channel 传输数据，也就是你想要定时的间隔，上面这个例子表示两秒之后输出 <code>Timer expired</code> 。</p>
-<p>那么每次我们都要这么麻烦的设置一个时间，然后等待 channel，运行制定的函数么？</p>
-<p>其实不是的，golfing 给我们内置了一个函数，类似于 JavaScript 的 setTimeout，那就是 AfterFunc。</p>
-<p>函数如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">AfterFunc</span><span class="params">(d Duration, f <span class="keyword">func</span>()</span>) *<span class="title">Timer</span></span></div></pre></td></tr></table></figure>
-<p>就是他会给你返回一个 <code>*Timer</code> ，并在指定时间之后，在 goroutine 中运行你的函数。</p>
-<p>上面说完了如何启动，那么怎么停止呢？很简单，就是 <code>Stop</code>。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        &lt;- timer.C</div><div class="line">        <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">    &#125;()</div><div class="line">    stop := timer.Stop()</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer cancelled:"</span>, stop)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Timer cancelled: true</div></pre></td></tr></table></figure>
-<p>调用停止之后，会返回一个 Bool 值：</p>
-<ul>
-<li><code>true</code> 停止成功</li>
-<li><code>false</code> 已经被停止或者已经到期触发</li>
-</ul>
-<p>这里有一点需要注意的是，调用停止之后，并不会关闭 channel，如果你想检测那么你可以通过额外添加一个 done channel 来协助。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    done := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      <span class="keyword">select</span>&#123;</div><div class="line">        <span class="keyword">case</span> &lt;- timer.C:</div><div class="line">          <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">        <span class="keyword">case</span> &lt;- done:</div><div class="line">          <span class="built_in">println</span>(<span class="string">"Timer stop"</span>)</div><div class="line">      &#125;</div><div class="line">    &#125;()</div><div class="line">    stop := timer.Stop()</div><div class="line">    done &lt;- <span class="literal">true</span></div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer cancelled:"</span>, stop)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer stop</div><div class="line">Timer cancelled: true</div></pre></td></tr></table></figure>
-<p>所以比较麻烦，大家可以自己封装一下。</p>
-<h2 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h2><p>单次定时器有一个特殊的方法就是 Reset，他可以将一个定时器的超时时间重新定义，这样你可以重复利用这个定时器。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      &lt;- timer.C</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">      &lt;- timer.C</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired again"</span>)</div><div class="line">    &#125;()</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">    timer.Reset(time.Second)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer expired</div><div class="line">Timer expired again</div></pre></td></tr></table></figure>
-<p>同理，你可以用在 AfterFunc 中</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.AfterFunc(time.Second, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">    &#125;)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">    timer.Reset(time.Second)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer expired</div><div class="line">Timer expired</div></pre></td></tr></table></figure>
-<p>简直和 JavaScript 中的 setTimeout 像的不能再像了。</p>
-<h2 id="Ticker"><a href="#Ticker" class="headerlink" title="Ticker"></a>Ticker</h2><p>这里的 Ticker 其实相当于 JavaScript 中的 setInterval，不过他没有类似 Timer 的 AfterFunc，只有一个最基础的构造器。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    ticker := time.NewTicker(time.Millisecond * <span class="number">500</span>)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">for</span> t := <span class="keyword">range</span> ticker.C &#123;</div><div class="line">            fmt.Println(<span class="string">"Tick at"</span>, t)</div><div class="line">        &#125;</div><div class="line">    &#125;()</div><div class="line">    time.Sleep(time.Millisecond * <span class="number">1500</span>)</div><div class="line">    ticker.Stop()</div><div class="line">    fmt.Println(<span class="string">"Ticker stopped"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Tick at 2012-09-22 15:58:40.912926 -0400 EDT</div><div class="line">Tick at 2012-09-22 15:58:41.413892 -0400 EDT</div><div class="line">Tick at 2012-09-22 15:58:41.913888 -0400 EDT</div><div class="line">Ticker stopped</div></pre></td></tr></table></figure>
-<p>Ticker 同样也有同 Timer 一样无法关闭 channel 的问题，解决方法和 Timer 类似，我就不多说了。</p>
-<p>不过 Ticker 的 Stop 函数与 Timer 的不太一样，因为他没有是否触发过的问题，所以 Ticker 的 Stop是没有返回值的，这一点需要注意。</p>
-<p>暂时先写这一个，以后如果有新的，持续更新。</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2017/06/09/all-in-one-timer/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -455,7 +366,6 @@
 </div>
 
 </section>
-
 
 
                 <footer id="footer" class="main-content-wrap">
