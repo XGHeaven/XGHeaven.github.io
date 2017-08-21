@@ -13,25 +13,18 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="All in one - Timer 定时器
-这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。
-首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。
-首先先从 golang 语言讲">
+    <meta name="description" content="All in one - Timer 定时器 这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。 首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。 首先先从 golang 语言讲">
+<meta name="keywords" content="All in One,Golang,Timer">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="All in One - Timer">
 <meta property="og:url" content="http://blog.xgheaven.cn/2017/06/09/all-in-one-timer/index.html">
-<meta property="og:site_name" content="XGHeaven's Blog">
-<meta property="og:description" content="All in one - Timer 定时器
-这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。
-首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。
-首先先从 golang 语言讲">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="All in one - Timer 定时器 这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。 首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。 首先先从 golang 语言讲">
+<meta property="og:locale" content="zh-cn">
 <meta property="og:updated_time" content="2017-06-11T13:05:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="All in One - Timer">
-<meta name="twitter:description" content="All in one - Timer 定时器
-这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。
-首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。
-首先先从 golang 语言讲">
+<meta name="twitter:description" content="All in one - Timer 定时器 这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。 首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。 首先先从 golang 语言讲">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
@@ -44,10 +37,7 @@
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/font-awesome.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox-thumbs.css">
-    <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+    <link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
     <!--STYLES END-->
     
     <script type="text/javascript">
@@ -310,7 +300,7 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Timer <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time</div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">type</span> Ticker <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time <span class="comment">// The channel on which the ticks are delivered.</span></div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>其中 <code>C</code> 是一个 只读的 Time 类型的 channel，定时器根据传入的时间设置，定时向这个 channel 输入时间。你需要做的是等待这个 channel 中的数据。</p>
 <p>每一个结构体都有如下方法：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></div><div class="line"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></div></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></span></div></pre></td></tr></table></figure>
 <p>首先 Timer 和 Ticker 的区别不是很大，下面我们将两者的共性以 Timer 来讲述， 后面会针对两者不同的内容进行讲解。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">2</span>)</div><div class="line">  	time := &lt;- timer.C</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>参数接受一个时间参数，表示多久后向 channel 传输数据，也就是你想要定时的间隔，上面这个例子表示两秒之后输出 <code>Timer expired</code> 。</p>
@@ -564,10 +554,7 @@
 <div id="cover" style="background-image:url('/static/images/20160204-KongfuPanda3.jpg');"></div>
     </body>
     <!--SCRIPTS-->
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/jquery.fancybox.js"></script>
-<script src="/assets/js/jquery.fancybox-thumbs.js"></script>
-<script src="/assets/js/tranquilpeak.js"></script>
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
 <!--SCRIPTS END-->
 
     

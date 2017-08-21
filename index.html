@@ -14,11 +14,12 @@
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
     <meta property="og:type" content="blog">
-<meta property="og:title" content="XGHeaven's Blog">
+<meta property="og:title" content="XGHeaven&#39;s Blog">
 <meta property="og:url" content="http://blog.xgheaven.cn/index.html">
-<meta property="og:site_name" content="XGHeaven's Blog">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:locale" content="zh-cn">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="XGHeaven's Blog">
+<meta name="twitter:title" content="XGHeaven&#39;s Blog">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
@@ -31,10 +32,7 @@
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/font-awesome.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox-thumbs.css">
-    <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+    <link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
     <!--STYLES END-->
     
     <script type="text/javascript">
@@ -271,6 +269,111 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/08/17/vue-lever-a-plugin-help-you-to-manager-true-false-state/">
+                            Vue-Lever 一个使用装饰器模式的插件帮你管理 True/false 状态
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Thu Aug 17 2017 11:01:14 GMT+0800">
+	
+		    8月 17, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Vue-js/">Vue.js</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <blockquote>
+<p>vue-lever 是一个使用装饰器模式的插件来帮你管理 true/false 状态</p>
+</blockquote>
+<p>最近一直在写 vue 相关的东西，因为毕竟是前端，所以经常会遇到一种情况就是说，我需要维护一个 true/false 状态，比如说：当按钮点击的时候，显示加载字样，然后等加载完毕之后完成显示。</p>
+<p>首先我们考虑出现这种情况的时候，如果我们一行一行的书写，那将是非常麻烦的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Vue(&#123;</div><div class="line">    data() &#123;</div><div class="line">        <span class="keyword">return</span> &#123; <span class="attr">loading</span>: <span class="literal">false</span> &#125;</div><div class="line">    &#125;</div><div class="line">    methods: &#123;</div><div class="line">        asyncAction() &#123;</div><div class="line">            <span class="keyword">this</span>.loading = <span class="literal">true</span></div><div class="line">            <span class="keyword">this</span>.$http.doing() <span class="comment">// return a promise</span></div><div class="line">                .then(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.loading = <span class="literal">false</span>)</div><div class="line">                .catch(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.loading = <span class="literal">false</span>))</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>我们需要在每一个退出的情况下将 loading 状态设置为 false，这至少意味着你要写 3 遍，非常冗余。而且很容易忘记。</p>
+<p>我们可以抽象出来，可以发现每当这种函数运行的时候，首先将相关的变量设置成 true，然后等待异步操作完成或者失败之后，再将变量设置回之前的值。</p>
+<p>完成这个操作最简单的方式就是代理，在用户的函数调用之前设置相应的变量，在用户的函数调用完成之后，或者如果函数是异步操作，那么通过返回一个 promise 来表示异步操作。</p>
+<p>既然讲到了代理模式，那么在 JS 中有很多，不过我们在这里通过一个 ES6 的新语法，装饰器。</p>
+<p>话不多说，上代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> Lever <span class="keyword">from</span> <span class="string">'vue-lever'</span></div><div class="line"><span class="comment">// import others</span></div><div class="line"></div><div class="line"><span class="keyword">new</span> Vue(&#123;</div><div class="line">    methods: &#123;</div><div class="line">        @Lever.Lever(<span class="string">'loading'</span>)</div><div class="line">        asyncAction() &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.$http.doing() <span class="comment">// return a promise</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>这个功能和上面的那段代码是一模一样的，是不是感觉用了装饰器之后就变得特别简单了呢？</p>
+<p>不过这里有一点需要注意的是，为了方便和隔离，我将所有的变量全都放在 <code>levers</code> 这个变量下面，也就是说你需要通过 <code>levers.loading</code> 来使用，而不是 <code>loading</code></p>
+<p>不过现在暂时没有支持回调函数的方式，也就是你必须要返回一个 promise，否则是不行的。</p>
+<p>其次我们这里还有手动模式，也就是如果你不想用装饰器的话，你可以通过 <code>this.$lever(name, value)</code>，来更改状态，其中 <code>name</code> 为变量名，<code>value</code> 为 true/false 值。当然这里也提供两个 alias，<code>this.$lever.t(name)</code> 和 <code>this.$lever.f(name)</code>。方便设置变量为 true/false。</p>
+<p>还有一些其他的参数，大家可以去 <a href="https://github.com/XGHeaven/vue-lever" target="_blank" rel="external">Github</a> 网站查看。这篇文章就写到这里。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/08/17/vue-lever-a-plugin-help-you-to-manager-true-false-state/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/08/12/a-new-v8-is-coming-node-js-performance-is-changeing/">
+                            A New V8 Is Coming node.js Performance Is Changeing
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Aug 12 2017 15:07:22 GMT+0800">
+	
+		    8月 12, 2017
+    	
+    </time>
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/08/12/a-new-v8-is-coming-node-js-performance-is-changeing/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/06/12/the-first-interview-of-alibaba-for-web-developer/">
                             阿里巴巴的前端实习生面试总结 - 其实是 Node.js
                         </a>
@@ -393,7 +496,7 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Timer <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time</div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">type</span> Ticker <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time <span class="comment">// The channel on which the ticks are delivered.</span></div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>其中 <code>C</code> 是一个 只读的 Time 类型的 channel，定时器根据传入的时间设置，定时向这个 channel 输入时间。你需要做的是等待这个 channel 中的数据。</p>
 <p>每一个结构体都有如下方法：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></div><div class="line"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></div></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></span></div></pre></td></tr></table></figure>
 <p>首先 Timer 和 Ticker 的区别不是很大，下面我们将两者的共性以 Timer 来讲述， 后面会针对两者不同的内容进行讲解。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">2</span>)</div><div class="line">  	time := &lt;- timer.C</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>参数接受一个时间参数，表示多久后向 channel 传输数据，也就是你想要定时的间隔，上面这个例子表示两秒之后输出 <code>Timer expired</code> 。</p>
@@ -1053,168 +1156,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/01/15/lodash-v4-0-0-changelog/">
-                            Lodash v4.0.0 简易更新日志
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Jan 15 2016 00:26:35 GMT+0800">
-	
-		    1月 15, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Lo-Dash/">Lo-Dash</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#主要更新"><span class="toc-text">主要更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#移除的方法"><span class="toc-text">移除的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重命名的方法"><span class="toc-text">重命名的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分离出的方法"><span class="toc-text">分离出的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他的小修改"><span class="toc-text">其他的小修改</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
-<p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。<br>简单的翻译了一下官方的更新日志。</p>
-<h3 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h3><ul>
-<li>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</li>
-<li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="external"><code>IE6-8</code></a> 的支持</li>
-<li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="external"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="external"><code>es6-shim</code></a></li>
-<li>移除了大部分的 <code>thisArg</code> 参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">var objects = [&#123; &apos;a&apos;: 1 &#125;, &#123; &apos;a&apos;: 2 &#125;];</div><div class="line">var context = &#123; &apos;b&apos;: 5 &#125;;</div><div class="line"></div><div class="line">function callback(item) &#123;</div><div class="line">  return item.a + this.b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// in 3.10.1</div><div class="line">_.map(objects, callback, context);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">_.map(objects, _.bind(callback, context));</div></pre></td></tr></table></figure>
-<ul>
-<li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// in 3.10.1</div><div class="line">var chunk = require(&apos;lodash/array/chunk&apos;);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">var chunk = require(&apos;lodash/chunk&apos;);</div></pre></td></tr></table></figure>
-<ul>
-<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="external">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="external">_.minBy</a></p>
-</li>
-<li><p>添加了足足 80 个方法</p>
-</li>
-</ul>
-<h3 id="移除的方法"><a href="#移除的方法" class="headerlink" title="移除的方法"></a>移除的方法</h3><ul>
-<li>移除了 <code>_.support</code></li>
-<li>移除了 <code>_.findWhere</code> ，用 <code>_.find</code> 来替代(with iteratee shorthand)</li>
-<li>移除了 <code>_.where</code> ，用 <code>_.filter</code> 来替代(with iteratee shorthand)</li>
-<li>移除了 <code>_.pluck</code> ，用 <code>_.map</code> 来替代(with iteratee shorthand)</li>
-</ul>
-<h3 id="重命名的方法"><a href="#重命名的方法" class="headerlink" title="重命名的方法"></a>重命名的方法</h3><ul>
-<li>重命名 <code>_.first</code> 为 <code>_.head</code></li>
-<li>重命名 <code>_.indexBy</code> 为 <code>_.keyBy</code></li>
-<li>重命名 <code>_.invoke</code> 为 <code>_.invokeMap</code></li>
-<li>重命名 <code>_.modArgs</code> 为 <code>_.overArgs</code></li>
-<li>重命名 <code>_.padLeft</code> &amp; <code>_.padRight</code> 为 <code>_.padStart</code> &amp; <code>_.padEnd</code></li>
-<li>重命名 <code>_.pairs</code> 为 <code>_.为Pairs</code></li>
-<li>重命名 <code>_.rest</code> 为 <code>_.tail</code></li>
-<li>重命名 <code>_.restParam</code> 为 <code>_.rest</code></li>
-<li>重命名 <code>_.sortByOrder</code> 为 <code>_.orderBy</code></li>
-<li>重命名 <code>_.trimLeft</code> &amp; <code>_.trimRight</code> 为 <code>_.trimStart</code> &amp; <code>_.trimEnd</code></li>
-<li>重命名 <code>_.trunc</code> 为 <code>_.truncate</code></li>
-</ul>
-<h3 id="分离出的方法"><a href="#分离出的方法" class="headerlink" title="分离出的方法"></a>分离出的方法</h3><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
-<ul>
-<li>分离出 <code>_.indexOf</code> &amp; <code>_.lastIndexOf</code> 为 <code>_.sortedIndexOf</code> &amp; <code>_.sortedLastIndexOf</code></li>
-<li>分离出 <code>_.max</code> &amp; <code>_.min</code> 为 <code>_.maxBy</code> &amp; <code>_.minBy</code></li>
-<li>分离出 <code>_.omit</code> &amp; <code>_.pick</code> 为 <code>_.omitBy</code> &amp; <code>_.pickBy</code></li>
-<li>分离出 <code>_.sample</code> 为 <code>_.sampleSize</code></li>
-<li>分离出 <code>_.sortedIndex</code> 为 <code>_.sortedIndexBy</code></li>
-<li>分离出 <code>_.sortedLastIndex</code> 为 <code>_.sortedLastIndexBy</code></li>
-<li>分离出 <code>_.uniq</code> 为 <code>_.sortedUniq</code>, <code>_.sortedUniqBy</code>, &amp; <code>_.uniqBy</code></li>
-</ul>
-<h3 id="其他的小修改"><a href="#其他的小修改" class="headerlink" title="其他的小修改"></a>其他的小修改</h3><ul>
-<li>将 <code>_.sortByAll</code> 融合到了 <code>_.sortBy</code></li>
-<li>改变这个类别 <code>_.at</code> 为 <em>“Object”</em></li>
-<li>改变这个类别 <code>_.bindAll</code> 为 <em>“Utility”</em></li>
-<li>在 <code>master</code> 分支下，将 <code>./lodash.js</code> 移动到 <code>./dist/lodash.js</code></li>
-<li>在 <code>npm</code> 分支下，将 <code>./index.js</code> 移动到 <code>./lodash.js</code></li>
-<li>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</li>
-<li><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2016/01/15/lodash-v4-0-0-changelog/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/01/09/osx-save-dialog-without-favorites/">
-                            OSX 在保存对话框中没有收藏(Favorites)分类
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sat Jan 09 2016 15:10:49 GMT+0800">
-	
-		    1月 09, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Mac/">Mac</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>你有没有发现自己保存东西的时候、下载东西的时候弹出来的保存对话框没有以前的收藏(favorites)分类了。</p>
-<p>这个时候，自己想点击一个下载或者文档都非常的麻烦。</p>
-<p>一开始的时候，以为这只是个别的现象，就没有理会，随着时间的推移，才发现，这是一个普遍现象。开始寻找解决方案。</p>
-<p>经过寻找，终于解决了这个问题：</p>
-<p>解决方法如下：</p>
-<ol>
-<li>进入 <code>Libary</code> -&gt; <code>Perference</code> 文件夹，找打 <code>com.apple.finder.plist</code> 文件，删除之</li>
-<li>然后重启 <code>Finder</code> 或者 系统</li>
-</ol>
-<p>然后就可以惊奇的发现，这个问题已经修复了</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2016/01/09/osx-save-dialog-without-favorites/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1282,10 +1223,7 @@
 <div id="cover" style="background-image:url('/static/images/20160204-KongfuPanda3.jpg');"></div>
     </body>
     <!--SCRIPTS-->
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/jquery.fancybox.js"></script>
-<script src="/assets/js/jquery.fancybox-thumbs.js"></script>
-<script src="/assets/js/tranquilpeak.js"></script>
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
 <!--SCRIPTS END-->
 
 

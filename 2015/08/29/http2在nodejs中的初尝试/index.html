@@ -13,35 +13,28 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="HTTP2 简介请大家自行搜索百度 Or Google
-前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~
-如果本文章有问题的话，请及时进行评论，并和我联系
-准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+    <meta name="description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+<meta name="keywords" content="HTTP2,Node.js">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Http2 在 Nodejs 中的初尝试">
 <meta property="og:url" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/index.html">
-<meta property="og:site_name" content="XGHeaven's Blog">
-<meta property="og:description" content="HTTP2 简介请大家自行搜索百度 Or Google
-前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~
-如果本文章有问题的话，请及时进行评论，并和我联系
-准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
-<meta property="og:image" content="http://blog.xgheaven.cn/see-google-network.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/enable-protocol.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/net-internals-http2.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/prepare-work.gif">
-<meta property="og:image" content="http://blog.xgheaven.cn/start-server.gif">
-<meta property="og:image" content="http://blog.xgheaven.cn/through-localhost.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/invalid-https.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/server-push-alert.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/server-push-network.jpg">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/enable-protocol.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/net-internals-http2.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/prepare-work.gif">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/start-server.gif">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/through-localhost.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/invalid-https.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/server-push-alert.jpg">
+<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/server-push-network.jpg">
 <meta property="og:updated_time" content="2015-08-29T06:29:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Http2 在 Nodejs 中的初尝试">
-<meta name="twitter:description" content="HTTP2 简介请大家自行搜索百度 Or Google
-前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~
-如果本文章有问题的话，请及时进行评论，并和我联系
-准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
-<meta name="twitter:image" content="http://blog.xgheaven.cn/see-google-network.jpg">
+<meta name="twitter:description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+<meta name="twitter:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
@@ -54,10 +47,7 @@
     
     
     <!--STYLES-->
-    <link rel="stylesheet" href="/assets/css/font-awesome.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox.css">
-    <link rel="stylesheet" href="/assets/css/jquery.fancybox-thumbs.css">
-    <link rel="stylesheet" href="/assets/css/tranquilpeak.css">
+    <link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
     <!--STYLES END-->
     
     <script type="text/javascript">
@@ -334,7 +324,7 @@
 <p><img src="prepare-work.gif" alt="准备工作"></p>
 <h3 id="使用openssl生成密钥和证书"><a href="#使用openssl生成密钥和证书" class="headerlink" title="使用openssl生成密钥和证书"></a>使用openssl生成密钥和证书</h3><p>这里不再重复，请尝试百度，并将证书和密钥拷贝到目录下面</p>
 <p>准备工作结束</p>
-<h2 id="创建服务器-start-server-分支"><a href="#创建服务器-start-server-分支" class="headerlink" title="创建服务器(start-server 分支)"></a>创建服务器(start-server 分支)</h2><p>使用http2服务创建服务器和使用https是基本一样的<br><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</div><div class="line">	<span class="attr">key</span>: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</div><div class="line">	<span class="attr">cert</span>: fs.readFileSync(<span class="string">'certificate.pem'</span>)</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">	res.end(<span class="string">'hello world'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure><br>此时在terminal中启动服务器即可</p>
+<h2 id="创建服务器-start-server-分支"><a href="#创建服务器-start-server-分支" class="headerlink" title="创建服务器(start-server 分支)"></a>创建服务器(start-server 分支)</h2><p>使用http2服务创建服务器和使用https是基本一样的<br><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</div><div class="line">	key: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</div><div class="line">	cert: fs.readFileSync(<span class="string">'certificate.pem'</span>)</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">	res.end(<span class="string">'hello world'</span>);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure><br>此时在terminal中启动服务器即可</p>
 <p><img src="start-server.gif" alt="启动服务器"></p>
 <blockquote>
 <p>记住，这里一定要用<code>sudo</code>来启动，因为在Linux的系统中（Mac也是和Linux相同祖先），普通用户是无法监听到1024端口一下的端口，所以要用<code>sudo</code>来让程序监听443端口，因为https服务就是监听在443端口的</p>
@@ -348,7 +338,7 @@
 <h2 id="尝试服务器推（server-push-分支）"><a href="#尝试服务器推（server-push-分支）" class="headerlink" title="尝试服务器推（server-push 分支）"></a>尝试服务器推（server-push 分支）</h2><p>说到服务器推，大家一定第一个想到的是<code>WebSocket</code>，但是相比于<code>WebSocket</code>来说，服务器推的东西不是数据，而是网络请求。</p>
 <p>其实他的正规说法是，服务器会推测你需要的东西，在解析HTML前将你需要的文件或者数据给你请求回来。这样，你请求了一次数据，返回了好几个资源</p>
 <h3 id="建立一个首页-index-html"><a href="#建立一个首页-index-html" class="headerlink" title="建立一个首页 index.html"></a>建立一个首页 <em>index.html</em></h3><figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>haha<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/client.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">	Hello world</div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="在代码中加入服务器推的代码，并返回上面那个主页"><a href="#在代码中加入服务器推的代码，并返回上面那个主页" class="headerlink" title="在代码中加入服务器推的代码，并返回上面那个主页"></a>在代码中加入服务器推的代码，并返回上面那个主页</h3><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</div><div class="line">	<span class="attr">key</span>: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</div><div class="line">	<span class="attr">cert</span>: fs.readFileSync(<span class="string">'certificate.pem'</span>)</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> push = res.push(<span class="string">'/client.js'</span>)</div><div class="line">	push.end(<span class="string">'alert("this is a server push");'</span>);</div><div class="line">	fs.createReadStream(<span class="string">'index.html'</span>).pipe(res);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="在代码中加入服务器推的代码，并返回上面那个主页"><a href="#在代码中加入服务器推的代码，并返回上面那个主页" class="headerlink" title="在代码中加入服务器推的代码，并返回上面那个主页"></a>在代码中加入服务器推的代码，并返回上面那个主页</h3><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</div><div class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</div><div class="line"></div><div class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</div><div class="line">	key: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</div><div class="line">	cert: fs.readFileSync(<span class="string">'certificate.pem'</span>)</div><div class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</div><div class="line">	<span class="keyword">var</span> push = res.push(<span class="string">'/client.js'</span>)</div><div class="line">	push.end(<span class="string">'alert("this is a server push");'</span>);</div><div class="line">	fs.createReadStream(<span class="string">'index.html'</span>).pipe(res);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <h3 id="启动服务器，并访问之"><a href="#启动服务器，并访问之" class="headerlink" title="启动服务器，并访问之"></a>启动服务器，并访问之</h3><p><img src="server-push-alert.jpg" alt=""></p>
 <p>看成功执行了client.js中的代码。</p>
 <p>下面我们来看看<code>Network</code>中的请求</p>
@@ -579,10 +569,7 @@
 <div id="cover" style="background-image:url('/static/images/20160204-KongfuPanda3.jpg');"></div>
     </body>
     <!--SCRIPTS-->
-<script src="/assets/js/jquery.js"></script>
-<script src="/assets/js/jquery.fancybox.js"></script>
-<script src="/assets/js/jquery.fancybox-thumbs.js"></script>
-<script src="/assets/js/tranquilpeak.js"></script>
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
 <!--SCRIPTS END-->
 
     
