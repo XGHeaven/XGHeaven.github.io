@@ -4566,23 +4566,23 @@ a.tag--small,
     margin-top: 0; }
 
 #resume .resume-header {
-  position: relative;
-  margin-bottom: 30px; }
+  position: relative; }
   #resume .resume-header .resume-header-avatar {
-    width: 150px;
-    height: 150px;
     position: relative;
+    z-index: 100;
+    width: 100px;
+    height: 100px;
     margin: auto;
-    top: 75px;
     display: block;
     border-radius: 50%;
     border: 5px solid white;
     box-shadow: 0 0 10px 0 #999; }
   #resume .resume-header .resume-header-info {
-    background: white;
-    padding-top: 85px;
+    background: #efefef;
+    padding-top: 56px;
     padding-bottom: 10px;
     box-shadow: 0 0 10px 0 #999;
+    margin-top: -50px;
     text-align: center; }
     #resume .resume-header .resume-header-info .resume-name {
       font-size: 1.2em; }
@@ -4597,3 +4597,5 @@ a.tag--small,
       color: white;
       border-radius: 5px;
       padding: 2px 10px; }
+    #resume .resume-header .resume-header-info .resume-intro p {
+      margin-bottom: 0; }
