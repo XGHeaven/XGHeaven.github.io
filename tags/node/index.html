@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="XGHeaven&#39;s Blog">
-    <title>归档: 2018 - XGHeaven&#39;s Blog</title>
+    <title>标签: node - XGHeaven&#39;s Blog</title>
     <meta name="author" content="XGHeaven">
     
     
@@ -15,7 +15,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="XGHeaven&#39;s Blog">
-<meta property="og:url" content="http://blog.xgheaven.cn/archives/2018/index.html">
+<meta property="og:url" content="http://blog.xgheaven.cn/tags/node/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
 <meta property="og:locale" content="zh-cn">
 <meta name="twitter:card" content="summary">
@@ -380,207 +380,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/04/16/nest-js-try-first/">
-                            Nest.js 入手以及企业化的思考
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Apr 16 2018 01:18:00 GMT+0800">
-	
-		    4月 16, 2018
-    	
-    </time>
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <blockquote>
-<p>本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async/Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。</p>
-</blockquote>
-<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a href="https://nestjs.com/" target="_blank" rel="external">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
-<ul>
-<li>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</li>
-<li>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</li>
-<li>依赖注入。从 Angular 那里学习而来，但是进行了一些简化，但是完全够用。比如说简化掉了 deps。</li>
-<li>模块思想。Node 社区的后端框架，其实都被 Express 导向到了中间件的模式。而 Nest.js 却从 Angular 当中吸取到了模块的思想。不同的 Service、Controller、Component 组成不同的模块。模块之间可以相互依赖，也可以独立存在，这大大减少了测试和逻辑的复杂度。</li>
-<li>易于扩展。以往的框架，你能做的就是编写业务逻辑，而其他的你都很难去做到。于是传统的后端框架不得不引入了一套插件机制来增强框架的扩展性。但是 Nest.js 将插件的功能直接内置到了框架当中。传统的插件在这里可以认为就是一个模块，通过加载不同的模块来添加不同的功能。</li>
-<li>Express 基石。有人会说，不是现在 Koa 才是更好的模型么？洋葱模型可以解决更多复杂的问题。没错，我不反对这个言论。但是我想说的是，Express 还是最简单最通用的方式，因为他不赖 Generator/Promise，只需要你又一个 Node.js 运行环境，支持 Callback 就可以了。（话说应该没有不支持 Callback 的 Node.js 环境吧，哈哈哈）不管怎么样，Express 的覆盖面还是比 Koa 要广不少。</li>
-<li>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</li>
-<li>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</li>
-<li>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</li>
-<li>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a href="https://docs.nestjs.com/pipes" target="_blank" rel="external">教程</a></li>
-<li>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</li>
-<li>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</li>
-</ul>
-<h2 id="Nest-js-企业化当中的问题"><a href="#Nest-js-企业化当中的问题" class="headerlink" title="Nest.js 企业化当中的问题"></a>Nest.js 企业化当中的问题</h2><ul>
-<li>目录无约束。在企业当中，不对目录进行约束会导致代码越来越乱。从而降低了代码可维护性。</li>
-<li>没有配置管理功能。在框架开发中，配置往往是一个很重要的功能。比如说配置数据库的连接，配置监听的端口。</li>
-<li>没有进程管理。虽然有提供 <code>@nestjs/cli</code>，但是这个提供的仅仅是一个项目的创建的能力。</li>
-<li>部分文档讲解不详细，会提高入门的门槛。</li>
-</ul>
-<p>不过总的来说，前面几点也正是 Nest.js 灵活性的保证。但是我们真正在开发当中，还是需要一种合理的约束来保证开发的统一。</p>
-<h2 id="Nest-js-企业化的尝试"><a href="#Nest-js-企业化的尝试" class="headerlink" title="Nest.js 企业化的尝试"></a>Nest.js 企业化的尝试</h2><p>那么我们这里针对上面的几个问题，尝试采用一些方式来进行约束。</p>
-<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p>我们对项目指定如下的规则：</p>
-<ul>
-<li>全部通过 TypeScript 书写，并且全部位于 <code>src</code> 目录下</li>
-<li>入口文件是 <code>main.ts</code> 如果没有特殊情况，不动这个文件</li>
-<li>配置放在 <code>src/config</code> 文件夹下</li>
-<li>所有的 Service/Controller/Logic/Component 等都挂载到 <code>MainModule</code> 下。</li>
-<li>其中 <code>module</code> 文件夹存放自定义的 Module，或者说希望独立成模块但是还没有完全独立出来的。其中目录结构和这个项目目录结构类似</li>
-<li><code>boot</code> 文件夹是项目启动代码的时候执行的，这部分在 Nest.js 当中没有给出。我这里打算添加这个功能，但是还没有想好具体的实现形式，所以待定。</li>
-<li><code>interface</code>/<code>enum</code> 等数据随着对应的 service 导出。不另做说明。比如说 <code>car.service.ts</code> 除了可以导出 <code>CarService</code> 类以外，还可以导出 <code>CarType</code> enum。</li>
-<li><code>dest</code> 文件夹是编译之后的文件，可以直接输入 <code>node dest/main.js</code> 运行。</li>
-<li>命名规则<ul>
-<li>所有的文件除了 main.ts 和类文件以外，都要添加类型后缀，比如说 <code>user.model.ts</code> <code>car.controller.ts</code> <code>google.logic.ts</code>。但是比如说只是一个 <code>Car</code> 类，那么可以直接命名成 <code>car.ts</code></li>
-<li>不允许通过 <code>export default</code> 导出数据。一方面是为了方便导入的时候保证命名的统一，另一方面可以随时导出 interface/enum 等内容。</li>
-<li>所有的测试文件后缀名都以 <code>.spec.ts</code> 或 <code>.test.ts</code> 结尾。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">|-- dest</div><div class="line">    |--- ...</div><div class="line">|-- src</div><div class="line">    |-- config</div><div class="line">    |-- controller</div><div class="line">    |-- model</div><div class="line">    |-- service</div><div class="line">    |-- logic</div><div class="line">    |-- component</div><div class="line">    |-- boot</div><div class="line">    |-- module</div><div class="line">        |-- module-name</div><div class="line">            |-- config</div><div class="line">            |-- index.ts</div><div class="line">            |-- module-name.module.ts</div><div class="line">    |-- main.ts</div><div class="line">    |-- main.module.ts</div></pre></td></tr></table></figure>
-<h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>我目前初步的想法是通过提供一个 <code>ConfigModule</code> 暴露出一个 <code>ConfigService</code> 来提供配置的获取和查看。</p>
-<p>在某些情况下，可能需要多级配置，模块级别的配置，应用级别的配置。那么 <code>ConfigService</code> 可以在获取配置的时候自动合并这些规则。</p>
-<h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><p>现在已经是 18 年了，不用 Docker 你真的对得起自己么？很明显是对不起的。所以进程管理这一块，我们就交给 Docker 来处理。包括启动、停止、重启、日志等，都交给 Docker。</p>
-<p>于是启动命令就可以简化成 <code>node dest/main.js</code> 即可。</p>
-<p>那么你可能会想到，如果一个 Docker 环境给你分配了两个 u，那岂不是会浪费一个 u。理论上是的，那么你就可以通过 pm2 啊啥的自己去管理吧，哈哈哈，不管。</p>
-<h2 id="Iron-js"><a href="#Iron-js" class="headerlink" title="Iron.js"></a>Iron.js</h2><p>说了这么多，把上面的内容都沉淀下来，我得要给他取个名字，于是我就取成了 Iron。为啥叫 Iron 呢？因为 Iron Man。那为啥因为 Iron Man 呢？因为他制作的盔甲可以自由拆分，自动拼合。非常适合我们这个项目的形态。</p>
-<p>不过这个项目什么时候能沉淀下来，看我心情了。不过定个时间线吧，就在 4 月底，争取搞定。</p>
-<p>因为这里面最大的问题就是配置的问题，需要深入依赖注入，所以会麻烦一些。但是其他的方面更多的只是一种约束吧。</p>
-<p>这就是我用 Nest.js 一周以来的心得。暂时就想到这么多，更多的内容等我后面再分析吧。</p>
-<p>写完睡觉，答应女票了，啦啦啦~</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/04/16/nest-js-try-first/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/16/summary-2018/">
-                            2018 年终总结
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Feb 16 2018 00:04:44 GMT+0800">
-	
-		    2月 16, 2018
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/年终总结/">年终总结</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>2017 年，有开心，也有失落。也不知道该从何说起，就随便写写了。高中语文就没学好过，所以可能写成流水账了。请各位看官多多包涵。</p>
-<h2 id="实习"><a href="#实习" class="headerlink" title="实习"></a>实习</h2><p>如今步入大四，最大的心事就是找实习找 Offer 了。先后经历了两次阿里面试的失利，至于失利的过程，我之前有吐槽过，就不多说了，而且听说今年的面试难度提升到了社招，心痛。饿了么/七牛都有投递过，但是都没有进。如果各位看官想招 Node.js 或者 前端 的校招生的话，请联系我哦~ <code>请在各大社交媒体请搜索 XGHeaven 即可</code></p>
-<p>终于在 CNode 上面找到了一家美国 AR 公司，Integem。</p>
-<p>在里面主要是用 Electron 做客户端，技术栈就是 Vue 全家桶，不多说了。反正整体干下来的感觉其实和自己接了一个外包的感觉差不多，而且设计师设计的页面参差不齐。最可气的是，假设页面 A 和页面 B 相同的部分，没准一个就有边框，另一个就没有。没准一个字体是 12px，另一个可能就是 16px。真是受不了，一开始，我还是让他确认一下到底哪个设计图是对的，到最后，只能用我的佛系心态对待这个设计图，懒得问了。切个图，也是切的乱七八糟，我还是自己来好了。</p>
-<p>在里面差不多干了 5 个月，再加上学校要求每个人都要去跟着导师完成一个实践项目，于是我就离开了。</p>
-<p>再之后，我在逛实习的时候，突然发现大搜车在招 Node.js 实习生，而且标注的是有大牛带。大搜车……为啥听着这么耳熟啊，不管了，报了再说。于是我就去面试了。面试我的是一个胖胖的留着胡子的人（死月罪过，当时并不知道那是你），于是和他相聊甚欢，最后还记得，当时看到他的 15寸 macbook pro 后面贴着一个 bad apple 的一个贴纸。当时顺口就问了一句，这个是 bad apple 么？当时之所以会问这个，因为我还记得很早以前，看过一个人的博客，里面讲到了他在花瓣网工作，而且很详细的讲解了图片主题色的提取和 Node.js NAN API，感觉受益匪浅，于是我当时在想，这是哪个学校的大牛，竟然这么厉害。后来看到他已经在花瓣工作了。。。不过我记得他很喜欢二次元。。。于是面试的时候，我在想会不会是他，于是就问了句贴纸，以为他会聊起二次元，结果他随便应了一句就过去了。我见状就没再继续问下去了。后面安慰道自己说，没事，那个人应该不会在大搜车。面试我这个人感觉还是很厉害的~~至少有一点，我说我提过 issue 给 node，他能马上就打开 github 看。这一点让我很敬佩，因为大部分面试都是会听你描述，看简历上面写的，而不是当场去查看。举个例子，你跟面试官说你博客写了很多高品质的文章，大部分面试官会直接问你有什么，他不会自己去看。而好的面试官会一边问你，一边自己打开看。。。我是这么觉得的。反正不管当时是不是月老，我已经决定来这家公司了。</p>
-<p>哈哈哈，后面等进大搜车之后，剧情反转。那个人其实就是死月。当时看到他在 QQ 群里面的时候，你知道我的心里有多么开心么！！但是，有一个噩耗，就是他在我去的前几周已经跳槽去蚂蚁金服了，哭 (((T____T))) 我的大牛啊，你怎么走了啊~啊~啊~啊~</p>
-<p>不过还好，也认识了挺多大牛的，不过还是没见到过我心仪的 朴灵/不四/狼叔 -_-。</p>
-<p>现在在大搜车呆了有两个月了吧，那就简单总结一下干了啥吧：</p>
-<ul>
-<li>完成了一个图片上传服务，里面包含了公共的图片上传，以及大风车的头像上传，真正的编码时间也就两个星期，但是真的发布上去，却花了一个月。</li>
-<li>现在准备一个请求限制框架，讲道理这是很简单的一个工作，但是我看时间很充裕，于是我就想写大，看看能不能独立成一个库，开源骗 star。</li>
-<li>期间还要各种小东西，修修补补。</li>
-</ul>
-<p>刚进大搜车，按理来说，带我的人应该是小山，但是那个时候他请了几天假，于是就鹏飞暂时带着我。让我看了 Akyuu.js 和帕秋莉网关。之后其实所有的时间都是跟着鹏飞，我师父小山感觉不喜欢多说话，平时也没有太多的共同语言。想平时打打游戏联络一下感情，但是看他很忙的样子，就放弃了。最近才发现，原来小山也看二次元，哈哈哈。反正就这样，和小山半亲近半陌生。和鹏飞一开始也聊的挺多，后面等公司的事情知道的差不多了，也交流的不多了。</p>
-<p>而且由于我比较慢热，再加上我进入公司比较晚，没有参加过团建，和大家都不是很熟。就和组内的坐在旁边的外加组内的实习生比较熟。</p>
-<p>说一下，我在大搜车实习的感受吧。</p>
-<ul>
-<li>代码层面<ul>
-<li>更加理性的对待 callback 和 promise，因为在之前，我是极力反对使用 callback 的，所以当第一眼看到公司的代码的时候，我懵逼了，怎么全是 callback。于是经过和鹏飞的交流以及自己的领悟，终于放下执念。其实 callback+async 和 promise 没啥区别么，哈哈哈。</li>
-<li>尝试先写文档，后写代码。我平时兴起的时候，直接就开始撸，从来不打草稿。小项目可以，但是当项目大了之后，就呵呵哒了。</li>
-<li>了解了 Node 的 PR 流程。</li>
-<li>其他的好像还真的没有了，什么代码规范，git flow，框架的使用等等，我基本都了解。但是又重新复习了并精进了一下。毕竟之前看时候只是看了几眼，大体明白了内容。正好趁着这次实习，运用一下，看看自己理解的哪里有问题。</li>
-</ul>
-</li>
-<li>交际层面<ul>
-<li>首先我是一个慢热的，也就是说我不是很擅长去找别人交流，但是别人来找我交流，我是很乐意的。所以说，我当初进入公司之前的幻想，就是大家都在交流着各种新技术，新框架，新事物，当一个人抛出问题的时候，大家会一起去解决研究。结果进来之后，我发现，好像群里半天都不会有任何消息。于是我就努力去带动气氛，有什么好玩的东东都尝试发到群里，结果还是很难带起氛围。不知道是大家太忙了，还是我发的信息太简单。</li>
-<li>还记得在学校的时候，社团的技术群，可能一个人发现了新东西，于是群里的大佬一起去尝试，评论，总结。和群里的人撕逼那个语言好，撕逼什么框架好用。我们只追求方便好用，并不怎么在乎稳定性这种东西。哎，这种感觉好难在找回来了。不知道头哥能不能看到我写的，我不知道头哥你想的团队是不是我想的那样，但是感觉大家仅仅为了业务而工作，死气沉沉，不觉得失去了乐趣么？</li>
-<li>再讲讲开源的东东，我不知道用我们大学生的思维来思考对不对。至少我会很讨厌所有的公司沉淀出来的产品，比如说阿里的 egg。怎么解释呢？你可以理解假设公司内部的开发版本按照 master 的一条线进行，如果开源了，我就从 master checkout 一个新的分支，然后做一些开源的修改。我为什么不喜欢这种呢？因为这种所有的功能的设计实现就是严重依赖业务的，他只能做到的是在这个业务的情况下尽可能去兼容其他的业务格式而抽离出来的核心。而我真正想要的是什么呢？是社区驱动，一个产品可以由一个公司来开发，但是设计一定还给社区。而且我也不喜欢所谓的二次封装的框架，二次封装的框架我建议内部使用，而不是开源。除非你的二次封装能够提供很多功能。</li>
-</ul>
-</li>
-<li>反正总的来讲，我感觉从知识层面，我获取的很少，没获取到太多新的概念/知识。但是实践层面我获取的还是挺多的。不知道这是不是以后工作的常态。</li>
-</ul>
-<h2 id="大学"><a href="#大学" class="headerlink" title="大学"></a>大学</h2><p>这一年其实大学生活没有太多的东西，主要是在实习当中度过的。</p>
-<p>正是因为如此，我也越发怀念当初的学习生活。回头看看学弟当中的大佬，不由自主的感叹自己好像虚度了大学生活。</p>
-<p>不顾了，下学期就准备毕业设计了，希望自己能珍惜最后的时光吧。</p>
-<h2 id="2018-展望"><a href="#2018-展望" class="headerlink" title="2018 展望"></a>2018 展望</h2><p>看过了死月的总结，我发现其实有一点挺好的，一年给自己定一些目标，来年看看目标有没有实现。</p>
-<p>那我也来展望一下好了：</p>
-<ul>
-<li>学习<ul>
-<li>争取研读 Node 源码，至少要把死月那本书给啃完</li>
-<li>争取 Github 每周都有贡献，希望能长久的维护一个项目</li>
-<li>争取写一些有意思，有难度的代码，比如说《如何写出一个 Babel》</li>
-<li>坚持写文章吧（这个有点难），至少保证每两周一篇高质量的</li>
-<li>了解一些其他方面的内容，下一年总结一下了解了啥。</li>
-</ul>
-</li>
-<li>坚持锻炼身体，把体重控制在 65 以下，争取练出胸肌（其实我有，只不过有点萎缩了）腹肌二头肌（当然，这些都练出来之后我就不限制体重了）。</li>
-<li>争取学会做几个菜（当然指的是在实习期间了），暂时只考虑用电饭煲来做。</li>
-<li>Minecraft 开新坑，等 1.13 发布~如果有小伙伴想入坑的请联系我，最好有正版，因为我是想单人开坑的。</li>
-<li>不知道为啥，自从实习之后，感觉有点思春。。。特别想找人聊聊非技术方面的事情。。没妹子陪，我都不想去电影院看电影了。。。所以，不求找女票，感觉自己现在还不是很适合去当男票，其实是找不到合适的，哈哈哈。只求可以找到有空可以出去看个电影，聊个天，而且臭味相投的妹子就好了。不过目测是完不成这个目标了。</li>
-<li>既然没有女票，那就多花一些时间在学习上。但是不要死学习，做程序员路上的书呆子。</li>
-<li>恶习<ul>
-<li>争取改掉拖沓的毛病，有任务赶紧去做，有事情提前安排</li>
-<li>争取每天刷牙洗脸（也就是让自己早起，哈哈哈）</li>
-</ul>
-</li>
-</ul>
-<p>先这么多吧，看看 2019 年，我完成了哪些。</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/16/summary-2018/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -590,7 +389,6 @@
 </div>
 
 </section>
-
 
 
                 <footer id="footer" class="main-content-wrap">
