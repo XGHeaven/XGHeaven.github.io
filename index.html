@@ -269,6 +269,180 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                            可控组件？不可控组件？让我们来讨论一下下~
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Dec 29 2018 10:48:57 GMT+0800">
+	
+		    12月 29, 2018
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/React/">React</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#可控组件？不可控组件？"><span class="toc-text">可控组件？不可控组件？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是可控和不可控？"><span class="toc-text">什么是可控和不可控？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为啥要区分呢？"><span class="toc-text">为啥要区分呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#value-defaultValue-onChange"><span class="toc-text">value? defaultValue? onChange?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#propName-in-this-props？"><span class="toc-text">propName in this.props？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Independence"><span class="toc-text">Independence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何使用？"><span class="toc-text">如何使用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+<blockquote>
+<p><strong>前言</strong>：本人入职之后算是第一次真正去写 React，发现了 React 的组件系统和其他框架的组件系统有些许的不同，这也触发了我对其中组件的可控性的一些思考和总结。</p>
+</blockquote>
+<h1 id="可控组件？不可控组件？"><a href="#可控组件？不可控组件？" class="headerlink" title="可控组件？不可控组件？"></a>可控组件？不可控组件？</h1><p>自从前端有了组件系统之后，有一个很常见但是却又被大家忽视的概念，就是可控组件（Controlled Component）和不可控组件（Uncontrolled Component）。</p>
+<h3 id="什么是可控和不可控？"><a href="#什么是可控和不可控？" class="headerlink" title="什么是可控和不可控？"></a>什么是可控和不可控？</h3><p>官方详细讲解了什么事可控和不可控组件，虽然只是针对 <code>input</code> 组件的 <code>value</code> 属性来讲的。但是对于很多第三方组件库来讲，一个组件不止有一个数据属于可控。比如 Ant Design 的 <code>Select</code> 组件，<code>value</code> 和 <code>open</code> 都属于可控的数据，如果你让 value 可控 open 不可控，那这到底是可控组件还是不可控组件呢？</p>
+<p>所以从广义来讲使用可控/不可控组件其实不是很恰当，这里使用<strong>可控数据</strong>与<strong>不可控数据</strong>更加合理一点。一个组件可能可能同时有可控的数据和不可控的数据。</p>
+<p><strong>可控数据</strong>是指组件的<strong>数据</strong>被使用者所控制。<strong>不可控数据</strong>是指组件的<strong>数据</strong>不由使用者来控制而是由组件内部控制。</p>
+<p>之所以会有可控和不可控，主要是跟人奇怪的心理有关。如果把框架比作一个公司，组件比作人，组件之间的关系比作上下级。那么上级对下级的期望就是你既能自己做好分内的事情，也可以随时听从我的命令。这本身就是一件矛盾的事情，一边撒手不管，一边又想全权掌控。遇到这样的上级，下级肯定会疯了吧。</p>
+<h3 id="为啥要区分呢？"><a href="#为啥要区分呢？" class="headerlink" title="为啥要区分呢？"></a>为啥要区分呢？</h3><p>在 Vue 中，其实都忽视了这两者的区别，我们来看下面这个例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;input/&gt;</div></pre></td></tr></table></figure>
+<p>上面是一个最简单 Input 组件，我们来思考一下如下几种使用场景：</p>
+<ul>
+<li><p>如果我只关心最后的结果，也就是输入的值，中间的过程不关心，最简单的方式是用 <code>v-model</code> 或者自己在 <code>change</code> 事件里面获取值并保存下来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;input v-model=&quot;value&quot;/&gt;</div><div class="line">&lt;!-- OR --&gt;</div><div class="line">&lt;input @change=&quot;change&quot;/&gt;</div></pre></td></tr></table></figure>
+<p>这种场景是非常普遍，Vue 可以很好的完成，结果也符合人们的预期。</p>
+</li>
+<li><p>如果我也只是关心结果，但是想要一个初始值。<br>也很简单，通过 value 传入一个静态字符串不就好了，或者传入一个变量，因为 Vue 的 props 是单向的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;input v-model=&quot;value&quot;/&gt; &lt;!-- value 有初始值 --&gt;</div><div class="line">&lt;input value=&quot;init string&quot; @change=&quot;change&quot;/&gt;</div><div class="line">&lt;input :value=&quot;initValue&quot; @change=&quot;change&quot;/&gt;</div></pre></td></tr></table></figure>
+<p>其中第三个方案并不是非常正确的方式，如果 <code>initValue</code> 在用户输入期间发生了更新，那么他将覆盖用户的数据，且不会触发 <code>change</code> 事件。</p>
+</li>
+<li><p>我不仅仅关心结果，还关心过程，我需要对过程进行控制。比如说把输入的字符串全部大小写，或者锁定某些字符串。<br>熟练的工程师肯定可以写出下面的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;input v-model=&quot;value&quot;/&gt; &lt;!-- watch &quot;value&quot;，做修改 --&gt;</div><div class="line">&lt;input :value=&quot;value&quot; @change=&quot;change&quot;/&gt; &lt;!-- 在 change 中修改数据 --&gt;</div></pre></td></tr></table></figure>
+<p>但是这会有问题：</p>
+<ol>
+<li>数据的修改都是在渲染 dom 之后，也就是说你不管怎么处理，都会出现输入的抖动。</li>
+<li>如果通过第二种方法，恰巧你做的工作是限制字符串长度，那么你这样写 <code>change(e) {this.value = e.target.slice(0, 10)}</code> 函数会发现没有效果。这是因为当超过 10 字符之后，value 的值长度一直是 10，vue 没有检测到 value 的变化，从而不会更新 input.value。</li>
+</ol>
+</li>
+</ul>
+<p>出现这个问题最关键的是因为没有很好的区分可控组件和不可控组件，我们来回顾一下上面的某一段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;input :value=&quot;value&quot; @change=&quot;change&quot;/&gt;</div></pre></td></tr></table></figure>
+<p>你能从这块代码能看出来使用这个组件的用户的意图是什么呢？他是想可控的使用组件还是说只是想设置一个初始值？你无法得知。我们人类都无法得知，那么代码层面就不可能得知的了。所以 vue 对这一块的处理其实是睁一只眼闭一只眼。用户用起来方便，</p>
+<p>用一个例子来简单描述一下：上级让你去做一项任务，你询问了上级关于这些任务的信息（props），然后你就开始（初始化组件）工作了，并且你隔一段时间就会向上级汇报你的工作进度（onChange），上级根据你反馈的进度，合理安排其他的事情。看起来一切都很完美。但是有的上级会有比较强的控制欲，当你提交了你的工作进度之后，他还会瞎改你的工作，然后告诉你，按照我的继续做。然后下级就懵逼，当初没说好我要接受你的修改的呀（value props），我这里也有一份工作进度呀（component state），我应该用我自己的还是你的？</p>
+<p>对于人来说，如何处理上级的要求（props）和自身工作（state）是一个人情商的表现，这个逻辑很符合普通人的想法，但是对于计算机来说，它没有情商也无法判断究竟应该听谁的。为了克服这个问题，你需要多很多的判断和处理才可以，而且对于一些不变的值，你需要先清空再 nextTick 之后赋值才可以出发组件内部的更新。</p>
+<p>最近入职之后，公司用到了 React，我才真正的对这个有所理解。</p>
+<h3 id="value-defaultValue-onChange"><a href="#value-defaultValue-onChange" class="headerlink" title="value? defaultValue? onChange?"></a>value? defaultValue? onChange?</h3><blockquote>
+<p>如果对 React 可控组件和不可控组件有了解了可以跳过这块内容了。</p>
+</blockquote>
+<p>让我们来看一下 React 如何处理这个的？我们还是拿上面的那三种情况来说：</p>
+<ul>
+<li><p>如果我只关心最后的结果，也就是输入的值，中间的过程不关心</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;input onChange=&#123;onChange&#125;/&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果我也只是关心结果，但是想要一个初始值</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;input defaultValue=<span class="string">"init value"</span> onChange=&#123;onChange&#125;/&gt;</div><div class="line">&lt;input defaultValue=&#123;initValue&#125; onChange=&#123;onChange&#125;/&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>我不仅仅关心结果，还关心过程，我需要对过程进行控制</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;input value=&#123;value&#125; onChange=&#123;onChange&#125;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当看完了这段你会很清楚的知道什么样的结构是可控，什么结构是不可控：</p>
+<ul>
+<li>如果有 <code>value</code> 那么就属于可控数据，永远使用 <code>value</code> 的值</li>
+<li>否则属于不可控数据，由组件使用内部 <code>value</code> 的值，并且通过 <code>defaultValue</code> 设置默认值</li>
+</ul>
+<p>不论什么情况修改都会触发 <code>onChange</code> 事件。</p>
+<p>React 对可控和不可控的区分其实对于计算机来说是非常合理的，而且也会让整个流程变的非常清晰。当然，不仅仅只有这一种设置的方式，你可以按照一定的规则也同样可以区分，但是<strong>保证可控和不可控之间清晰的界限是一个好的设计所必须要满足的</strong>。</p>
+<h3 id="propName-in-this-props？"><a href="#propName-in-this-props？" class="headerlink" title="propName in this.props？"></a><code>propName</code> in this.props？</h3><p>了解上面的概念之后，我们进入到实战环节，我们怎么从代码的层面来判断当前组件是可控还是不可控呢？</p>
+<p>根据上面的判断逻辑来讲：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> isControlled1 = <span class="string">'value'</span> <span class="keyword">in</span> <span class="keyword">this</span>.props <span class="comment">// approval 1</span></div><div class="line"><span class="keyword">const</span> isControlled2 = !!<span class="keyword">this</span>.props.value <span class="comment">// approval 2</span></div><div class="line"><span class="keyword">const</span> isControlled3 = <span class="string">'value'</span> <span class="keyword">in</span> <span class="keyword">this</span>.props &amp;&amp; <span class="keyword">this</span>.props.value !== <span class="literal">null</span> &amp;&amp; <span class="keyword">this</span>.props.value !== <span class="literal">undefined</span> <span class="comment">// approval 3</span></div></pre></td></tr></table></figure>
+<p>我们来观察上面几个判断的方式，分别对应一下下面几个模板（针对第三方组件）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;Input value=&#123;inputValue&#125; /&gt; <span class="comment">// element 1，期望可控</span></div><div class="line">&lt;Input value=<span class="string">""</span> /&gt; <span class="comment">// element 2，期望可控</span></div><div class="line">&lt;Input /&gt; <span class="comment">// element 3，期望不可控</span></div><div class="line">&lt;Input value=&#123;<span class="literal">null</span>&#125; /&gt; <span class="comment">// element 4，期望？？？</span></div></pre></td></tr></table></figure>
+<p>可以得到如下表格</p>
+<table>
+<thead>
+<tr>
+<th>是否可控</th>
+<th style="text-align:center">approval 1</th>
+<th style="text-align:center">approval 2</th>
+<th style="text-align:center">approval 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>element1</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>true</code></td>
+</tr>
+<tr>
+<td>element2</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>true</code></td>
+</tr>
+<tr>
+<td>element3</td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+</tr>
+<tr>
+<td>element4</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p>大家第一眼就应该能看出来方法二其实是不正确的，他无法很好的区分这两种状态，所以直接 pass 掉。</p>
+<p>眼尖的同学也会发现为什么 element 4 的期望没有填写呢？这是因为有一条官方的规则没有讲，这条规则是这样的：<strong>当设置了 <code>value</code> 属性之后，组件就变成了可控组件，会阻止用户修改 input 的内容。但是如果你想在设置了 <code>value</code>  prop 的同时还想让用户可以编辑的话，只可以通过设置 <code>value</code> 为 <code>undefined</code> 或 <code>null</code>。</strong></p>
+<p>在官方的这种规则下面，element 4 期望是不可控组件，也就是说 approval 3 是完全符合官方的定义的。但是这样会导致可控和不可控之间的界限有些模糊。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;Input value=&#123;inputValue&#125; /&gt;</div><div class="line"><span class="comment">// 如果 inputValue 是 string，组件是什么状态？如果是 null 又是什么状态？</span></div></pre></td></tr></table></figure>
+<p>所以这里其实我推荐使用 approval 1 的方式，这也是 antd 所采用的。虽然不符合官方的定义，但是我觉得符合人们使用组件的一种直觉。<small>第六感，=逃=</small></p>
+<h3 id="Independence"><a href="#Independence" class="headerlink" title="Independence"></a>Independence</h3><p>有了判断的方法，那么我们可以画出一个简单的流程图（Input 组件为例）：</p>
+<img src="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/handle-controlled.jpg" alt="handle-controlled.jpg" title="">
+<p>图片有点复杂，简单来讲就是每一次需要获取可控数据或者更新可控数据的时候，都需要检测一下当前组件的状态，并根据状态选择是从 props 中获取数据还是从 state 中获取数据已经更新的时候调用的是那个函数等等。图中有一些箭头的方向不是很正确，而且部分细节未画出，大家见谅。</p>
+<p>如果只是添加这一个可控的属性 <code>value</code> ，这样写未尝不可，但是如果我们要同时考虑很多属性呢？比如说 Antd Select 组件就同时有 <code>value</code> 和 <code>open</code> 两个可控属性，那么整个代码量是以线性方式增长的。这很明显是无法接受的。</p>
+<p>于是这里我引入了 Independence 装饰器来做这件事情。架构如下：</p>
+<img src="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/independence.jpg" alt="independence.jpg" title="">
+<p>我们可以这么理解，一个支持可控和不可控的组件本质上可以拆分成内部一个展示型的无状态受控的组件和外面的包装组件，通过包装（也就是高阶组件的方式）让内部受控组件支持不可控。</p>
+<p>这样写其实有如下几个好处：</p>
+<ol>
+<li>组件逻辑复杂度降低，只需要将组件的受控情况</li>
+<li>可以将任意受控组件包装成不受控组件，尤其是对第三方组件的封装上</li>
+<li>组件复杂度降低，代码冗余变少</li>
+<li>非常方便的添加和删除受控属性，只需要修改装饰器即可</li>
+</ol>
+<h3 id="如何使用？"><a href="#如何使用？" class="headerlink" title="如何使用？"></a>如何使用？</h3><p>目前我简单实现了 Independence 装饰器，代码在网易猛犸开源的组件库 <a href="https://github.com/Mammut-FE/bdms-ui" target="_blank" rel="external">bdms-ui</a>（建设中，组件不全、文档不全、时间不够，敬请期待）中，<a href="https://github.com/Mammut-FE/bdms-ui/blob/master/src/lib/independence.tsx" target="_blank" rel="external">代码在此</a>。</p>
+<p>他遵循这样的规范：<strong>假如属性名称为 <code>value</code>，那么默认值为 <code>defaultValue</code>，change 事件为 <code>onValueChange</code></strong>。支持通过 <code>onChangeName</code> 修改 change 事件名称，通过 <code>defaultName</code> 修改默认值名称。</p>
+<p>另外最简单的使用方式就是通过装饰器了，拿 <code>Select</code> 组件举例。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@Independence(&#123;</div><div class="line">    value: &#123;</div><div class="line">        onChangeName: <span class="string">'onChange'</span></div><div class="line">    &#125;,</div><div class="line">    open: &#123;&#125; <span class="comment">// 使用默认值</span></div><div class="line">&#125;)</div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Select</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</div><div class="line">    <span class="comment">// blahblah，你就可以当受控组件来编写了</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从此编写可控和不可控的数据从未如此简单。另外 Independence 还实现了 forward ref 的功能。</p>
+<p>不过现在功能还比较薄弱，需要经过时间的检验，等完备之后可以封装成一个库。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文简单讲解了一下什么是可控和不可控，以及提出了一个 React 的解决方案。</p>
+<p>这些只是基于我的经验的总结，欢迎大家积极交流。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/12/26/react-hook-with-parcel-to-build-truth-or-dare/">
                             尝鲜用 React Hook + Parcel 构建真心话大冒险简单页面
                         </a>
@@ -1092,95 +1266,6 @@
                     
                         <p>
                             <a href="/2017/06/12/the-first-interview-of-alibaba-for-web-developer/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/06/09/all-in-one-timer/">
-                            All in One - Timer
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Jun 09 2017 00:50:14 GMT+0800">
-	
-		    6月 09, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/All-in-One/">All in One</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="All-in-one-Timer-定时器"><a href="#All-in-one-Timer-定时器" class="headerlink" title="All in one - Timer 定时器"></a>All in one - Timer 定时器</h1><h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#All-in-one-Timer-定时器"><span class="toc-text">All in one - Timer 定时器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Golang"><span class="toc-text">Golang</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timer"><span class="toc-text">Timer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ticker"><span class="toc-text">Ticker</span></a></li></ol></li></ol>
-<p>这一篇文章，我们主要讲解一下不同语言之间关于定时器的操作和坑。</p>
-<p>首先说一些这个坑中的一些前提，首先我这里所有的都是和 JavaScript 与 C++ 相比较进行学习的，所以下面不会出现 JavaScript 相关的教程，除非 JavaScript 在这个上面的坑太多，非讲不可。如果你没有相关的语言基础，请去学习。谢谢。</p>
-<p>首先先从 golang 语言讲起来</p>
-<h1 id="Golang"><a href="#Golang" class="headerlink" title="Golang"></a>Golang</h1><p>在 golang 中单次定时器和循环定时器分别是 Timer 和 Ticker。这两个都是一个结构体，结构如下</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Timer <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time</div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">type</span> Ticker <span class="keyword">struct</span> &#123;</div><div class="line">        C &lt;-<span class="keyword">chan</span> Time <span class="comment">// The channel on which the ticks are delivered.</span></div><div class="line">        <span class="comment">// contains filtered or unexported fields</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>其中 <code>C</code> 是一个 只读的 Time 类型的 channel，定时器根据传入的时间设置，定时向这个 channel 输入时间。你需要做的是等待这个 channel 中的数据。</p>
-<p>每一个结构体都有如下方法：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Timer)</span> <span class="title">Reset</span><span class="params">(d Duration)</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Timer)</span> <span class="title">Stop</span><span class="params">()</span> <span class="title">bool</span></span></div><div class="line"><span class="function"><span class="title">func</span> <span class="params">(t *Ticker)</span> <span class="title">Stop</span><span class="params">()</span></span></div></pre></td></tr></table></figure>
-<p>首先 Timer 和 Ticker 的区别不是很大，下面我们将两者的共性以 Timer 来讲述， 后面会针对两者不同的内容进行讲解。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second * <span class="number">2</span>)</div><div class="line">  	time := &lt;- timer.C</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>参数接受一个时间参数，表示多久后向 channel 传输数据，也就是你想要定时的间隔，上面这个例子表示两秒之后输出 <code>Timer expired</code> 。</p>
-<p>那么每次我们都要这么麻烦的设置一个时间，然后等待 channel，运行制定的函数么？</p>
-<p>其实不是的，golfing 给我们内置了一个函数，类似于 JavaScript 的 setTimeout，那就是 AfterFunc。</p>
-<p>函数如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">AfterFunc</span><span class="params">(d Duration, f <span class="keyword">func</span>()</span>) *<span class="title">Timer</span></span></div></pre></td></tr></table></figure>
-<p>就是他会给你返回一个 <code>*Timer</code> ，并在指定时间之后，在 goroutine 中运行你的函数。</p>
-<p>上面说完了如何启动，那么怎么停止呢？很简单，就是 <code>Stop</code>。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        &lt;- timer.C</div><div class="line">        <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">    &#125;()</div><div class="line">    stop := timer.Stop()</div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer cancelled:"</span>, stop)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Timer cancelled: true</div></pre></td></tr></table></figure>
-<p>调用停止之后，会返回一个 Bool 值：</p>
-<ul>
-<li><code>true</code> 停止成功</li>
-<li><code>false</code> 已经被停止或者已经到期触发</li>
-</ul>
-<p>这里有一点需要注意的是，调用停止之后，并不会关闭 channel，如果你想检测那么你可以通过额外添加一个 done channel 来协助。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    done := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">bool</span>)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      <span class="keyword">select</span>&#123;</div><div class="line">        <span class="keyword">case</span> &lt;- timer.C:</div><div class="line">          <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">        <span class="keyword">case</span> &lt;- done:</div><div class="line">          <span class="built_in">println</span>(<span class="string">"Timer stop"</span>)</div><div class="line">      &#125;</div><div class="line">    &#125;()</div><div class="line">    stop := timer.Stop()</div><div class="line">    done &lt;- <span class="literal">true</span></div><div class="line">    <span class="built_in">println</span>(<span class="string">"Timer cancelled:"</span>, stop)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer stop</div><div class="line">Timer cancelled: true</div></pre></td></tr></table></figure>
-<p>所以比较麻烦，大家可以自己封装一下。</p>
-<h2 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h2><p>单次定时器有一个特殊的方法就是 Reset，他可以将一个定时器的超时时间重新定义，这样你可以重复利用这个定时器。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.NewTimer(time.Second)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      &lt;- timer.C</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">      &lt;- timer.C</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired again"</span>)</div><div class="line">    &#125;()</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">    timer.Reset(time.Second)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer expired</div><div class="line">Timer expired again</div></pre></td></tr></table></figure>
-<p>同理，你可以用在 AfterFunc 中</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    timer := time.AfterFunc(time.Second, <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">      <span class="built_in">println</span>(<span class="string">"Timer expired"</span>)</div><div class="line">    &#125;)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">    timer.Reset(time.Second)</div><div class="line">    time.Sleep(time.Second * <span class="number">2</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Timer expired</div><div class="line">Timer expired</div></pre></td></tr></table></figure>
-<p>简直和 JavaScript 中的 setTimeout 像的不能再像了。</p>
-<h2 id="Ticker"><a href="#Ticker" class="headerlink" title="Ticker"></a>Ticker</h2><p>这里的 Ticker 其实相当于 JavaScript 中的 setInterval，不过他没有类似 Timer 的 AfterFunc，只有一个最基础的构造器。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"></div><div class="line"><span class="keyword">import</span> <span class="string">"time"</span></div><div class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">    ticker := time.NewTicker(time.Millisecond * <span class="number">500</span>)</div><div class="line">    <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">for</span> t := <span class="keyword">range</span> ticker.C &#123;</div><div class="line">            fmt.Println(<span class="string">"Tick at"</span>, t)</div><div class="line">        &#125;</div><div class="line">    &#125;()</div><div class="line">    time.Sleep(time.Millisecond * <span class="number">1500</span>)</div><div class="line">    ticker.Stop()</div><div class="line">    fmt.Println(<span class="string">"Ticker stopped"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Tick at 2012-09-22 15:58:40.912926 -0400 EDT</div><div class="line">Tick at 2012-09-22 15:58:41.413892 -0400 EDT</div><div class="line">Tick at 2012-09-22 15:58:41.913888 -0400 EDT</div><div class="line">Ticker stopped</div></pre></td></tr></table></figure>
-<p>Ticker 同样也有同 Timer 一样无法关闭 channel 的问题，解决方法和 Timer 类似，我就不多说了。</p>
-<p>不过 Ticker 的 Stop 函数与 Timer 的不太一样，因为他没有是否触发过的问题，所以 Ticker 的 Stop是没有返回值的，这一点需要注意。</p>
-<p>暂时先写这一个，以后如果有新的，持续更新。</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2017/06/09/all-in-one-timer/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
