@@ -17,24 +17,24 @@
 <meta name="keywords" content="HTTP2,Node.js">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Http2 在 Nodejs 中的初尝试">
-<meta property="og:url" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/index.html">
+<meta property="og:url" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
 <meta property="og:description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/enable-protocol.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/net-internals-http2.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/prepare-work.gif">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/start-server.gif">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/through-localhost.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/invalid-https.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/server-push-alert.jpg">
-<meta property="og:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/server-push-network.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/enable-protocol.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/net-internals-http2.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/prepare-work.gif">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/start-server.gif">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/through-localhost.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/invalid-https.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/server-push-alert.jpg">
+<meta property="og:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/server-push-network.jpg">
 <meta property="og:updated_time" content="2015-08-29T06:29:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Http2 在 Nodejs 中的初尝试">
 <meta name="twitter:description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
-<meta name="twitter:image" content="http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
+<meta name="twitter:image" content="http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/see-google-network.jpg">
 <meta name="twitter:creator" content="@XGHeaven">
     
     
@@ -393,17 +393,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -439,7 +439,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2018 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2019 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
@@ -474,17 +474,17 @@
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i>
             </a>
         </li>
         <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i>
             </a>
         </li>
@@ -510,17 +510,17 @@
                 <div id="share-options-bar" class="share-options-bar" data-behavior="3">
     <ul class="share-options">
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
             </a>
         </li>
         <li class="share-option">
-            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/">
                 <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
             </a>
         </li>
@@ -575,7 +575,7 @@
     
         <script>
              var disqus_config = function () {
-                 this.page.url = 'http://blog.xgheaven.cn/2015/08/29/http2在nodejs中的初尝试/';
+                 this.page.url = 'http://blog.xgheaven.com/2015/08/29/http2在nodejs中的初尝试/';
                  
                     this.page.identifier = '2015/08/29/http2在nodejs中的初尝试/';
                                   
