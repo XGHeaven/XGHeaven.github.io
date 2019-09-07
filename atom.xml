@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.xgheaven.com/"/>
-  <updated>2019-03-31T16:25:35.072Z</updated>
+  <updated>2019-09-07T11:24:34.457Z</updated>
   <id>http://blog.xgheaven.com/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Node Cli 设计上的几点建议</title>
+    <link href="http://blog.xgheaven.com/2019/09/07/some-tips-for-create-npm-cli/"/>
+    <id>http://blog.xgheaven.com/2019/09/07/some-tips-for-create-npm-cli/</id>
+    <published>2019-09-07T10:59:29.000Z</published>
+    <updated>2019-09-07T11:24:34.457Z</updated>
+    
+    <content type="html"><![CDATA[<p>在平时的开发中，我发现大家特别喜欢将很多自己常用或者公司常用的脚本封装成一个 cli，这虽然无可厚非，但是作为一个有强迫症的患者来说，我认为这其实做不好会导致 cli 非常不好用的。所以这里总结了下平时写 cli 的经验希望和大家分享下。</p>
+<h3 id="写之前请思考"><a href="#写之前请思考" class="headerlink" title="写之前请思考"></a>写之前请思考</h3><ol>
+<li>我是不是为了 cli 而去写 cli，换句话我觉得这样比较 cool。如果是，那么请放弃这种想法。</li>
+<li>这个 cli 一定会减轻工作量么？<ul>
+<li>有很多公司喜欢将各种 webpack/eslint/babel 工具封装成一个 cli，那么这真的会降低使用者的工作量么？如果你封装的不好，相反会增加很大的工作量。最神奇的是，封装了这么多工具，配置文件却一个都没少，babelrc/eslintrc/prettierrc，那封装了有何用。</li>
+<li>cli 的不透明性就会导致使用者永远都是有使用成本的，不论这个 cli 有多简单。他不会知道你是干了什么。所以能避免写一个 cli 就避免写一个 cli。那如果真的要写，有其他方案么？请看第三条</li>
+</ul>
+</li>
+<li>除了写 node cli 真的没有其他方案了么？<ul>
+<li>大部分情况下，写 shell 的效率远远高于写 cli，将一个命令拆分成多个 shell，然后配合简单的帮助文档即可。如果用户不知道是做什么的，那么直接就可以去看源码。</li>
+<li>而且使用 git 管理 shell 也同样高效，比如将个人的一些脚本放到 private github 上，然后直接 clone 下来就可以用了。这样不需要每次都 npm publish，进而污染 npm。</li>
+<li>大部分情况下，去写 Makefile/Rakefile 同样可行。当然，Node 生态也有 Jake，不过不推荐用，因为要装 <code>jake</code> 包。</li>
+<li>如果你这个 cli 是作为一个项目的脚手架工具，那么是不是用 <code>yeoman</code> 或者 <code>degit</code> 这类工具更好？除非你的项目非常热门，功能自定义程度高，否则完全不需要自己去写一个脚手架。如果你只是觉得好玩，想写一个脚手架的话，那么请去看第一条，问问自己。</li>
+<li>如果是一个团队使用，那么除非有很大的普世性，那么用 git 管理同样比 npm 管理要强的多。</li>
+</ul>
+</li>
+<li>最后如果决定一定要写 cli 的话，有必要发布到 npm 么？<ul>
+<li>是不是发布到自己的 scope 下也是一个不错的选择？</li>
+<li>是不是直接让别人通过 <code>npm install [github.com/user/package](http://github.com/user/package)</code> 也是一个不错的选择？</li>
+<li>是不是上传到公司 or 个人的私有 npm 更好？</li>
+</ul>
+</li>
+</ol>
+<h3 id="开发时请遵循以下几点"><a href="#开发时请遵循以下几点" class="headerlink" title="开发时请遵循以下几点"></a>开发时请遵循以下几点</h3><ol>
+<li>请使用 npm</li>
+<li>不要写死版本号，优先使用 <code>^</code><ul>
+<li>这是因为有可能你的 cli 会被直接当做依赖安装到项目中，如果你写死了版本号，那么可能会装多分依赖。比如项目依赖了 <code>yargs@^13.2.0</code> ，但是你锁死了 <code>yargs@13.1.0</code>，就会导致安装两个 yargs。</li>
+</ul>
+</li>
+<li>避免引入一些功能很大，而自己只用其中一部分的包<ul>
+<li>因为没有 webpack 工具，无法进行 tree shaking，所以导致安装了很多比较大的包。比如你只是用了 <code>lodash</code> 的 <code>cloneDepp</code> 却安装了整个包。优先使用 <code>[lodash.xxx](http://lodash.xxx)</code> 子包。</li>
+</ul>
+</li>
+<li>如果你使用了某些构建工具(babel,webpack,typescript,flow)，那么请将构建之后的文件也加入代码仓库。<ul>
+<li>比如有一个 <code>src</code> 目录存放了 ts 源文件，而 <code>dist</code> 存放了构建之后的 js 文件。那么很多人的选择往往是将这 <code>dist</code> 文件夹加入 gitignore。这样其实是不太好的，原因如下：</li>
+<li>第一，方便追踪变化，比如你自己添加了一些 debug 代码，这个时候构建之后发现没有问题。又把 debug 代码删除，当你提交的时候就可以很清楚的看到自己修改了之后没有构建代码</li>
+<li>第二，方便通过 <a href="http://unpkg.com" target="_blank" rel="external">unpkg.com</a> 等工具访问</li>
+<li>第三，在版本开发依赖升级之后，可以很方便的看到改变的内容。一般使用者会放心升级 cli 之类的开发工具，所以这部分的质量需要我们自己来保证。</li>
+</ul>
+</li>
+</ol>
+<h3 id="交互设计上请遵循以下几点"><a href="#交互设计上请遵循以下几点" class="headerlink" title="交互设计上请遵循以下几点"></a>交互设计上请遵循以下几点</h3><ol>
+<li>Throw as possible，将可能的所有报错向上抛出，是一个好系统所必备的能力。但是在错误展示的时候，可以向用户隐藏部分调用栈信息等，只保留关键信息即可。</li>
+<li>尽可能遵循 linux 下的 cli 规范。</li>
+<li>不要让用户产生无畏的等待，通过添加进度条或者输出完成列表等告诉用户你依旧是在工作中的。</li>
+<li>给予用户想查看所有日志的能力。可以通过 <code>-v</code> <code>-vv</code> <code>-vvv</code> 或者 <code>--log-level debug</code> 来控制显示级别</li>
+<li>对所有命令的描述都不要超过一行。不论屏幕宽度如何（一般默认 80），最好不要超过 70。如果需要大量描述，请尝试通过 man 或者单独的页面。</li>
+<li>帮助是最好的文档，写好 cli 的 help 远比去写好一个文档网站要关键</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在平时的开发中，我发现大家特别喜欢将很多自己常用或者公司常用的脚本封装成一个 cli，这虽然无可厚非，但是作为一个有强迫症的患者来说，我认为这其实做不好会导致 cli 非常不好用的。所以这里总结了下平时写 cli 的经验希望和大家分享下。&lt;/p&gt;
+&lt;h3 id=&quot;写之前请思
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>一个 18 届前端校招生在网易的 257 天</title>
@@ -1468,89 +1536,6 @@
     
     
       <category term="blog" scheme="http://blog.xgheaven.com/tags/blog/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Lodash v4.0.0 简易更新日志</title>
-    <link href="http://blog.xgheaven.com/2016/01/15/lodash-v4-0-0-changelog/"/>
-    <id>http://blog.xgheaven.com/2016/01/15/lodash-v4-0-0-changelog/</id>
-    <published>2016-01-14T16:26:35.000Z</published>
-    <updated>2016-01-14T17:38:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<!-- TOC -->
-<p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。<br>简单的翻译了一下官方的更新日志。</p>
-<h3 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h3><ul>
-<li>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</li>
-<li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="external"><code>IE6-8</code></a> 的支持</li>
-<li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="external"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="external"><code>es6-shim</code></a></li>
-<li>移除了大部分的 <code>thisArg</code> 参数</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">var objects = [&#123; &apos;a&apos;: 1 &#125;, &#123; &apos;a&apos;: 2 &#125;];</div><div class="line">var context = &#123; &apos;b&apos;: 5 &#125;;</div><div class="line"></div><div class="line">function callback(item) &#123;</div><div class="line">  return item.a + this.b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// in 3.10.1</div><div class="line">_.map(objects, callback, context);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">_.map(objects, _.bind(callback, context));</div></pre></td></tr></table></figure>
-<ul>
-<li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// in 3.10.1</div><div class="line">var chunk = require(&apos;lodash/array/chunk&apos;);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">var chunk = require(&apos;lodash/chunk&apos;);</div></pre></td></tr></table></figure>
-<ul>
-<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="external">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="external">_.minBy</a></p>
-</li>
-<li><p>添加了足足 80 个方法</p>
-</li>
-</ul>
-<h3 id="移除的方法"><a href="#移除的方法" class="headerlink" title="移除的方法"></a>移除的方法</h3><ul>
-<li>移除了 <code>_.support</code></li>
-<li>移除了 <code>_.findWhere</code> ，用 <code>_.find</code> 来替代(with iteratee shorthand)</li>
-<li>移除了 <code>_.where</code> ，用 <code>_.filter</code> 来替代(with iteratee shorthand)</li>
-<li>移除了 <code>_.pluck</code> ，用 <code>_.map</code> 来替代(with iteratee shorthand)</li>
-</ul>
-<h3 id="重命名的方法"><a href="#重命名的方法" class="headerlink" title="重命名的方法"></a>重命名的方法</h3><ul>
-<li>重命名 <code>_.first</code> 为 <code>_.head</code></li>
-<li>重命名 <code>_.indexBy</code> 为 <code>_.keyBy</code></li>
-<li>重命名 <code>_.invoke</code> 为 <code>_.invokeMap</code></li>
-<li>重命名 <code>_.modArgs</code> 为 <code>_.overArgs</code></li>
-<li>重命名 <code>_.padLeft</code> &amp; <code>_.padRight</code> 为 <code>_.padStart</code> &amp; <code>_.padEnd</code></li>
-<li>重命名 <code>_.pairs</code> 为 <code>_.为Pairs</code></li>
-<li>重命名 <code>_.rest</code> 为 <code>_.tail</code></li>
-<li>重命名 <code>_.restParam</code> 为 <code>_.rest</code></li>
-<li>重命名 <code>_.sortByOrder</code> 为 <code>_.orderBy</code></li>
-<li>重命名 <code>_.trimLeft</code> &amp; <code>_.trimRight</code> 为 <code>_.trimStart</code> &amp; <code>_.trimEnd</code></li>
-<li>重命名 <code>_.trunc</code> 为 <code>_.truncate</code></li>
-</ul>
-<h3 id="分离出的方法"><a href="#分离出的方法" class="headerlink" title="分离出的方法"></a>分离出的方法</h3><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
-<ul>
-<li>分离出 <code>_.indexOf</code> &amp; <code>_.lastIndexOf</code> 为 <code>_.sortedIndexOf</code> &amp; <code>_.sortedLastIndexOf</code></li>
-<li>分离出 <code>_.max</code> &amp; <code>_.min</code> 为 <code>_.maxBy</code> &amp; <code>_.minBy</code></li>
-<li>分离出 <code>_.omit</code> &amp; <code>_.pick</code> 为 <code>_.omitBy</code> &amp; <code>_.pickBy</code></li>
-<li>分离出 <code>_.sample</code> 为 <code>_.sampleSize</code></li>
-<li>分离出 <code>_.sortedIndex</code> 为 <code>_.sortedIndexBy</code></li>
-<li>分离出 <code>_.sortedLastIndex</code> 为 <code>_.sortedLastIndexBy</code></li>
-<li>分离出 <code>_.uniq</code> 为 <code>_.sortedUniq</code>, <code>_.sortedUniqBy</code>, &amp; <code>_.uniqBy</code></li>
-</ul>
-<h3 id="其他的小修改"><a href="#其他的小修改" class="headerlink" title="其他的小修改"></a>其他的小修改</h3><ul>
-<li>将 <code>_.sortByAll</code> 融合到了 <code>_.sortBy</code></li>
-<li>改变这个类别 <code>_.at</code> 为 <em>“Object”</em></li>
-<li>改变这个类别 <code>_.bindAll</code> 为 <em>“Utility”</em></li>
-<li>在 <code>master</code> 分支下，将 <code>./lodash.js</code> 移动到 <code>./dist/lodash.js</code></li>
-<li>在 <code>npm</code> 分支下，将 <code>./index.js</code> 移动到 <code>./lodash.js</code></li>
-<li>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</li>
-<li><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;!-- TOC --&gt;
-&lt;p&gt;在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 &lt;code&gt;4.0&lt;/code&gt;，这次更新了很多的内容，包括了&lt;code&gt;不兼容更新&lt;/code&gt;，&lt;code&gt;方法分离&lt;/code&gt;，&lt;code&gt;函数重命名&lt;/
-    
-    </summary>
-    
-      <category term="Lo-Dash" scheme="http://blog.xgheaven.com/categories/Lo-Dash/"/>
-    
-    
-      <category term="lodash" scheme="http://blog.xgheaven.com/tags/lodash/"/>
-    
-      <category term="changelog" scheme="http://blog.xgheaven.com/tags/changelog/"/>
     
   </entry>
   
