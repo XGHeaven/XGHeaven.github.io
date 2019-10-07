@@ -307,7 +307,7 @@
 <p>链接测试，路由器显示链接成功，并且进入花生壳域名管理，查看域名解析的情况。</p>
 <p>如果失败了，请查看是否免费的域名填写错误，或者密码用户名错误等等。</p>
 <p>此时，如果你运行如下命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ping your.deamon.com</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping your.deamon.com</span><br></pre></td></tr></table></figure>
 <p>会正常的 <code>ping</code> 到自己的主机。</p>
 <h3 id="配置端口转发"><a href="#配置端口转发" class="headerlink" title="配置端口转发"></a>配置端口转发</h3><p>当解析成功的时候，仅仅说明域名可以正常的找到这台路由器，但是还不能找到路由器内部的主机。</p>
 <p>所以我们需要将路由器的部分端口映射到内部的服务器的主机的端口，这就是端口转发</p>
@@ -320,7 +320,7 @@
 <p>PS: 因为服务器是 Centos 7， 所以采用了 <code>firewall</code> 的管理方式，而不是以前的 <code>iptables</code>，这一点需要注意。</p>
 <h3 id="配置-Gitlab-中的-external-url"><a href="#配置-Gitlab-中的-external-url" class="headerlink" title="配置 Gitlab 中的 external_url"></a>配置 Gitlab 中的 <code>external_url</code></h3><p>在安装之后，你还需要配置 <code>external_url</code> 来在 repo 中正确显示url。</p>
 <p>之所以没有从 host 中获取 URL ，是因为，很多情况下，git 仓库和前端管理是分离的，所以你需要自己去配置。</p>
-<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="external">Configuring the external URL for GitLab</a></p>
+<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="noopener">Configuring the external URL for GitLab</a></p>
 <p>然后按照教程 <code>gitlab-ctl reconfigure</code> 即可</p>
 <h3 id="Over"><a href="#Over" class="headerlink" title="Over"></a>Over</h3><p>至此，在添加了 Gitlab 成员之后，我就可以洗洗睡了，晚安~~~</p>
 

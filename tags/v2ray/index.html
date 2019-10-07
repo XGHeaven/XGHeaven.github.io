@@ -301,17 +301,17 @@
 <li>社区比较活跃，我喜欢</li>
 </ul>
 <p>鉴于上面的优点，我去研究了一下这个 v2ray，发现安装起来还是很简单的么。</p>
-<p>具体安装方式，请参考 <a href="https://www.v2ray.com/chapter_01/install.html" target="_blank" rel="external">v2ray install</a> ，配置什么的我就不多说什么了，官网上面讲的很清楚。如果有什么问题，欢迎提交 issue 或者进入 telegram group 讨论，作者在里面还是很积极的。</p>
+<p>具体安装方式，请参考 <a href="https://www.v2ray.com/chapter_01/install.html" target="_blank" rel="noopener">v2ray install</a> ，配置什么的我就不多说什么了，官网上面讲的很清楚。如果有什么问题，欢迎提交 issue 或者进入 telegram group 讨论，作者在里面还是很积极的。</p>
 <p>不过现在 v2ray 总体来说对新手还不是很友好，期待以后的改进。而且暂时还没有 gui 管理界面，期待作者的添加。</p>
 <p>说完了 v2ray，就不得不说 v2ray 相关的 tcp-bbr，谷歌大大提交的 tcp 拥塞解决算法，现在已经合并到 linux4.9 内核当中，听说对于高延迟长连接的线路有很大的优化作用，那么对于翻墙来说，这可是神器，怎么能不使用一下呢。</p>
-<p>关于 bbr 的介绍，可以看这篇<a href="https://www.zhihu.com/question/53559433" target="_blank" rel="external">知乎的文章</a></p>
+<p>关于 bbr 的介绍，可以看这篇<a href="https://www.zhihu.com/question/53559433" target="_blank" rel="noopener">知乎的文章</a></p>
 <p>那么我就在我的 linode 服务器上开启一下，不过需要注意的是，不要使用 linode dashboard 中的 linux4.9 内核，因为那个内核是被 linode 修改过的，会无法开启 bbr，我们需要手动安装 linux4.9 内核。</p>
-<p><a href="https://blog.linuxeye.com/452.html" target="_blank" rel="external">安装教程</a></p>
+<p><a href="https://blog.linuxeye.com/452.html" target="_blank" rel="noopener">安装教程</a></p>
 <p>是不是很期待呀，下面就是测试</p>
 <p>未开启 bbr</p>
-<img src="/2017/01/18/first-try-v2ray-and-bbr/without_bbr.png" alt="without_bbr.png" title="">
+<img src="/2017/01/18/first-try-v2ray-and-bbr/without_bbr.png">
 <p>开启 bbr</p>
-<img src="/2017/01/18/first-try-v2ray-and-bbr/bbr.png" alt="bbr.png" title="">
+<img src="/2017/01/18/first-try-v2ray-and-bbr/bbr.png">
 <p>可能由于家里的带宽的原因，提升速度太不明显了2333，等以后有空回学校重新测试一下。</p>
 <p>不过我不能确定是不是我的服务器网络质量太好了，导致加速不明显 2333</p>
 

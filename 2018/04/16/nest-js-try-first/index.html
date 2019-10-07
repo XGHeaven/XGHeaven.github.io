@@ -289,7 +289,7 @@
             <blockquote>
 <p>本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async/Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。</p>
 </blockquote>
-<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a href="https://nestjs.com/" target="_blank" rel="external">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
+<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a href="https://nestjs.com/" target="_blank" rel="noopener">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
 <ul>
 <li>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</li>
 <li>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</li>
@@ -300,7 +300,7 @@
 <li>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</li>
 <li>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</li>
 <li>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</li>
-<li>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a href="https://docs.nestjs.com/pipes" target="_blank" rel="external">教程</a></li>
+<li>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a href="https://docs.nestjs.com/pipes" target="_blank" rel="noopener">教程</a></li>
 <li>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</li>
 <li>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</li>
 </ul>
@@ -329,7 +329,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">|-- dest</div><div class="line">    |--- ...</div><div class="line">|-- src</div><div class="line">    |-- config</div><div class="line">    |-- controller</div><div class="line">    |-- model</div><div class="line">    |-- service</div><div class="line">    |-- logic</div><div class="line">    |-- component</div><div class="line">    |-- boot</div><div class="line">    |-- module</div><div class="line">        |-- module-name</div><div class="line">            |-- config</div><div class="line">            |-- index.ts</div><div class="line">            |-- module-name.module.ts</div><div class="line">    |-- main.ts</div><div class="line">    |-- main.module.ts</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">|-- dest</span><br><span class="line">    |--- ...</span><br><span class="line">|-- src</span><br><span class="line">    |-- config</span><br><span class="line">    |-- controller</span><br><span class="line">    |-- model</span><br><span class="line">    |-- service</span><br><span class="line">    |-- logic</span><br><span class="line">    |-- component</span><br><span class="line">    |-- boot</span><br><span class="line">    |-- module</span><br><span class="line">        |-- module-name</span><br><span class="line">            |-- config</span><br><span class="line">            |-- index.ts</span><br><span class="line">            |-- module-name.module.ts</span><br><span class="line">    |-- main.ts</span><br><span class="line">    |-- main.module.ts</span><br></pre></td></tr></table></figure>
 <h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>我目前初步的想法是通过提供一个 <code>ConfigModule</code> 暴露出一个 <code>ConfigService</code> 来提供配置的获取和查看。</p>
 <p>在某些情况下，可能需要多级配置，模块级别的配置，应用级别的配置。那么 <code>ConfigService</code> 可以在获取配置的时候自动合并这些规则。</p>
 <h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><p>现在已经是 18 年了，不用 Docker 你真的对得起自己么？很明显是对不起的。所以进程管理这一块，我们就交给 Docker 来处理。包括启动、停止、重启、日志等，都交给 Docker。</p>

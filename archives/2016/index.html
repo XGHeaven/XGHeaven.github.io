@@ -307,7 +307,7 @@
 <p>链接测试，路由器显示链接成功，并且进入花生壳域名管理，查看域名解析的情况。</p>
 <p>如果失败了，请查看是否免费的域名填写错误，或者密码用户名错误等等。</p>
 <p>此时，如果你运行如下命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ping your.deamon.com</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping your.deamon.com</span><br></pre></td></tr></table></figure>
 <p>会正常的 <code>ping</code> 到自己的主机。</p>
 <h3 id="配置端口转发"><a href="#配置端口转发" class="headerlink" title="配置端口转发"></a>配置端口转发</h3><p>当解析成功的时候，仅仅说明域名可以正常的找到这台路由器，但是还不能找到路由器内部的主机。</p>
 <p>所以我们需要将路由器的部分端口映射到内部的服务器的主机的端口，这就是端口转发</p>
@@ -320,7 +320,7 @@
 <p>PS: 因为服务器是 Centos 7， 所以采用了 <code>firewall</code> 的管理方式，而不是以前的 <code>iptables</code>，这一点需要注意。</p>
 <h3 id="配置-Gitlab-中的-external-url"><a href="#配置-Gitlab-中的-external-url" class="headerlink" title="配置 Gitlab 中的 external_url"></a>配置 Gitlab 中的 <code>external_url</code></h3><p>在安装之后，你还需要配置 <code>external_url</code> 来在 repo 中正确显示url。</p>
 <p>之所以没有从 host 中获取 URL ，是因为，很多情况下，git 仓库和前端管理是分离的，所以你需要自己去配置。</p>
-<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="external">Configuring the external URL for GitLab</a></p>
+<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="noopener">Configuring the external URL for GitLab</a></p>
 <p>然后按照教程 <code>gitlab-ctl reconfigure</code> 即可</p>
 <h3 id="Over"><a href="#Over" class="headerlink" title="Over"></a>Over</h3><p>至此，在添加了 Gitlab 成员之后，我就可以洗洗睡了，晚安~~~</p>
 
@@ -419,10 +419,10 @@
 <li>纯函数相互组合，还是纯函数（类似于高中所学的奇函数偶函数）</li>
 </ul>
 <h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ul>
-<li><a href="https://en.wikipedia.org/wiki/Pure_function" target="_blank" rel="external">Wiki</a></li>
-<li><a href="http://america.pink/pure-function_3618964.html" target="_blank" rel="external">Pure function</a></li>
-<li><a href="http://www.kancloud.cn/kancloud/scala-quickstart/50726" target="_blank" rel="external">纯函数和非纯函数</a></li>
-<li><a href="http://blog.csdn.net/popy007/article/details/8508776" target="_blank" rel="external">C++函数式编程（二）纯函数</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Pure_function" target="_blank" rel="noopener">Wiki</a></li>
+<li><a href="http://america.pink/pure-function_3618964.html" target="_blank" rel="noopener">Pure function</a></li>
+<li><a href="http://www.kancloud.cn/kancloud/scala-quickstart/50726" target="_blank" rel="noopener">纯函数和非纯函数</a></li>
+<li><a href="http://blog.csdn.net/popy007/article/details/8508776" target="_blank" rel="noopener">C++函数式编程（二）纯函数</a></li>
 </ul>
 
                     
@@ -484,7 +484,7 @@
 <li>Changelog 页面，以后的所有的 Changelog 都在这个页面下展示</li>
 </ol>
 <h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><ol>
-<li>更新主题(<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-theme" target="_blank" rel="external">tranquilpeak</a>)更新至 <code>1.6.2</code></li>
+<li>更新主题(<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-theme" target="_blank" rel="noopener">tranquilpeak</a>)更新至 <code>1.6.2</code></li>
 <li>跟随潮流，使用《功夫熊猫3》海报背景</li>
 <li>在列表页面，更新为全文显示，以前是只显示部分内容</li>
 </ol>
@@ -545,17 +545,17 @@
 <p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。<br>简单的翻译了一下官方的更新日志。</p>
 <h3 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h3><ul>
 <li>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</li>
-<li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="external"><code>IE6-8</code></a> 的支持</li>
-<li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="external"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="external"><code>es6-shim</code></a></li>
+<li>移除了对 <a href="https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support" target="_blank" rel="noopener"><code>IE6-8</code></a> 的支持</li>
+<li>使用了 <a href="https://github.com/es-shims/es5-shim" target="_blank" rel="noopener"><code>es5-shim</code></a> 或者 <a href="https://github.com/es-shims/es6-shim" target="_blank" rel="noopener"><code>es6-shim</code></a></li>
 <li>移除了大部分的 <code>thisArg</code> 参数</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">var objects = [&#123; &apos;a&apos;: 1 &#125;, &#123; &apos;a&apos;: 2 &#125;];</div><div class="line">var context = &#123; &apos;b&apos;: 5 &#125;;</div><div class="line"></div><div class="line">function callback(item) &#123;</div><div class="line">  return item.a + this.b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// in 3.10.1</div><div class="line">_.map(objects, callback, context);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">_.map(objects, _.bind(callback, context));</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">var objects = [&#123; &apos;a&apos;: 1 &#125;, &#123; &apos;a&apos;: 2 &#125;];</span><br><span class="line">var context = &#123; &apos;b&apos;: 5 &#125;;</span><br><span class="line"></span><br><span class="line">function callback(item) &#123;</span><br><span class="line">  return item.a + this.b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// in 3.10.1</span><br><span class="line">_.map(objects, callback, context);</span><br><span class="line"></span><br><span class="line">// in 4.0.0</span><br><span class="line">_.map(objects, _.bind(callback, context));</span><br></pre></td></tr></table></figure>
 <ul>
 <li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">// in 3.10.1</div><div class="line">var chunk = require(&apos;lodash/array/chunk&apos;);</div><div class="line"></div><div class="line">// in 4.0.0</div><div class="line">var chunk = require(&apos;lodash/chunk&apos;);</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// in 3.10.1</span><br><span class="line">var chunk = require(&apos;lodash/array/chunk&apos;);</span><br><span class="line"></span><br><span class="line">// in 4.0.0</span><br><span class="line">var chunk = require(&apos;lodash/chunk&apos;);</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="external">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="external">_.minBy</a></p>
+<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a href="https://lodash.com/docs#maxBy" target="_blank" rel="noopener">_.maxBy</a> &amp; <a href="https://lodash.com/docs#minBy" target="_blank" rel="noopener">_.minBy</a></p>
 </li>
 <li><p>添加了足足 80 个方法</p>
 </li>
@@ -598,7 +598,7 @@
 <li>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</li>
 <li><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</li>
 </ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="external">changelog</a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a href="https://github.com/lodash/lodash/wiki/Changelog" target="_blank" rel="noopener">changelog</a></p>
 
                     
                         

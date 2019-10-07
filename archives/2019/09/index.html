@@ -313,7 +313,7 @@
 <h3 id="开发时请遵循以下几点"><a href="#开发时请遵循以下几点" class="headerlink" title="开发时请遵循以下几点"></a>开发时请遵循以下几点</h3><ol>
 <li>请使用 npm</li>
 <li>不要写死版本号，优先使用 <code>^</code><ul>
-<li>这是因为有可能你的 cli 会被直接当做依赖安装到项目中，如果你写死了版本号，那么可能会装多分依赖。比如项目依赖了 <code>yargs@^13.2.0</code> ，但是你锁死了 <code>yargs@13.1.0</code>，就会导致安装两个 yargs。</li>
+<li>这是因为有可能你的 cli 会被直接当做依赖安装到项目中，如果你写死了版本号，那么可能会装多分依赖。比如项目依赖了 <code>yargs@^13.2.0</code> ，但是你锁死了 <a href="mailto:`yargs@13.1.0" target="_blank" rel="noopener">`yargs@13.1.0</a>`，就会导致安装两个 yargs。</li>
 </ul>
 </li>
 <li>避免引入一些功能很大，而自己只用其中一部分的包<ul>
@@ -323,7 +323,7 @@
 <li>如果你使用了某些构建工具(babel,webpack,typescript,flow)，那么请将构建之后的文件也加入代码仓库。<ul>
 <li>比如有一个 <code>src</code> 目录存放了 ts 源文件，而 <code>dist</code> 存放了构建之后的 js 文件。那么很多人的选择往往是将这 <code>dist</code> 文件夹加入 gitignore。这样其实是不太好的，原因如下：</li>
 <li>第一，方便追踪变化，比如你自己添加了一些 debug 代码，这个时候构建之后发现没有问题。又把 debug 代码删除，当你提交的时候就可以很清楚的看到自己修改了之后没有构建代码</li>
-<li>第二，方便通过 <a href="http://unpkg.com" target="_blank" rel="external">unpkg.com</a> 等工具访问</li>
+<li>第二，方便通过 <a href="http://unpkg.com" target="_blank" rel="noopener">unpkg.com</a> 等工具访问</li>
 <li>第三，在版本开发依赖升级之后，可以很方便的看到改变的内容。一般使用者会放心升级 cli 之类的开发工具，所以这部分的质量需要我们自己来保证。</li>
 </ul>
 </li>
