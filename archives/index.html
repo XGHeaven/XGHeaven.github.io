@@ -270,6 +270,142 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/">
+                            如何使用自签名 CA 和证书来保护个人在公网上的内容
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sun Oct 13 2019 17:03:49 GMT+0800">
+	
+		    10月 13, 2019
+    	
+    </time>
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>作为一个喜欢折腾的人，个人搞了很多东西放在自己的服务器上，但是为了方便，能够在世界各地随时随地的打开查看和使用，我将服务器暴露到了公网中，当然了有些在公有云上的本来就暴露出来的。</p>
+<p>那么这里就有一个问题，我如何保护我的信息只能我来查看呢？</p>
+<ul>
+<li>最简单的方法就是通过 HTTP Basic Auth + HTTPS。记住一定要上 https，否则你的密码也是会泄漏的。为什么说简单呢？因为只需要在 Nginx 或 Traefik 上配置下就可以了。但是这个方案有一个非常麻烦的问题，就是过一段时间之后就要输入用户名和密码。时间短了，到无所谓，时间一长就会觉得很烦。</li>
+<li>构建一套 token 验证体系，不管是使用 oauth 也好还是 jwt 也好，都是可以的。安全性也是可以保证的，而且设置好 token 的时间长度，也能保证避免频繁的输入密码。但是这有一个问题就是实现起来太过于复杂，都快赶上公司的一套系统了。而且还要有各种登录页面，想想都烦。</li>
+<li>与上面类似，不过验证方式使用 Two Auth，也就是基于时间的 6 位数组。但是依旧比较复杂。</li>
+</ul>
+<p>我想了许久，有没有一种不需要输入密码，就可以验证安全的呢？因为是我一个人使用的，所以我根本不需要多用户系统，也就是说验证方式只需要一个密码就可以了。这我突然想起了之前在写 gRPC 的时候有一个双向验证的参数，也可以验证客户端可以不可以。当时觉得只是他们基于 h2 改的协议，结果我一查发现这原来就包含在 https 里面，准确说是 SSL 规范里面。（怪自己当初上计算机网络的时候没好好学这部分，竟然连这个都不知道）</p>
+<p>那么至此，思路就很清晰了，给我的所有个人服务都添加 https 客户端校验。只要我的证书够安全，我的页面就是安全的（反正都是我个人的东西，直接拿着 U 盘到处拷贝，手机 Pad 用数据线发送，我就不信这样谁还能盗走我的证书，傲娇脸）</p>
+<h2 id="关于-SSL-证书的一些知识"><a href="#关于-SSL-证书的一些知识" class="headerlink" title="关于 SSL 证书的一些知识"></a>关于 SSL 证书的一些知识</h2><ul>
+<li>生成证书我们主要采用 <code>openssl</code> 具体的安装教程我就不讲解了，有兴趣的小伙伴自行查阅，主要有下面几个步骤：<ul>
+<li><code>openssl genrsa</code>：生成 Private Key，用于生成请求文件使用，这里用 <code>.key</code> 后缀。</li>
+<li><code>openssl req</code>：依赖上面生成的 Key 去生成 CSR，也就是证书请求文件。使用 <code>.csr</code> 后缀。这期间要填写一些信息，前面的几个大写字母是缩写，后面在命令行使用的时候会用到。<ul>
+<li>C(Country) 国家</li>
+<li>ST(State/Province) 州或者省</li>
+<li>L(Locality) 地区，国内写区即可</li>
+<li>O(Organization) 组织</li>
+<li>OU(Organization) 组织单位</li>
+<li>CN(Common Name) 通用名，这个是非常重要的，影响了证书的显示名称和 HTTPS 的域名。</li>
+</ul>
+</li>
+<li><code>openssl x509</code>：根据 x509 规范，利用 CA 的证书和私钥将 CSR 文件加密成真正可以使用到的证书。使用 <code>.crt</code> 后缀</li>
+</ul>
+</li>
+<li>SSL 证书必须要采用 sha-2 加密算法。2015 年 12 月 31 日前，CA 机构还会颁发 SHA-1 签名的证书，但是之后只会签发 SHA-2 签名的证书了。Chrome 也会对 SHA-1 签名的证书提示不安全。在 openssl 中用的是 <code>-sha-256</code> 参数。</li>
+<li><code>CRT</code> 和 <code>PEM</code> 的关系，大家可以简单的认为 <code>PEM</code> 是将证书 base64 之后的文件，而 <code>CRT</code> 是既能 base64 也能 binary 的一种文件格式。但是通常 <code>openssl</code> 产出的是 base64 的文件，你可以通过 <code>-outform</code> 参数控制产出的类型。</li>
+</ul>
+<h2 id="CA-的生成"><a href="#CA-的生成" class="headerlink" title="CA 的生成"></a>CA 的生成</h2><p>有了 CA 我们才能去给其他的证书签名，生成 CA 的过程很简单</p>
+<h3 id="创建根钥"><a href="#创建根钥" class="headerlink" title="创建根钥"></a>创建根钥</h3><p>这个秘钥非常重要，任何获得了这个秘钥的人在知道密码的情况下都可以生成证书。所以请小心保存</p>
+<pre><code>openssl genrsa -des3 -out root.key 4096
+</code></pre><ul>
+<li><code>-des3</code> 标明了私钥的加密方式，也就是带有密码。建议添加密码保护，这样即使私钥被窃取了，依旧无法对其他证书签名。你也可以更换其他的加密方式，具体的请自行 help。</li>
+<li><code>4096</code> 表示秘钥的长度。</li>
+</ul>
+<h3 id="创建自签名证书"><a href="#创建自签名证书" class="headerlink" title="创建自签名证书"></a>创建自签名证书</h3><p>因为是 CA 证书，所以没法让别人去签名，只能自签名。这里可以认为是生成 CSR 和签名两部合成一步走。</p>
+<pre><code>openssl req -x509 -sha256 -new -key root.key -sha256 -days 1024 -out root.crt
+</code></pre><h2 id="服务端证书生成"><a href="#服务端证书生成" class="headerlink" title="服务端证书生成"></a>服务端证书生成</h2><h3 id="生成证书私钥"><a href="#生成证书私钥" class="headerlink" title="生成证书私钥"></a>生成证书私钥</h3><pre><code>openssl genrsa -out your-domain.com.key 2048
+</code></pre><p>和 CA 证书不同，这个私钥一般不需要加密，长度也可以短一些。</p>
+<h3 id="生成证书请求文件"><a href="#生成证书请求文件" class="headerlink" title="生成证书请求文件"></a>生成证书请求文件</h3><pre><code>openssl req -new -key your-domain.com.key -out your-domain.com.csr
+</code></pre><p>这期间要填入一些信息，注意 CN 的名字一定要是你的域名。</p>
+<h3 id="使用-CA-对-CSR-签名"><a href="#使用-CA-对-CSR-签名" class="headerlink" title="使用 CA 对 CSR 签名"></a>使用 CA 对 CSR 签名</h3><p>在 Chrome 58 之前，Chrome 会根据 CN 来检查访问的域名是不是和证书的域名一致，但是在 Chrome 58 之后，改为使用 SAN(Subject Alternative Name) 而不是 CN 检查域名的一致性。</p>
+<p>而 SAN 属于 x509 扩展里面的内容，所以我们需要通过 <code>-extfile</code> 参数来指定存放扩展内容的文件。</p>
+<p>所以我们需要额外创建一个 <code>your-domain.com.ext</code> 文件用来保存 SAN 信息，通过指定多个 DNS 从而可以实现多域名证书。</p>
+<pre><code>subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = your-domain.com
+DNS.2 = *.your-domain.com
+DNS.3 = *.api.your-domain.com
+</code></pre><p>以此类推，如果域名较少，还可以用另外一种简写方案。</p>
+<pre><code>subjectAltName = DNS: your-domain.com, DNS: *.your-domain.com
+</code></pre><p>关于语法的更多内容请查看<a href="https://www.openssl.org/docs/manmaster/man5/x509v3_config.html" target="_blank" rel="noopener">官方文档</a>。在有了 ext 文件之后就直接可以开始签名了。</p>
+<pre><code>openssl x509 -req -sha256 -in your-domain.com.csr -CA root.crt -CAkey root.key -CAcreateserial -out your-domain.com.crt -days 365 -extfile your-domain.com.ext
+</code></pre><p><code>CAcreateserial</code> 这个参数是比较有意思的，意思是如果证书没有 serial number 就创建一个，因为我们是签名，所以肯定会创建一个。序列号在这里的作用就是唯一标识一个证书，当有两个证书的时候，只有给这两个证书签名的 CA 和序列号都一样的情况下，我们才认为这两个证书是一致的。除了自定生成，还可以通过 <code>-set_serial</code> 手动指定一个序列号。</p>
+<p>当使用 <code>-CAcreateserial</code> 参数之后，会自动创建一个和 CA 文件名相同的，但是后缀是 <code>.srl</code> 的文件。这里存储了上一次生成的序列号，每次调用的时候都会读取并 +1 。也就是说每一次生成的证书的序列号都比上一次的加了一。</p>
+<p>现在，只需要将 <code>your-domain.com.crt</code> 和 <code>your-domain.com.key</code> 放到服务端就可以使用了。别忘了将 CA 添加系统当中，要不然浏览器访问会出现问题。</p>
+<h2 id="客户端证书生成"><a href="#客户端证书生成" class="headerlink" title="客户端证书生成"></a>客户端证书生成</h2><p>服务端有了之后，就需要生成客户端的证书，步骤和服务端基本一致，但是不需要 SAN 信息了。</p>
+<pre><code>openssl genrsa -out client.key 2048
+# 这里也可以采用非交互形式，方便制作成命令行工具
+openssl req -new \
+    -key client.key \
+    -subj &quot;/C=CN/ST=Zhejiang/O=X/CN=*.your-domain.com&quot; \ # 这里的缩写就是文章一开始所说的那些缩写
+    -out client.csr
+openssl x509 -req -in client.csr -CA root.crt -CAkey root.key -out client.crt -days 365
+</code></pre><p>只不过客户端验证需要的是 PKCS#12 格式，这种格式是将证书和私钥打包在了一起。因为系统需要知道一个证书的私钥和公钥，而证书只包含公钥和签名，不包含私钥，所以需要这种格式的温江将私钥和公钥都包含进来。</p>
+<pre><code>openssl pkcs12 -export -clcerts -in client.crt -inkey client.key -out client.p12
+</code></pre><p>这期间会提示你输入密码，用于安装的时候使用。也就是说不是什么人都可以安装客户端证书的，要有密码才行，这无疑又增加了一定的安全性。当然了，我试过不输入密码，但是好像有点问题，有兴趣的同学可以自己尝试下。</p>
+<h2 id="客户端校验证书的使用"><a href="#客户端校验证书的使用" class="headerlink" title="客户端校验证书的使用"></a>客户端校验证书的使用</h2><p>这里以 Node.js 举例。使用 <code>https</code> 模块，在创建的时候和普通的创建方式基本一致，但是需要额外指定 <code>requestCert</code> 和 <code>ca</code> 参数来开启客户端校验。</p>
+<pre><code>https.createServer({
+    key: fs.readFileSync(&apos;your-domain.com.key&apos;),
+    cert: fs.readFileSync(&apos;your-domain.com.crt&apos;),
+    requestCert: true,
+    ca: [fs.readFileSync(&apos;root.crt&apos;)], // 校验客户端证书的 CA
+}, (req, resp) =&gt; {
+    // blahblah
+})
+</code></pre><p>这样只要客户端没有安装合法的证书，那么整个请求就是失败的。而且根本不会进入请求处理的回调函数中，这也意味着显示的错误是浏览器的默认错误。那么这对用户来讲其实不太友好。</p>
+<p>那么我们可以通过在参数中添加 <code>rejectUnauthorized: false</code> 来关闭这个功能，也就是说不管客户端证书校验是正确还是失败，都可以进入正常的回调流程。此时我们只需要通过 <code>req.client.authorized</code> 来判断这个请求是否通过了客户端证书的校验，可以给予用户更详尽的错误提示。</p>
+<p>另外我们还可以通过 <code>resp.connection.getPeerCertificate()</code> 获取客户端证书的信息，甚至可以根据不同的信息选择给予不同的用户权限。</p>
+<p>这里有一个 DEMO: <a href="https://www.xgheaven.net.cn:3443" target="_blank" rel="noopener">https://www.xgheaven.net.cn:3443</a>，大家打开之后应该会看到一个证书校验失败的提示。这里要说下，我这里的 DEMO 没有使用自签名的服务端证书，只是使用了自签名的 CA 去检查客户端证书。因为用自己签名的服务端证书的话，浏览器会提示不安全，因为用户么有安装自签名的 CA。</p>
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/step1.png">
+<p>可以点击下载客户端证书按钮，安装客户端证书。因为客户端证书是有密码保护的，请输入页面上提示的密码。</p>
+<p>再次刷新，如果是 Mac 系统，会提示你要使用哪个客户端证书登录，此时就说明安装成功了。</p>
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/step2.png">
+<p>点击确认，可能还要输入一个系统密码允许 Chrome 访问 Keychain，一劳永与的话在输入密码之后选择 Always Allow，从此就不需要再输入密码了。</p>
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/step3.png">
+<p>按照道理，你就可以看到这个页面了。</p>
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/step4.png">
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有了这个功能，我就可以将我的所有内容全盘私有化而且还能直接暴露在公网中。配合之前毕设搞的微服务化，简直不要美滋滋。如果之前是使用账号密码登录的，也可以接入这个方案。就是将登录页面替换成证书校验就可以了。</p>
+<h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><ul>
+<li><a href="https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326" target="_blank" rel="noopener">Authentication using HTTPS client certificates</a></li>
+<li><a href="https://alexanderzeitler.com/articles/Fixing-Chrome-missing_subjectAltName-selfsigned-cert-openssl/" target="_blank" rel="noopener">Fixing Chrome 58+ [missing_subjectAltName] with openssl when using self signed certificates</a></li>
+<li><a href="https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309" target="_blank" rel="noopener">Self Signed Certificate with custom CA</a></li>
+<li><a href="https://www.jianshu.com/p/68c664b663f4" target="_blank" rel="noopener">散列算法：SHA-1，SHA-2和SHA-256之间的区别（下）</a></li>
+</ul>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2019/10/07/make-your-react-to-slow/">
                             如何让你的 React 『变慢』？探析 Array Diff 的一些边角特性
                         </a>
@@ -1226,112 +1362,6 @@ element10000.map(i =&gt; &lt;div key={`${i}`}&gt;{i}&lt;/div&gt;)
                     
                         <p>
                             <a href="/2018/04/16/nest-js-try-first/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2018/02/16/summary-2018/">
-                            2018 年终总结
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Feb 16 2018 00:04:44 GMT+0800">
-	
-		    2月 16, 2018
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/年终总结/">年终总结</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <p>2017 年，有开心，也有失落。也不知道该从何说起，就随便写写了。高中语文就没学好过，所以可能写成流水账了。请各位看官多多包涵。</p>
-<h2 id="实习"><a href="#实习" class="headerlink" title="实习"></a>实习</h2><p>如今步入大四，最大的心事就是找实习找 Offer 了。先后经历了两次阿里面试的失利，至于失利的过程，我之前有吐槽过，就不多说了，而且听说今年的面试难度提升到了社招，心痛。饿了么/七牛都有投递过，但是都没有进。如果各位看官想招 Node.js 或者 前端 的校招生的话，请联系我哦~ <code>请在各大社交媒体请搜索 XGHeaven 即可</code></p>
-<p>终于在 CNode 上面找到了一家美国 AR 公司，Integem。</p>
-<p>在里面主要是用 Electron 做客户端，技术栈就是 Vue 全家桶，不多说了。反正整体干下来的感觉其实和自己接了一个外包的感觉差不多，而且设计师设计的页面参差不齐。最可气的是，假设页面 A 和页面 B 相同的部分，没准一个就有边框，另一个就没有。没准一个字体是 12px，另一个可能就是 16px。真是受不了，一开始，我还是让他确认一下到底哪个设计图是对的，到最后，只能用我的佛系心态对待这个设计图，懒得问了。切个图，也是切的乱七八糟，我还是自己来好了。</p>
-<p>在里面差不多干了 5 个月，再加上学校要求每个人都要去跟着导师完成一个实践项目，于是我就离开了。</p>
-<p>再之后，我在逛实习的时候，突然发现大搜车在招 Node.js 实习生，而且标注的是有大牛带。大搜车……为啥听着这么耳熟啊，不管了，报了再说。于是我就去面试了。面试我的是一个胖胖的留着胡子的人（死月罪过，当时并不知道那是你），于是和他相聊甚欢，最后还记得，当时看到他的 15寸 macbook pro 后面贴着一个 bad apple 的一个贴纸。当时顺口就问了一句，这个是 bad apple 么？当时之所以会问这个，因为我还记得很早以前，看过一个人的博客，里面讲到了他在花瓣网工作，而且很详细的讲解了图片主题色的提取和 Node.js NAN API，感觉受益匪浅，于是我当时在想，这是哪个学校的大牛，竟然这么厉害。后来看到他已经在花瓣工作了。。。不过我记得他很喜欢二次元。。。于是面试的时候，我在想会不会是他，于是就问了句贴纸，以为他会聊起二次元，结果他随便应了一句就过去了。我见状就没再继续问下去了。后面安慰道自己说，没事，那个人应该不会在大搜车。面试我这个人感觉还是很厉害的~~至少有一点，我说我提过 issue 给 node，他能马上就打开 github 看。这一点让我很敬佩，因为大部分面试都是会听你描述，看简历上面写的，而不是当场去查看。举个例子，你跟面试官说你博客写了很多高品质的文章，大部分面试官会直接问你有什么，他不会自己去看。而好的面试官会一边问你，一边自己打开看。。。我是这么觉得的。反正不管当时是不是月老，我已经决定来这家公司了。</p>
-<p>哈哈哈，后面等进大搜车之后，剧情反转。那个人其实就是死月。当时看到他在 QQ 群里面的时候，你知道我的心里有多么开心么！！但是，有一个噩耗，就是他在我去的前几周已经跳槽去蚂蚁金服了，哭 (((T____T))) 我的大牛啊，你怎么走了啊~啊~啊~啊~</p>
-<p>不过还好，也认识了挺多大牛的，不过还是没见到过我心仪的 朴灵/不四/狼叔 -_-。</p>
-<p>现在在大搜车呆了有两个月了吧，那就简单总结一下干了啥吧：</p>
-<ul>
-<li>完成了一个图片上传服务，里面包含了公共的图片上传，以及大风车的头像上传，真正的编码时间也就两个星期，但是真的发布上去，却花了一个月。</li>
-<li>现在准备一个请求限制框架，讲道理这是很简单的一个工作，但是我看时间很充裕，于是我就想写大，看看能不能独立成一个库，开源骗 star。</li>
-<li>期间还要各种小东西，修修补补。</li>
-</ul>
-<p>刚进大搜车，按理来说，带我的人应该是小山，但是那个时候他请了几天假，于是就鹏飞暂时带着我。让我看了 Akyuu.js 和帕秋莉网关。之后其实所有的时间都是跟着鹏飞，我师父小山感觉不喜欢多说话，平时也没有太多的共同语言。想平时打打游戏联络一下感情，但是看他很忙的样子，就放弃了。最近才发现，原来小山也看二次元，哈哈哈。反正就这样，和小山半亲近半陌生。和鹏飞一开始也聊的挺多，后面等公司的事情知道的差不多了，也交流的不多了。</p>
-<p>而且由于我比较慢热，再加上我进入公司比较晚，没有参加过团建，和大家都不是很熟。就和组内的坐在旁边的外加组内的实习生比较熟。</p>
-<p>说一下，我在大搜车实习的感受吧。</p>
-<ul>
-<li>代码层面<ul>
-<li>更加理性的对待 callback 和 promise，因为在之前，我是极力反对使用 callback 的，所以当第一眼看到公司的代码的时候，我懵逼了，怎么全是 callback。于是经过和鹏飞的交流以及自己的领悟，终于放下执念。其实 callback+async 和 promise 没啥区别么，哈哈哈。</li>
-<li>尝试先写文档，后写代码。我平时兴起的时候，直接就开始撸，从来不打草稿。小项目可以，但是当项目大了之后，就呵呵哒了。</li>
-<li>了解了 Node 的 PR 流程。</li>
-<li>其他的好像还真的没有了，什么代码规范，git flow，框架的使用等等，我基本都了解。但是又重新复习了并精进了一下。毕竟之前看时候只是看了几眼，大体明白了内容。正好趁着这次实习，运用一下，看看自己理解的哪里有问题。</li>
-</ul>
-</li>
-<li>交际层面<ul>
-<li>首先我是一个慢热的，也就是说我不是很擅长去找别人交流，但是别人来找我交流，我是很乐意的。所以说，我当初进入公司之前的幻想，就是大家都在交流着各种新技术，新框架，新事物，当一个人抛出问题的时候，大家会一起去解决研究。结果进来之后，我发现，好像群里半天都不会有任何消息。于是我就努力去带动气氛，有什么好玩的东东都尝试发到群里，结果还是很难带起氛围。不知道是大家太忙了，还是我发的信息太简单。</li>
-<li>还记得在学校的时候，社团的技术群，可能一个人发现了新东西，于是群里的大佬一起去尝试，评论，总结。和群里的人撕逼那个语言好，撕逼什么框架好用。我们只追求方便好用，并不怎么在乎稳定性这种东西。哎，这种感觉好难在找回来了。不知道头哥能不能看到我写的，我不知道头哥你想的团队是不是我想的那样，但是感觉大家仅仅为了业务而工作，死气沉沉，不觉得失去了乐趣么？</li>
-<li>再讲讲开源的东东，我不知道用我们大学生的思维来思考对不对。至少我会很讨厌所有的公司沉淀出来的产品，比如说阿里的 egg。怎么解释呢？你可以理解假设公司内部的开发版本按照 master 的一条线进行，如果开源了，我就从 master checkout 一个新的分支，然后做一些开源的修改。我为什么不喜欢这种呢？因为这种所有的功能的设计实现就是严重依赖业务的，他只能做到的是在这个业务的情况下尽可能去兼容其他的业务格式而抽离出来的核心。而我真正想要的是什么呢？是社区驱动，一个产品可以由一个公司来开发，但是设计一定还给社区。而且我也不喜欢所谓的二次封装的框架，二次封装的框架我建议内部使用，而不是开源。除非你的二次封装能够提供很多功能。</li>
-</ul>
-</li>
-<li>反正总的来讲，我感觉从知识层面，我获取的很少，没获取到太多新的概念/知识。但是实践层面我获取的还是挺多的。不知道这是不是以后工作的常态。</li>
-</ul>
-<h2 id="大学"><a href="#大学" class="headerlink" title="大学"></a>大学</h2><p>这一年其实大学生活没有太多的东西，主要是在实习当中度过的。</p>
-<p>正是因为如此，我也越发怀念当初的学习生活。回头看看学弟当中的大佬，不由自主的感叹自己好像虚度了大学生活。</p>
-<p>不顾了，下学期就准备毕业设计了，希望自己能珍惜最后的时光吧。</p>
-<h2 id="2018-展望"><a href="#2018-展望" class="headerlink" title="2018 展望"></a>2018 展望</h2><p>看过了死月的总结，我发现其实有一点挺好的，一年给自己定一些目标，来年看看目标有没有实现。</p>
-<p>那我也来展望一下好了：</p>
-<ul>
-<li>学习<ul>
-<li>争取研读 Node 源码，至少要把死月那本书给啃完</li>
-<li>争取 Github 每周都有贡献，希望能长久的维护一个项目</li>
-<li>争取写一些有意思，有难度的代码，比如说《如何写出一个 Babel》</li>
-<li>坚持写文章吧（这个有点难），至少保证每两周一篇高质量的</li>
-<li>了解一些其他方面的内容，下一年总结一下了解了啥。</li>
-</ul>
-</li>
-<li>坚持锻炼身体，把体重控制在 65 以下，争取练出胸肌（其实我有，只不过有点萎缩了）腹肌二头肌（当然，这些都练出来之后我就不限制体重了）。</li>
-<li>争取学会做几个菜（当然指的是在实习期间了），暂时只考虑用电饭煲来做。</li>
-<li>Minecraft 开新坑，等 1.13 发布~如果有小伙伴想入坑的请联系我，最好有正版，因为我是想单人开坑的。</li>
-<li>不知道为啥，自从实习之后，感觉有点思春。。。特别想找人聊聊非技术方面的事情。。没妹子陪，我都不想去电影院看电影了。。。所以，不求找女票，感觉自己现在还不是很适合去当男票，其实是找不到合适的，哈哈哈。只求可以找到有空可以出去看个电影，聊个天，而且臭味相投的妹子就好了。不过目测是完不成这个目标了。</li>
-<li>既然没有女票，那就多花一些时间在学习上。但是不要死学习，做程序员路上的书呆子。</li>
-<li>恶习<ul>
-<li>争取改掉拖沓的毛病，有任务赶紧去做，有事情提前安排</li>
-<li>争取每天刷牙洗脸（也就是让自己早起，哈哈哈）</li>
-</ul>
-</li>
-</ul>
-<p>先这么多吧，看看 2019 年，我完成了哪些。</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2018/02/16/summary-2018/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
