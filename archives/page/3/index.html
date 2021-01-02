@@ -270,6 +270,74 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/01/18/first-try-v2ray-and-bbr/">
+                            第一次尝试 V2ray 和 Bbr 用于翻墙（非教程）
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Wed Jan 18 2017 11:15:32 GMT+0800">
+	
+		    1月 18, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Linux/">Linux</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>​    2017年到了，我也放假了，正好在这个时间看到了一个叫做 v2ray 的代理软件，发现他非常符合我的需求，至少他有一下几个优点：</p>
+<ul>
+<li>支持多入多出，也就是可以同时监听多个接口，接收代理请求，然后通过多个输出端口进行代理。</li>
+<li>既然支持多入多出，不支持多协议怎么可以呢？他支持 ss，socks，vmess 等协议</li>
+<li>用 golang 写得，效率不会太低（我是说在相同算法和功能上，不是指他协议的加密传输算法）</li>
+<li>社区比较活跃，我喜欢</li>
+</ul>
+<p>鉴于上面的优点，我去研究了一下这个 v2ray，发现安装起来还是很简单的么。</p>
+<p>具体安装方式，请参考 <a href="https://www.v2ray.com/chapter_01/install.html" target="_blank" rel="noopener">v2ray install</a> ，配置什么的我就不多说什么了，官网上面讲的很清楚。如果有什么问题，欢迎提交 issue 或者进入 telegram group 讨论，作者在里面还是很积极的。</p>
+<p>不过现在 v2ray 总体来说对新手还不是很友好，期待以后的改进。而且暂时还没有 gui 管理界面，期待作者的添加。</p>
+<p>说完了 v2ray，就不得不说 v2ray 相关的 tcp-bbr，谷歌大大提交的 tcp 拥塞解决算法，现在已经合并到 linux4.9 内核当中，听说对于高延迟长连接的线路有很大的优化作用，那么对于翻墙来说，这可是神器，怎么能不使用一下呢。</p>
+<p>关于 bbr 的介绍，可以看这篇<a href="https://www.zhihu.com/question/53559433" target="_blank" rel="noopener">知乎的文章</a></p>
+<p>那么我就在我的 linode 服务器上开启一下，不过需要注意的是，不要使用 linode dashboard 中的 linux4.9 内核，因为那个内核是被 linode 修改过的，会无法开启 bbr，我们需要手动安装 linux4.9 内核。</p>
+<p><a href="https://blog.linuxeye.com/452.html" target="_blank" rel="noopener">安装教程</a></p>
+<p>是不是很期待呀，下面就是测试</p>
+<p>未开启 bbr</p>
+<img src="/2017/01/18/first-try-v2ray-and-bbr/without_bbr.png">
+<p>开启 bbr</p>
+<img src="/2017/01/18/first-try-v2ray-and-bbr/bbr.png">
+<p>可能由于家里的带宽的原因，提升速度太不明显了2333，等以后有空回学校重新测试一下。</p>
+<p>不过我不能确定是不是我的服务器网络质量太好了，导致加速不明显 2333</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/01/18/first-try-v2ray-and-bbr/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/03/06/the-first-ddns-for-gitlab/">
                             使用 DDNS 将 Gitlab 暴露到公网中的第一次尝试
                         </a>
@@ -1112,67 +1180,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2015/08/28/Mac-是否区分大小写/">
-                            Mac 是否区分大小写
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Aug 28 2015 13:18:18 GMT+0800">
-	
-		    8月 28, 2015
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Mac/">Mac</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#真的是区分大小写么？"><span class="toc-text">真的是区分大小写么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#我想要区分大小写怎么办？"><span class="toc-text">我想要区分大小写怎么办？</span></a></li></ol>
-<h3 id="真的是区分大小写么？"><a href="#真的是区分大小写么？" class="headerlink" title="真的是区分大小写么？"></a>真的是区分大小写么？</h3><p>熟悉过Linux的同学一定知道，在Linux中，文件是区分大小写的。<br>而对于相同祖先的Mac OS来说，应该也是如此。大家想当然的认为是这样的。</p>
-<p>可是，事实却不是这样的。</p>
-<p>在Mac OS中，默认是不区分大小写的。<br>这个大家可以进行如下的实验</p>
-<pre><code>$ echo a &gt; a
-$ echo A &gt; A
-$ ls
-</code></pre><p>大家可以看一下结果，是不是</p>
-<pre><code>a
-</code></pre><p>这样的么？</p>
-<p>说明Mac OS确实是不区分大小写的。</p>
-<h3 id="我想要区分大小写怎么办？"><a href="#我想要区分大小写怎么办？" class="headerlink" title="我想要区分大小写怎么办？"></a>我想要区分大小写怎么办？</h3><p>前面我说过了，默认是不区分，但是我们可以更改文件分区来区分大小写。</p>
-<p><img src="mac-partition.jpg" alt="Mac 分区"><br><em>我是用的我的一个移动硬盘来看的分区，所以会在window的格式上有对勾，请不要在意😂</em></p>
-<p>如图，默认是<strong>日志式</strong>，你可以选择<strong>区分大小写，日志式</strong>就可以了</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2015/08/28/Mac-是否区分大小写/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1203,7 +1210,7 @@ $ ls
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2020 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2021 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
