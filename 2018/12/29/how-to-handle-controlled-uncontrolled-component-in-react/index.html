@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>可控组件？不可控组件？让我们来讨论一下下~ - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="前言：本人入职之后算是第一次真正去写 React，发现了 React 的组件系统和其他框架的组件系统有些许的不同，这也触发了我对其中组件的可控性的一些思考和总结。  可控组件？不可控组件？自从前端有了组件系统之后，有一个很常见但是却又被大家忽视的概念，就是可控组件（Controlled Component）和不可控组件（Uncontrolled Component）。 什么是可控和不可控？官方">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="可控组件？不可控组件？让我们来讨论一下下~">
+<meta property="og:url" content="https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="前言：本人入职之后算是第一次真正去写 React，发现了 React 的组件系统和其他框架的组件系统有些许的不同，这也触发了我对其中组件的可控性的一些思考和总结。  可控组件？不可控组件？自从前端有了组件系统之后，有一个很常见但是却又被大家忽视的概念，就是可控组件（Controlled Component）和不可控组件（Uncontrolled Component）。 什么是可控和不可控？官方">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/handle-controlled.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/independence.jpg">
+<meta property="article:published_time" content="2018-12-29T02:48:57.000Z">
+<meta property="article:modified_time" content="2023-09-16T15:48:05.168Z">
+<meta property="article:author" content="XGHeaven">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="Component">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/handle-controlled.jpg">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            可控组件？不可控组件？让我们来讨论一下下~
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Sat Dec 29 2018 10:48:57 GMT+0800">
+	
+		    12月 29, 2018
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/React/">React</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E6%8E%A7%E7%BB%84%E4%BB%B6%EF%BC%9F%E4%B8%8D%E5%8F%AF%E6%8E%A7%E7%BB%84%E4%BB%B6%EF%BC%9F"><span class="toc-text">可控组件？不可控组件？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E6%8E%A7%E5%92%8C%E4%B8%8D%E5%8F%AF%E6%8E%A7%EF%BC%9F"><span class="toc-text">什么是可控和不可控？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E5%95%A5%E8%A6%81%E5%8C%BA%E5%88%86%E5%91%A2%EF%BC%9F"><span class="toc-text">为啥要区分呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#value-defaultValue-onChange"><span class="toc-text">value? defaultValue? onChange?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#propName-in-this-props%EF%BC%9F"><span class="toc-text">propName in this.props？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Independence"><span class="toc-text">Independence</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%EF%BC%9F"><span class="toc-text">如何使用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol>
+<blockquote>
+<p><strong>前言</strong>：本人入职之后算是第一次真正去写 React，发现了 React 的组件系统和其他框架的组件系统有些许的不同，这也触发了我对其中组件的可控性的一些思考和总结。</p>
+</blockquote>
+<h1 id="可控组件？不可控组件？"><a href="#可控组件？不可控组件？" class="headerlink" title="可控组件？不可控组件？"></a>可控组件？不可控组件？</h1><p>自从前端有了组件系统之后，有一个很常见但是却又被大家忽视的概念，就是可控组件（Controlled Component）和不可控组件（Uncontrolled Component）。</p>
+<h3 id="什么是可控和不可控？"><a href="#什么是可控和不可控？" class="headerlink" title="什么是可控和不可控？"></a>什么是可控和不可控？</h3><p>官方详细讲解了什么事可控和不可控组件，虽然只是针对 <code>input</code> 组件的 <code>value</code> 属性来讲的。但是对于很多第三方组件库来讲，一个组件不止有一个数据属于可控。比如 Ant Design 的 <code>Select</code> 组件，<code>value</code> 和 <code>open</code> 都属于可控的数据，如果你让 value 可控 open 不可控，那这到底是可控组件还是不可控组件呢？</p>
+<p>所以从广义来讲使用可控/不可控组件其实不是很恰当，这里使用<strong>可控数据</strong>与<strong>不可控数据</strong>更加合理一点。一个组件可能可能同时有可控的数据和不可控的数据。</p>
+<p><strong>可控数据</strong>是指组件的<strong>数据</strong>被使用者所控制。<strong>不可控数据</strong>是指组件的<strong>数据</strong>不由使用者来控制而是由组件内部控制。</p>
+<p>之所以会有可控和不可控，主要是跟人奇怪的心理有关。如果把框架比作一个公司，组件比作人，组件之间的关系比作上下级。那么上级对下级的期望就是你既能自己做好分内的事情，也可以随时听从我的命令。这本身就是一件矛盾的事情，一边撒手不管，一边又想全权掌控。遇到这样的上级，下级肯定会疯了吧。</p>
+<h3 id="为啥要区分呢？"><a href="#为啥要区分呢？" class="headerlink" title="为啥要区分呢？"></a>为啥要区分呢？</h3><p>在 Vue 中，其实都忽视了这两者的区别，我们来看下面这个例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input/&gt;</span><br></pre></td></tr></table></figure>
+<p>上面是一个最简单 Input 组件，我们来思考一下如下几种使用场景：</p>
+<ul>
+<li><p>如果我只关心最后的结果，也就是输入的值，中间的过程不关心，最简单的方式是用 <code>v-model</code> 或者自己在 <code>change</code> 事件里面获取值并保存下来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;input v-model=&quot;value&quot;/&gt;</span><br><span class="line">&lt;!-- OR --&gt;</span><br><span class="line">&lt;input @change=&quot;change&quot;/&gt;</span><br></pre></td></tr></table></figure>
+<p>这种场景是非常普遍，Vue 可以很好的完成，结果也符合人们的预期。</p>
+</li>
+<li><p>如果我也只是关心结果，但是想要一个初始值。<br>也很简单，通过 value 传入一个静态字符串不就好了，或者传入一个变量，因为 Vue 的 props 是单向的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;input v-model=&quot;value&quot;/&gt; &lt;!-- value 有初始值 --&gt;</span><br><span class="line">&lt;input value=&quot;init string&quot; @change=&quot;change&quot;/&gt;</span><br><span class="line">&lt;input :value=&quot;initValue&quot; @change=&quot;change&quot;/&gt;</span><br></pre></td></tr></table></figure>
+<p>其中第三个方案并不是非常正确的方式，如果 <code>initValue</code> 在用户输入期间发生了更新，那么他将覆盖用户的数据，且不会触发 <code>change</code> 事件。</p>
+</li>
+<li><p>我不仅仅关心结果，还关心过程，我需要对过程进行控制。比如说把输入的字符串全部大小写，或者锁定某些字符串。<br>熟练的工程师肯定可以写出下面的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;input v-model=&quot;value&quot;/&gt; &lt;!-- watch &quot;value&quot;，做修改 --&gt;</span><br><span class="line">&lt;input :value=&quot;value&quot; @change=&quot;change&quot;/&gt; &lt;!-- 在 change 中修改数据 --&gt;</span><br></pre></td></tr></table></figure>
+<p>但是这会有问题：</p>
+<ol>
+<li>数据的修改都是在渲染 dom 之后，也就是说你不管怎么处理，都会出现输入的抖动。</li>
+<li>如果通过第二种方法，恰巧你做的工作是限制字符串长度，那么你这样写 <code>change(e) {this.value = e.target.slice(0, 10)}</code> 函数会发现没有效果。这是因为当超过 10 字符之后，value 的值长度一直是 10，vue 没有检测到 value 的变化，从而不会更新 input.value。</li>
+</ol>
+</li>
+</ul>
+<p>出现这个问题最关键的是因为没有很好的区分可控组件和不可控组件，我们来回顾一下上面的某一段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input :value=&quot;value&quot; @change=&quot;change&quot;/&gt;</span><br></pre></td></tr></table></figure>
+<p>你能从这块代码能看出来使用这个组件的用户的意图是什么呢？他是想可控的使用组件还是说只是想设置一个初始值？你无法得知。我们人类都无法得知，那么代码层面就不可能得知的了。所以 vue 对这一块的处理其实是睁一只眼闭一只眼。用户用起来方便，</p>
+<p>用一个例子来简单描述一下：上级让你去做一项任务，你询问了上级关于这些任务的信息（props），然后你就开始（初始化组件）工作了，并且你隔一段时间就会向上级汇报你的工作进度（onChange），上级根据你反馈的进度，合理安排其他的事情。看起来一切都很完美。但是有的上级会有比较强的控制欲，当你提交了你的工作进度之后，他还会瞎改你的工作，然后告诉你，按照我的继续做。然后下级就懵逼，当初没说好我要接受你的修改的呀（value props），我这里也有一份工作进度呀（component state），我应该用我自己的还是你的？</p>
+<p>对于人来说，如何处理上级的要求（props）和自身工作（state）是一个人情商的表现，这个逻辑很符合普通人的想法，但是对于计算机来说，它没有情商也无法判断究竟应该听谁的。为了克服这个问题，你需要多很多的判断和处理才可以，而且对于一些不变的值，你需要先清空再 nextTick 之后赋值才可以出发组件内部的更新。</p>
+<p>最近入职之后，公司用到了 React，我才真正的对这个有所理解。</p>
+<h3 id="value-defaultValue-onChange"><a href="#value-defaultValue-onChange" class="headerlink" title="value? defaultValue? onChange?"></a>value? defaultValue? onChange?</h3><blockquote>
+<p>如果对 React 可控组件和不可控组件有了解了可以跳过这块内容了。</p>
+</blockquote>
+<p>让我们来看一下 React 如何处理这个的？我们还是拿上面的那三种情况来说：</p>
+<ul>
+<li><p>如果我只关心最后的结果，也就是输入的值，中间的过程不关心</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input onChange=&#123;onChange&#125;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果我也只是关心结果，但是想要一个初始值</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;input defaultValue=<span class="string">"init value"</span> onChange=&#123;onChange&#125;/&gt;</span><br><span class="line">&lt;input defaultValue=&#123;initValue&#125; onChange=&#123;onChange&#125;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>我不仅仅关心结果，还关心过程，我需要对过程进行控制</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;input value=&#123;value&#125; onChange=&#123;onChange&#125;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当看完了这段你会很清楚的知道什么样的结构是可控，什么结构是不可控：</p>
+<ul>
+<li>如果有 <code>value</code> 那么就属于可控数据，永远使用 <code>value</code> 的值</li>
+<li>否则属于不可控数据，由组件使用内部 <code>value</code> 的值，并且通过 <code>defaultValue</code> 设置默认值</li>
+</ul>
+<p>不论什么情况修改都会触发 <code>onChange</code> 事件。</p>
+<p>React 对可控和不可控的区分其实对于计算机来说是非常合理的，而且也会让整个流程变的非常清晰。当然，不仅仅只有这一种设置的方式，你可以按照一定的规则也同样可以区分，但是<strong>保证可控和不可控之间清晰的界限是一个好的设计所必须要满足的</strong>。</p>
+<h3 id="propName-in-this-props？"><a href="#propName-in-this-props？" class="headerlink" title="propName in this.props？"></a><code>propName</code> in this.props？</h3><p>了解上面的概念之后，我们进入到实战环节，我们怎么从代码的层面来判断当前组件是可控还是不可控呢？</p>
+<p>根据上面的判断逻辑来讲：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> isControlled1 = <span class="string">'value'</span> <span class="keyword">in</span> <span class="keyword">this</span>.props <span class="comment">// approval 1</span></span><br><span class="line"><span class="keyword">const</span> isControlled2 = !!<span class="keyword">this</span>.props.value <span class="comment">// approval 2</span></span><br><span class="line"><span class="keyword">const</span> isControlled3 = <span class="string">'value'</span> <span class="keyword">in</span> <span class="keyword">this</span>.props &amp;&amp; <span class="keyword">this</span>.props.value !== <span class="literal">null</span> &amp;&amp; <span class="keyword">this</span>.props.value !== <span class="literal">undefined</span> <span class="comment">// approval 3</span></span><br></pre></td></tr></table></figure>
+<p>我们来观察上面几个判断的方式，分别对应一下下面几个模板（针对第三方组件）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;Input value=&#123;inputValue&#125; /&gt; <span class="comment">// element 1，期望可控</span></span><br><span class="line">&lt;Input value=<span class="string">""</span> /&gt; <span class="comment">// element 2，期望可控</span></span><br><span class="line">&lt;Input /&gt; <span class="comment">// element 3，期望不可控</span></span><br><span class="line">&lt;Input value=&#123;<span class="literal">null</span>&#125; /&gt; <span class="comment">// element 4，期望？？？</span></span><br></pre></td></tr></table></figure>
+<p>可以得到如下表格</p>
+<table>
+<thead>
+<tr>
+<th>是否可控</th>
+<th style="text-align:center">approval 1</th>
+<th style="text-align:center">approval 2</th>
+<th style="text-align:center">approval 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>element1</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>true</code></td>
+</tr>
+<tr>
+<td>element2</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>true</code></td>
+</tr>
+<tr>
+<td>element3</td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+</tr>
+<tr>
+<td>element4</td>
+<td style="text-align:center"><code>true</code></td>
+<td style="text-align:center"><code>false</code></td>
+<td style="text-align:center"><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<p>大家第一眼就应该能看出来方法二其实是不正确的，他无法很好的区分这两种状态，所以直接 pass 掉。</p>
+<p>眼尖的同学也会发现为什么 element 4 的期望没有填写呢？这是因为有一条官方的规则没有讲，这条规则是这样的：<strong>当设置了 <code>value</code> 属性之后，组件就变成了可控组件，会阻止用户修改 input 的内容。但是如果你想在设置了 <code>value</code>  prop 的同时还想让用户可以编辑的话，只可以通过设置 <code>value</code> 为 <code>undefined</code> 或 <code>null</code>。</strong></p>
+<p>在官方的这种规则下面，element 4 期望是不可控组件，也就是说 approval 3 是完全符合官方的定义的。但是这样会导致可控和不可控之间的界限有些模糊。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Input value=&#123;inputValue&#125; /&gt;</span><br><span class="line"><span class="comment">// 如果 inputValue 是 string，组件是什么状态？如果是 null 又是什么状态？</span></span><br></pre></td></tr></table></figure>
+<p>所以这里其实我推荐使用 approval 1 的方式，这也是 antd 所采用的。虽然不符合官方的定义，但是我觉得符合人们使用组件的一种直觉。<small>第六感，=逃=</small></p>
+<h3 id="Independence"><a href="#Independence" class="headerlink" title="Independence"></a>Independence</h3><p>有了判断的方法，那么我们可以画出一个简单的流程图（Input 组件为例）：</p>
+<img src="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/handle-controlled.jpg">
+<p>图片有点复杂，简单来讲就是每一次需要获取可控数据或者更新可控数据的时候，都需要检测一下当前组件的状态，并根据状态选择是从 props 中获取数据还是从 state 中获取数据已经更新的时候调用的是那个函数等等。图中有一些箭头的方向不是很正确，而且部分细节未画出，大家见谅。</p>
+<p>如果只是添加这一个可控的属性 <code>value</code> ，这样写未尝不可，但是如果我们要同时考虑很多属性呢？比如说 Antd Select 组件就同时有 <code>value</code> 和 <code>open</code> 两个可控属性，那么整个代码量是以线性方式增长的。这很明显是无法接受的。</p>
+<p>于是这里我引入了 Independence 装饰器来做这件事情。架构如下：</p>
+<img src="/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/independence.jpg">
+<p>我们可以这么理解，一个支持可控和不可控的组件本质上可以拆分成内部一个展示型的无状态受控的组件和外面的包装组件，通过包装（也就是高阶组件的方式）让内部受控组件支持不可控。</p>
+<p>这样写其实有如下几个好处：</p>
+<ol>
+<li>组件逻辑复杂度降低，只需要将组件的受控情况</li>
+<li>可以将任意受控组件包装成不受控组件，尤其是对第三方组件的封装上</li>
+<li>组件复杂度降低，代码冗余变少</li>
+<li>非常方便的添加和删除受控属性，只需要修改装饰器即可</li>
+</ol>
+<h3 id="如何使用？"><a href="#如何使用？" class="headerlink" title="如何使用？"></a>如何使用？</h3><p>目前我简单实现了 Independence 装饰器，代码在网易猛犸开源的组件库 <a href="https://github.com/Mammut-FE/bdms-ui" target="_blank" rel="noopener">bdms-ui</a>（建设中，组件不全、文档不全、时间不够，敬请期待）中，<a href="https://github.com/Mammut-FE/bdms-ui/blob/master/src/lib/independence.tsx" target="_blank" rel="noopener">代码在此</a>。</p>
+<p>他遵循这样的规范：<strong>假如属性名称为 <code>value</code>，那么默认值为 <code>defaultValue</code>，change 事件为 <code>onValueChange</code></strong>。支持通过 <code>onChangeName</code> 修改 change 事件名称，通过 <code>defaultName</code> 修改默认值名称。</p>
+<p>另外最简单的使用方式就是通过装饰器了，拿 <code>Select</code> 组件举例。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Independence(&#123;</span><br><span class="line">    value: &#123;</span><br><span class="line">        onChangeName: <span class="string">'onChange'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    open: &#123;&#125; <span class="comment">// 使用默认值</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Select</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="comment">// blahblah，你就可以当受控组件来编写了</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从此编写可控和不可控的数据从未如此简单。另外 Independence 还实现了 forward ref 的功能。</p>
+<p>不过现在功能还比较薄弱，需要经过时间的检验，等完备之后可以封装成一个库。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本文简单讲解了一下什么是可控和不可控，以及提出了一个 React 的解决方案。</p>
+<p>这些只是基于我的经验的总结，欢迎大家积极交流。</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Component/" rel="tag">Component</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/React/" rel="tag">React</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/12/257-days-in-netease/"  data-tooltip="一个 18 届前端校招生在网易的 257 天">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/12/26/react-hook-with-parcel-to-build-truth-or-dare/" data-tooltip="尝鲜用 React Hook + Parcel 构建真心话大冒险简单页面">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/12/257-days-in-netease/"  data-tooltip="一个 18 届前端校招生在网易的 257 天">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/12/26/react-hook-with-parcel-to-build-truth-or-dare/" data-tooltip="尝鲜用 React Hook + Parcel 构建真心话大冒险简单页面">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'https://blog.xgheaven.com/2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/';
+                 
+                    this.page.identifier = '2018/12/29/how-to-handle-controlled-uncontrolled-component-in-react/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xgheaven-blog';
+                s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

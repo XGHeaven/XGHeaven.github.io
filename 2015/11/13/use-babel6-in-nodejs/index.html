@@ -1,0 +1,635 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>Use ES6 With Babel6 in Nodejs - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="什么是Babel相信很多新手没有听说过Babel和ES6，如果你是老手的话，那么请自动忽略~ ES6ES6也就是ECMAScript 6，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~ Babel然而虽然ES6很棒，但是现在几乎没有浏览器或者Node（我记得5.0已经全部支持了es6，可是为啥我试着却不行。。。似乎要开启全部的">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Use ES6 With Babel6 in Nodejs">
+<meta property="og:url" content="https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="什么是Babel相信很多新手没有听说过Babel和ES6，如果你是老手的话，那么请自动忽略~ ES6ES6也就是ECMAScript 6，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~ Babel然而虽然ES6很棒，但是现在几乎没有浏览器或者Node（我记得5.0已经全部支持了es6，可是为啥我试着却不行。。。似乎要开启全部的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/install-babel6.gif">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/install-es2015.gif">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/run-it.gif">
+<meta property="article:published_time" content="2015-11-13T07:49:56.000Z">
+<meta property="article:modified_time" content="2023-09-16T15:48:05.143Z">
+<meta property="article:author" content="XGHeaven">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="ECMAScript 6">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/install-babel6.gif">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Use ES6 With Babel6 in Nodejs
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Fri Nov 13 2015 15:49:56 GMT+0800">
+	
+		    11月 13, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFBabel"><span class="toc-text">什么是Babel</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ES6"><span class="toc-text">ES6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Babel"><span class="toc-text">Babel</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#babel5-%E5%92%8C-babel6-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">babel5 和 babel6 的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Quick-Start"><span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E7%A9%BA%E6%96%87%E4%BB%B6%E5%A4%B9-babel6"><span class="toc-text">建立空文件夹 babel6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Babel6"><span class="toc-text">安装Babel6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#require-hook"><span class="toc-text">require hook</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-text">安装插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%A6%E5%86%99%E4%BC%98%E9%9B%85%E7%9A%84ES6%E4%BB%A3%E7%A0%81"><span class="toc-text">书写优雅的ES6代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Run-it"><span class="toc-text">Run it</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E5%AE%B9%E8%A7%A3%E9%87%8A"><span class="toc-text">内容解释</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#babelrc"><span class="toc-text">.babelrc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%9Cpresets%E2%80%9D"><span class="toc-text">“presets”</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#require-hook-1"><span class="toc-text">require hook</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CLI"><span class="toc-text">CLI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#babel"><span class="toc-text">babel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#babel-node"><span class="toc-text">babel-node</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#babel-doctor"><span class="toc-text">babel-doctor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#babel-external-helpers"><span class="toc-text">babel-external-helpers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0"><span class="toc-text">更新</span></a></li></ol>
+<h1 id="什么是Babel"><a href="#什么是Babel" class="headerlink" title="什么是Babel"></a>什么是<code>Babel</code></h1><p>相信很多新手没有听说过<code>Babel</code>和<code>ES6</code>，如果你是老手的话，那么请自动忽略~</p>
+<h2 id="ES6"><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h2><p><code>ES6</code>也就是<code>ECMAScript 6</code>，也就是最新的一代js规范，添加了很多语言的特性，包括模块管理，类，块级作用域等等内容。我最喜欢的就是箭头函数，优雅~</p>
+<h2 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h2><p>然而虽然<code>ES6</code>很棒，但是现在几乎没有浏览器或者Node（我记得5.0已经全部支持了es6，可是为啥我试着却不行。。。似乎要开启全部的harmony）能够完全支持es6的代码，那么问题来了，如果我想体验一下es6的代码，怎么办？？</p>
+<p>一个很简单的思路便是：</p>
+<blockquote>
+<p>我写个程序，将es6代码转换成es5代码进行运行不就好了，很棒  </p>
+</blockquote>
+<p>而<code>Babel</code>就是干的这个事情。</p>
+<h1 id="babel5-和-babel6-的区别"><a href="#babel5-和-babel6-的区别" class="headerlink" title="babel5 和 babel6 的区别"></a>babel5 和 babel6 的区别</h1><p>对于<code>Babel</code>来说，现在有了两个版本，一个是5，一个是6，那么两者有什么区别呢？</p>
+<ul>
+<li>5对新手更加友好，因为只需要安装一个<code>babel</code>就可以了，而6需要安装比较多的东西和插件才可以。</li>
+<li>相比5来说，6将命令行工具和API分开来了，最直观的感觉就是，当你想在代码中运行es6代码的话，需要安装<code>babel-core</code>，而如果你想在终端编译es6或者是运行es6版本的REPL的话，需要安装<code>babel-cli</code></li>
+<li>也许有人问，原先的<code>babel</code>去哪了？是这样的，这个<code>babel</code>的package到了6版本之后虽然还是能安装，但是已经不具有任何的有效的代码了。取而代之的是一段提示文字，提示你需要安装<code>babel-core</code>或者<code>babel-cli</code>。所以你在babel6的情况下，完全不需要安装<code>babel</code></li>
+<li>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require hook的话，你回发现代码无法运行：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require(&apos;babel-core/register&apos;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>就是因为babel6整体插件化了，如果你想使用es6语法，需要手动加载相关插件。</p>
+<p>这里有一篇文章，建议看一下<a href="http://jamesknelson.com/the-six-things-you-need-to-know-about-babel-6/" target="_blank" rel="noopener">《The Six Things You Need To Know About Babel 6》</a></p>
+<hr>
+<h1 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h1><h2 id="建立空文件夹-babel6"><a href="#建立空文件夹-babel6" class="headerlink" title="建立空文件夹 babel6"></a>建立空文件夹 babel6</h2><p>建立空文件夹babel6作为本次的目录，并<code>npm init</code></p>
+<h2 id="安装Babel6"><a href="#安装Babel6" class="headerlink" title="安装Babel6"></a>安装<code>Babel6</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-core --save</span><br></pre></td></tr></table></figure>
+<p>如果觉得慢，可以使用淘宝镜像<code>cnpm</code>。<br>此时，基础的babel6就安装完成了，如果你想安装babel5，那么执行如下的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 --save</span><br></pre></td></tr></table></figure>
+<p>即可使用babel5，那么在后文的中，统一使用babel6</p>
+<p><img src="install-babel6.gif" alt="安装babel6"></p>
+<h2 id="require-hook"><a href="#require-hook" class="headerlink" title="require hook"></a>require hook</h2><p>安装好之后，问题来了，如何使用呢？</p>
+<p>相信使用过<code>coffee</code>的人一定知道<code>register</code>，那么在babel中同样不例外，也可以使用同样的方法。</p>
+<figure class="highlight plain"><figcaption><span>start.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require(&apos;babel-core/register&apos;);</span><br><span class="line"></span><br><span class="line">require(&apos;./app&apos;);</span><br></pre></td></tr></table></figure>
+<p>大家可能以为这样我就可以在<code>app.js</code>中优雅的使用es6了，在babel5中确实是这样的，但是在babel6中，却不一样了。</p>
+<p>如果你这样写完，并没有任何作用，因为你缺少一个插件。</p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>如果想使用<code>es6</code>语法，必须安装一个插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-preset-es2015</span><br></pre></td></tr></table></figure></p>
+<p>然后在文件夹下面创建一个叫<code>.babelrc</code>的文件，并写入如下代码：<br><figure class="highlight plain"><figcaption><span>.babelrc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;presets&quot;: [&quot;es2015&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面你就可以很优雅的书写你的es6代码了。<br><img src="install-es2015.gif" alt="安装es2015插件"></p>
+<h2 id="书写优雅的ES6代码"><a href="#书写优雅的ES6代码" class="headerlink" title="书写优雅的ES6代码"></a>书写优雅的<code>ES6</code>代码</h2><p>下面我们写一段优雅的代码</p>
+<figure class="highlight plain"><figcaption><span>app.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let first = (size, ...args) =&gt; [...args].slice(0, size);</span><br><span class="line"></span><br><span class="line">export default first;</span><br><span class="line"></span><br><span class="line">console.log(first(2,1,2,3));</span><br></pre></td></tr></table></figure>
+<h2 id="Run-it"><a href="#Run-it" class="headerlink" title="Run it"></a>Run it</h2><p>直接运行，不说话~~~<br><img src="run-it.gif" alt="Run it"></p>
+<hr>
+<h1 id="内容解释"><a href="#内容解释" class="headerlink" title="内容解释"></a>内容解释</h1><h2 id="babelrc"><a href="#babelrc" class="headerlink" title=".babelrc"></a>.babelrc</h2><p>什么是<code>.babelrc</code>文件呢？熟悉linux的同学一定知道，rc结尾的文件通常代表运行时自动加载的文件，配置等等的，类似bashrc,zshrc。同样babelrc在这里也是有同样的作用的，而且在babel6中，这个文件必不可少。</p>
+<ul>
+<li>里面可以对babel命令进行配置，以后在使用babel的cli的时候，可以少写一些配置</li>
+<li>还有一个<code>env</code>字段，可以对<code>BABEL_ENV</code>或者<code>NODE_ENV</code>指定的不同的环境变量，进行不同的编译操作</li>
+</ul>
+<h3 id="“presets”"><a href="#“presets”" class="headerlink" title="“presets”"></a>“presets”</h3><p>这个是babel6新加的，就是代表需要启动什么样的预设转码，在babel6中，预设了6种，分别是</p>
+<ul>
+<li>es2015</li>
+<li>stage-0</li>
+<li>stage-1</li>
+<li>stage-2</li>
+<li>stage-3</li>
+<li>react</li>
+</ul>
+<p>至于如何安装，请查看<a href="http://babeljs.io/docs/plugins/" target="_blank" rel="noopener">balel官网</a></p>
+<p>而且，对<code>.babelrc</code>的设置，你可以存放在package.json中的。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	&quot;babel&quot;: &#123;</span><br><span class="line">		&quot;presets&quot;: [&quot;es2015&quot;]</span><br><span class="line">	&#125;,</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="require-hook-1"><a href="#require-hook-1" class="headerlink" title="require hook"></a>require hook</h2><p>require hook 的作用就是替换原先的require，以便在加载自动对代码进行编译，运行。</p>
+<p>其实这个做的便是重写<code>require.extensions</code>中对应的扩展名的加载程序，并且默认会判断这个文件是否是<code>node_modules</code>中的模块，如果是的话，那么将不会进行转换。否则的话，会进行转换。</p>
+<h2 id="CLI"><a href="#CLI" class="headerlink" title="CLI"></a>CLI</h2><p>其实babel也可以当做全局变量来使用的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-cli -g</span><br></pre></td></tr></table></figure>
+<p>安装上后，会安装如下四个程序到全局环境中：</p>
+<ul>
+<li>babel</li>
+<li>babel-node</li>
+<li>babel-doctor</li>
+<li>babel-external-helpers</li>
+</ul>
+<h3 id="babel"><a href="#babel" class="headerlink" title="babel"></a>babel</h3><p>这个就是编译js文件的全局变量，具体如何使用，大家请参照官网。使用方法和coffee，style，less了类似，就不多讲了</p>
+<h3 id="babel-node"><a href="#babel-node" class="headerlink" title="babel-node"></a>babel-node</h3><p>这里主要说一下这个东西，就是这个的作用就是提供一个<code>node</code>命令相同的REPL环境，不过这个环境会在执行之前讲代码进行编译。</p>
+<blockquote>
+<p>坑1：上文讲到，babel6默认是无法编译es6文件的，需要你手动安装<code>es2015</code>的preset，同样，全局模式下，也需要这个preset。</p>
+</blockquote>
+<p>那么问题来了，我们怎么安装这个preset呢？global？所以这是一个坑，我在babel的<a href="https://github.com/babel/babel/issues/2816" target="_blank" rel="noopener">issue</a>中找到这样的一条。作者给出这样的回答：我们处理preset和plugin是依据于输入的文件，而你直接运行CLI是没有输入文件的，也就无法定位preset和plugin的位置。言下之意就是不要全局安装，虽然我们给你了你全局安装的方式。然后作者关闭了issue，表示很无奈。。。。</p>
+<blockquote>
+<p>解决方案1： 经过寻找，找到一种解决方案，就是创建一个空项目，安装<code>babel-preset-es2015</code>，并写入对应的配置进入<code>.babelrc</code>，然后在这个目录下运行<code>babel-node</code>即可正常运行</p>
+</blockquote>
+<p>不过这种方式太麻烦了，所以，如果大家想体验一下es6的REPL的话，建议安装babel5</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 -g</span><br></pre></td></tr></table></figure>
+<h3 id="babel-doctor"><a href="#babel-doctor" class="headerlink" title="babel-doctor"></a>babel-doctor</h3><p>就是检查babel状况的，<br>主要检查以下几个内容</p>
+<ul>
+<li>是否发现了<code>.babelrc</code>配置文件</li>
+<li>是否有重复的babel安装包，比如说安装了5和6</li>
+<li>所有的babel安装包是否已经升级到了最新版</li>
+<li>并且 npm &gt;= 3.3.0</li>
+</ul>
+<h3 id="babel-external-helpers"><a href="#babel-external-helpers" class="headerlink" title="babel-external-helpers"></a>babel-external-helpers</h3><p>就是讲一些公共的帮助函数提取成一个文件，其实就做了这一个作用。。。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这是我的第一篇关于es6的教程，如果大家有什么不好的地方，请及时想我反馈</p>
+<h1 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h1><p>2015-11-15 添加了CLI</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/ECMAScript-6/" rel="tag">ECMAScript 6</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Node-js/" rel="tag">Node.js</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/09/osx-save-dialog-without-favorites/"  data-tooltip="OSX 在保存对话框中没有收藏(Favorites)分类">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/13/About-Internet-In-College/" data-tooltip="关于大学生当中的互联网发展的感想">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2016/01/09/osx-save-dialog-without-favorites/"  data-tooltip="OSX 在保存对话框中没有收藏(Favorites)分类">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/11/13/About-Internet-In-College/" data-tooltip="关于大学生当中的互联网发展的感想">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'https://blog.xgheaven.com/2015/11/13/use-babel6-in-nodejs/';
+                 
+                    this.page.identifier = '2015/11/13/use-babel6-in-nodejs/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xgheaven-blog';
+                s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

@@ -1,0 +1,648 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>如何让你的 React 『变慢』？探析 Array Diff 的一些边角特性 - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="当你看到这个标题的时候，一定很好奇，React 不是很快么？为啥会变慢呢？在写这篇文章之前，我也是这么认为的，但是当我去看了一下 React 有关 Array 的 Diff 之后，我才认识到其实 React 如果你用的不正确，那么是会变慢的。 React Diff 算法React Diff 算法相信大家不是很陌生吧，这里就不具体展开讲了。不过有一点要补充下，Diff 算法针对的是整个 React">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="如何让你的 React 『变慢』？探析 Array Diff 的一些边角特性">
+<meta property="og:url" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="当你看到这个标题的时候，一定很好奇，React 不是很快么？为啥会变慢呢？在写这篇文章之前，我也是这么认为的，但是当我去看了一下 React 有关 Array 的 Diff 之后，我才认识到其实 React 如果你用的不正确，那么是会变慢的。 React Diff 算法React Diff 算法相信大家不是很陌生吧，这里就不具体展开讲了。不过有一点要补充下，Diff 算法针对的是整个 React">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/d859191a-15f6-4fa6-945f-7c895d22399c.png">
+<meta property="og:image" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/0a8fb847-d652-48bc-ae59-5dbd06ed1169.png">
+<meta property="article:published_time" content="2019-10-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-16T15:51:09.748Z">
+<meta property="article:author" content="XGHeaven">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="源码分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/d859191a-15f6-4fa6-945f-7c895d22399c.png">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+        <meta property="og:image" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/cover.jpeg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/cover.jpeg" />
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+        <div class="post-header-cover
+                    text-left
+                    "
+             style="background-image:url('/2019/10/07/make-your-react-to-slow/cover.jpeg');"
+             data-behavior="3">
+            
+                <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            如何让你的 React 『变慢』？探析 Array Diff 的一些边角特性
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Mon Oct 07 2019 00:00:00 GMT+0800">
+	
+		    10月 07, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Frontend/">Frontend</a>
+
+
+    
+</div>
+</div>
+            
+        </div>
+
+            <div id="main" data-behavior="3"
+                 class="hasCover
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p>当你看到这个标题的时候，一定很好奇，React 不是很快么？为啥会变慢呢？在写这篇文章之前，我也是这么认为的，但是当我去看了一下 React 有关 Array 的 Diff 之后，我才认识到其实 React 如果你用的不正确，那么是会变慢的。</p>
+<h2 id="React-Diff-算法"><a href="#React-Diff-算法" class="headerlink" title="React Diff 算法"></a>React Diff 算法</h2><p>React Diff 算法相信大家不是很陌生吧，这里就不具体展开讲了。不过有一点要补充下，Diff 算法针对的是整个 React 组件树，而不仅仅是 DOM 树，虽然这样性能会比较低一些，但是实现起来却很方便。</p>
+<p>而在 Diff 算法中，针对数组的 diff 其实是比较有意思的一个地方。在开始讲解方面，我希望你能对 React 有一定的了解和使用。</p>
+<h2 id="试一试有什么区别？"><a href="#试一试有什么区别？" class="headerlink" title="试一试有什么区别？"></a>试一试有什么区别？</h2><p>首先我们创建 3 个组件，分别渲染 10000 个 DOM 元素，从 <code>[1...10000]</code> ，渲染成如下。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> e10000 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">10000</span>).fill(<span class="number">0</span>).map(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i + <span class="number">1</span>)</span><br><span class="line">element10000.map(<span class="function"><span class="params">i</span> =&gt;</span> &lt;div key=&#123;<span class="string">`<span class="subst">$&#123;i&#125;</span>`</span>&#125;&gt;&#123;i&#125;&lt;<span class="regexp">/div&gt;)</span></span><br></pre></td></tr></table></figure>
+<p>每个组件有两个状态，会切换数据的顺序</p>
+<ul>
+<li><p>组件 A 在 <code>[1...10000]</code> 和 <code>[2,1,3...10000]</code> 之间切换。</p>
+</li>
+<li><p>组件 B 在 <code>[1...10000]</code> 和 <code>[10000,1...9999]</code> 之间切换</p>
+</li>
+<li><p>组件 C 在 <code>[1...10000]</code> 和 <code>[10000...1]</code> 之间切换，也就是正序和倒序之间切换。</p>
+</li>
+</ul>
+<p>我们简单命名下，默认的初始状态为 <code>S1</code> 而切换之后的状态为 <code>S2</code> 。大家可以思考一下，同一个组件状态切换的时候，所耗费的时间是不是都是一样的？可以直接使用这个 <a href="https://codesandbox.io/s/react-slow-array-diff-example-kw112?fontsize=14" target="_blank" rel="noopener">DEMO</a>。</p>
+<img src="/2019/10/07/make-your-react-to-slow/d859191a-15f6-4fa6-945f-7c895d22399c.png">
+<p>可以直接点击上方的 toggle 来切换两者之间的状态，并在控制台中查看渲染的时间。因为每次时间都不是绝对准确的，所以取了多次平均值，直接揭晓答案：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>S2 ⇒ S1</th>
+<th>S1 ⇒ S2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>102ms</td>
+<td>103ms</td>
+</tr>
+<tr>
+<td>B</td>
+<td>129ms</td>
+<td>546ms</td>
+</tr>
+<tr>
+<td>C</td>
+<td>556ms</td>
+<td>585ms</td>
+</tr>
+</tbody>
+</table>
+<p>有么有觉得很奇怪，为什么同样是 S1 ⇒ S2 ，同样是只改变了一个元素的位置，为什么 A 和 B 的时间差距有这么多的差距。这个具体原理就要从 Diff 算法开始讲起了。</p>
+<h2 id="Array-Diff-的原理"><a href="#Array-Diff-的原理" class="headerlink" title="Array Diff 的原理"></a>Array Diff 的原理</h2><p>在讲 React 的实现之前，我们先来抛开 React 的实现独立思考一下。但是如果直接从 React 的组件角度下手会比较麻烦，首先简化一下问题。</p>
+<p>存在两个数组 A 和 B，数组中每一个值必须要保证在对应数组内是唯一的，类型可以是字符串或者数字。那么这个问题就转变成了如何从数组 A 通过<strong>最少的</strong>变换<strong>步骤</strong>到数组 B。</p>
+<blockquote>
+<p>其实每个元素的值对应的就是 React 当中的 key。如果一个元素没有 key 的话，index 就是那个元素默认的 key。为什么要强调<strong>最少</strong>？因为我们希望的是能够用最少的步数完成，但是实际上这会造成计算量的加大，而 React 的实现并没有计算出最优解，而是一个较快解。</p>
+</blockquote>
+<p>顺便定义一下操作的类型有：<code>删除元素</code>，<code>插入元素</code>，<code>移动元素</code>。</p>
+<p>这里又要引申一个特殊点，React 充分利用了 DOM 的特性，在 DOM 操作中，你是可以不使用 index 来索引数据的。简单来讲，如果用数组表示，删除需要指定删除元素的索引，插入需要指定插入的位置，而移动元素需要指定从哪个索引移动到另一个索引。而利用 DOM，我们就可以简化这些操作，可以直接删除某个元素的实例，在某个元素前插入或者移动到这里（利用 <code>insertBefore</code> API，如果是要在添加或者移动到最后，可以利用 <code>append</code> ）。这样最大的好处是我们不需要记录下移动到的位置，只需要记录下那些元素移动了即可，而且这部分操作正好可以由 Fiber 来承担。</p>
+<p>举个例子说，从 <code>A=[1,2,3]</code> 变化到 <code>B=[2,3,4,1]</code>，那么只需要记录如下操作即可：</p>
+<img src="/2019/10/07/make-your-react-to-slow/0a8fb847-d652-48bc-ae59-5dbd06ed1169.png">
+<p>有人好奇，不需要记录移动插入到那个元素前面么？其实不需要的，这是因为你有了操作列表和 B 数组之后，就可以知道目标元素在哪里了。而且采用这种方式就根本不需要关心每次操作之后索引的变化。</p>
+<p>回到上面的简化后的问题，首先通过对比 A、B 数组，可以得到哪些元素是删除的，哪些元素是添加的，而不管采用什么样子的策略，添加删除元素的操作次数是无法减少的。因为你不能凭空产生或者消失一个元素。那么我们问题就可以再简化一下，把所有的添加删除的元素剔除后分别得到数组 A’ 和 B’，也就是 A’ 中不包含被删除的元素，B’ 中不包含被添加的元素，此时 A’ 和 B’ 的长度一定是一样长的。也就是求解出最少移动次数使得数组 A’ 能够转化成数组 B’。</p>
+<p>如果只是简单的求解一下最少移动步数的话，答案很简单，就是<strong>最长上升子序列（LIS，Longest Increasing Subsequence）</strong>。关于如何证明为什么是最长不下降子序列这个算法，可以通过简单的反证法得到。关于这个算法的内容我就不具体讲解了，有兴趣的可以自行 Google。在这里我们只需要知道这个算法的时间复杂度是 <code>O(n^2)</code> 。</p>
+<p>但是现在我们还无法直接应用这个算法，因为每个元素的类型可能是字符串或者数字，无法比较大小。定义数组 T 为 <strong>B’ 内元素在 A’ 的位置</strong>。举个例子，如果 <code>A&#39; = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</code> <code>B&#39; = [&#39;b&#39;, &#39;c&#39;, &#39;a&#39;]</code>，那么 <code>T = [2, 3, 1]</code>。本文约定位置是从 1 开始，索引从 0 开始。</p>
+<p>此时便可以对 T 求解 LIS，可以得到 <code>[2, 3]</code>，我们将剩下不在 LIS 中的元素标记为移动元素，在这里就是 <code>1</code>，最后补上被剔除的删除和插入的元素的操作动作。这样 Diff 算法就可以结束了。</p>
+<p>上面讲解的是一个<strong>个人认为</strong>完整的 Array Diff 算法，但是还是可以在保证正确性上继续优化。但是不管优化，这个复杂度对于 React 来讲还是偏高的，而如何<strong>平衡效率和最优解</strong>成为了最头疼的问题，好在 React 采用了一个混合算法，在牺牲掉一定正确性的前提下，将复杂度降低为 <code>O(n)</code>。下面我们来讲解下。</p>
+<h2 id="React-简化之后的-Array-Diff"><a href="#React-简化之后的-Array-Diff" class="headerlink" title="React 简化之后的 Array Diff"></a>React 简化之后的 Array Diff</h2><p>大家有过 React 开发经验的人很清楚，大部分情况下，我们通常是这样使用的：</p>
+<ul>
+<li><p><strong>情形1</strong>：一个标签的的直接子子标签数量类型顺序不变，通常用于静态内容或者对子组件的更新</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 比如每次渲染都是这样的，里面的直接子元素的类型和数量是不变的，在这种情况下，其实是可以省略 key</span></span><br><span class="line">&lt;div&gt;</span><br><span class="line">	&lt;div key=<span class="string">"header"</span>&gt;header&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">	&lt;div key="content"&gt;content&lt;/</span>div&gt;</span><br><span class="line">	&lt;div key=<span class="string">"footer"</span>&gt;footer&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">	&lt;SubCmp time=&#123;Date.now()&#125;/</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>情形2</strong>：一个标签有多个子标签，但是一般只改变其中的少数几个子标签。最常见的场景就是规则编辑器，每次只在最后添加新规则，或者删除其中某个规则。当然了，滚动加载也算是这种。</p>
+</li>
+<li><p><strong>情形3</strong>：交换某几个子标签之间的顺序</p>
+</li>
+<li><p><strong>情形4</strong>：翻页操作，几乎重置了整个子元素</p>
+</li>
+</ul>
+<p>上面只是简单举了几个常见的例子，大家可以发现，大部分情况下子标签变动的其实并不多，React 利用了这个，所以将 LIS 简化成以第一个元素开始，找到最近上升子序列。简单来来讲就是从头开始遍历，只要这个元素不小于前的元素，那么就加入队列。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q = [<span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="comment">// 标准算法</span></span><br><span class="line">LIS = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="comment">// 简化后的算法，从第一个开始，找到最近的不下降子序列即可。</span></span><br><span class="line">LIS_React = [<span class="number">4</span>, <span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+<p>我们乍一看，这个算法不对呀，随便就能举出一个例子让这个算法错成狗，但是我们要结合实际情况来看。如果我们套回前面说的几种情况，可以看到对于情况 1,2,3 来讲，几乎和简化前效果是一样。而这样做之后，时间复杂度降低为 <code>O(n)</code> ，空间复杂度降低为 <code>O(1)</code>。我们给简化后的算法叫做 <code>LIS&#39;</code> 方便后面区分。</p>
+<p>我们将 LIS 算法简化后，配合上之前一样的流程就可以得出 React 的 Array Diff 算法的核心流程了。（为什么叫核心流程，因为还有很多优化的地方没有讲）</p>
+<h2 id="变慢的原因？"><a href="#变慢的原因？" class="headerlink" title="变慢的原因？"></a>变慢的原因？</h2><p>当我们在了解了 React 的实现之后，我们再回过来头来看看前面给出的三个例子为啥会有这么大的时间差距？</p>
+<ul>
+<li><p>组件 A 从 <code>[1...10000]</code> 变化到 <code>[2,1,3...10000]</code> 。此时我们先求解一下 <code>LIS&#39;</code> 可以得到 <code>[2,3,4...10000]</code>，那么我们只需要移动 <code>1</code> 这个元素就可以了，将移动到元素 <code>3</code> 前面。同理反过来也是如此，也就是说 S1 ⇒ S2 和 S2 ⇒ S1 的所需要移动的次数是一致的，理论上时间上也就是相同的。</p>
+</li>
+<li><p>组件 B 从 <code>[1...10000]</code> 变化到 <code>[10000,1,2...9999]</code> 。同理，先计算 <code>LIS&#39;</code> 可以得到 <code>[10000]</code>，没错，你没看错，就是只有一次元素，那么我需要将剩下的所有元素全都移动到 <code>10000</code> 的后面去，换句话要进行 9999 次移动。这也就是为啥 <code>S1 =&gt; S2</code> 的时间会这么慢。但是反过来却不需要这个样子，将状态反过来，并重新计算索引，那么也就是从 <code>[1...10000]</code> 到 <code>[2,3....10000,1]</code>，在计算一次 <code>LIS&#39;</code> 得到 <code>[2,3...10000]</code> ，此时只需要移动一次即可，<code>S2 ⇒ S1</code> 的时间也就自然恢复的和组件 A 一致。</p>
+</li>
+<li><p>组件 C 是完全倒序操作，所以只分析其中一个过程即可。首先计算 <code>LIS&#39;</code> 可以得到，<code>[10000]</code> ，也就是说要移动 9999 次，反过来也是要 9999 次，所以时间状态是一致的。</p>
+</li>
+</ul>
+<p>经过这样的分析大家是不是就明白为啥会变慢了吧？</p>
+<h2 id="优化细节"><a href="#优化细节" class="headerlink" title="优化细节"></a>优化细节</h2><h3 id="降低-Map-的生成操作次数"><a href="#降低-Map-的生成操作次数" class="headerlink" title="降低 Map 的生成操作次数"></a>降低 Map 的生成操作次数</h3><p>上面有一点没有讲到，不知道大家有没有思考到，我怎么知道某个元素是该添加函数删除呢？大家第一反应就是构建一个 Set，将数组元素全放进去，然后进行判断就可以了。但是在 React 中，其实用的是 Map，因为要存储对应的 Fiber，具体细节大家可以不用关注，只需要知道这里用 Map 实现了这个功能。</p>
+<p>不管怎么样，根据算法，一开始肯定要构建一遍 Map，但是我们来看下上面的 <code>情形1</code>。发现内容是根本不会发生变化的，而且对于 <code>情形2</code> 来讲，有很大的概率前面的大部分是相同的。</p>
+<p>于是 React 一开始不构建 Map，而是假设前面的内容都是一致的，对这些元素直接执行普通的更新 Fiber 操作，直到碰到第一个 key 不相同的元素才开始构建 Map 走正常的 Diff 流程。按照这个方式，<strong>情形1</strong>根本不会创建 Map，而且对于<strong>情形2、3</strong>来讲也会减少很多 Map 元素的操作（set、get、has）。</p>
+<h3 id="降低循环次数"><a href="#降低循环次数" class="headerlink" title="降低循环次数"></a>降低循环次数</h3><p>按照上面的算法，我们需要至少 3 遍循环：第一遍构建 Map，第二遍剔除添加删除的元素生成 A’ 和 B’，第三遍计算 LIS 并得到哪些元素需要移动或者删除。而我们发现第二遍和第三遍是可以合并在一起的。也即是说我们在有了 Map 的情况下，不需要剔除元素，当遍历发现这个元素是新增的时候，直接记录下来。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>关于 Diff 算法其实还有很多的细节，我这边没有过多讲解，因为比较简单，比较符合直觉。大家有兴趣的可以自己去看下。另外有人应该会注意到，上面的例子中，为什么切换同样的次数，有的时间长，有的时间短了。日后有时间再分析下补充了。</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/React/" rel="tag">React</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" rel="tag">源码分析</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/"  data-tooltip="如何使用自签名 CA 和证书来保护个人在公网上的内容">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/09/07/some-tips-for-create-npm-cli/" data-tooltip="Node Cli 设计上的几点建议">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/"  data-tooltip="如何使用自签名 CA 和证书来保护个人在公网上的内容">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/09/07/some-tips-for-create-npm-cli/" data-tooltip="Node Cli 设计上的几点建议">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/';
+                 
+                    this.page.identifier = '2019/10/07/make-your-react-to-slow/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xgheaven-blog';
+                s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

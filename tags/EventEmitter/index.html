@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>标签: EventEmitter - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta property="og:type" content="blog">
+<meta property="og:title" content="XGHeaven&#39;s Blog">
+<meta property="og:url" content="https://blog.xgheaven.com/tags/EventEmitter/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="XGHeaven">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="1">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="1">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="1"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+    
+
+<section class="postShorten-group main-content-wrap">
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2015/10/04/nodejs-eventemitter/">
+                            Nodejs EventEmitter 解读
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sun Oct 04 2015 00:25:46 GMT+0800">
+	
+		    10月 04, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#events-moudle"><span class="toc-text">events moudle</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Class-EventEmitter"><span class="toc-text">Class EventEmitter</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Static-Method-And-Property"><span class="toc-text">EventEmitter Static Method And Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#defaultMaxListeners"><span class="toc-text">defaultMaxListeners</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#usingDomains"><span class="toc-text">usingDomains</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init"><span class="toc-text">init()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-emitter-type"><span class="toc-text">listenerCount(emitter, type)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%96%91%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%A4%E6%96%AD%E5%8E%9F%E5%9E%8B%E4%B8%8A%E6%98%AF%E5%90%A6%E5%90%AB%E6%9C%89listenerCount%E6%96%B9%E6%B3%95%E5%91%A2%EF%BC%9F"><span class="toc-text">疑问：为什么要判断原型上是否含有listenerCount方法呢？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Property"><span class="toc-text">EventEmitter Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#events"><span class="toc-text">_events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eventsCount"><span class="toc-text">_eventsCount</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maxListeners"><span class="toc-text">_maxListeners</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Method"><span class="toc-text">EventEmitter Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addListener-on"><span class="toc-text">addListener() &#x3D; on()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#newListener%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%9C%A8%E4%BA%8B%E4%BB%B6%E7%9C%9F%E6%AD%A3%E6%B7%BB%E5%8A%A0%E4%B9%8B%E5%89%8D%E8%A7%A6%E5%8F%91%E7%9A%84"><span class="toc-text">newListener事件是在事件真正添加之前触发的</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#emit"><span class="toc-text">emit()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#handler%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-text">handler的执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E5%8F%82%E6%95%B0%E4%B8%AA%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-text">根据参数个数进行加速</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#once"><span class="toc-text">once()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E7%96%91%E9%97%AE%EF%BC%9A%E8%BF%99%E9%87%8C%E6%88%91%E6%9C%89%E4%B8%80%E7%82%B9%E4%B8%8D%E5%A4%AA%E7%90%86%E8%A7%A3%E7%9A%84%E5%9C%B0%E6%96%B9%E5%B0%B1%E6%98%AF%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81fired%E8%BF%9B%E8%A1%8C%E6%A0%87%E8%AE%B0%E4%B8%80%E4%B8%8B%E5%91%A2%EF%BC%9F"><span class="toc-text">我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeListener-type-listener"><span class="toc-text">removeListener(type, listener)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E4%BA%8B%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B9%8B%E5%90%8E%E6%89%8D%E8%B0%83%E7%94%A8removeListener%E4%BA%8B%E4%BB%B6"><span class="toc-text">在事件删除之后才调用removeListener事件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeAllListeners-type"><span class="toc-text">removeAllListeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listeners-type"><span class="toc-text">listeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-type"><span class="toc-text">listenerCount(type)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#domain-%E9%83%A8%E5%88%86%E6%B2%A1%E6%9C%89%E8%BF%9B%E8%A1%8C%E8%A7%A3%E9%87%8A"><span class="toc-text">domain 部分没有进行解释</span></a></li></ol></li></ol>
+<h1 id="events-moudle"><a href="#events-moudle" class="headerlink" title="events moudle"></a><code>events</code> moudle</h1><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter;</span><br></pre></td></tr></table></figure></p>
+<p>然而在源码当中有这样的一句话<br><figure class="highlight js"><figcaption><span>模块定义</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L8" target="_blank" rel="noopener">events.js:8</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = EventEmitter;</span><br><span class="line">EventEmitter.EventEmitter = EventEmitter;</span><br></pre></td></tr></table></figure></p>
+<p>所以<code>require(&#39;events&#39;).EventEmitter</code>和<code>require(&#39;events&#39;)</code>是一样的。所以以后大家可以直接写</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="Class-EventEmitter"><a href="#Class-EventEmitter" class="headerlink" title="Class EventEmitter"></a>Class EventEmitter</h1><p>在源码中，构造函数极其的简单。</p>
+<figure class="highlight js"><figcaption><span>constructor</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L5" target="_blank" rel="noopener">event.js:5</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EventEmitter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	EventEmitter.init.call(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>思路很简单，就是直接调用<code>EventEmitter</code>上的静态方法<code>init</code>进行构造。之后我们会介绍<code>EventEmitter.init</code>方法</p>
+<h2 id="EventEmitter-Static-Method-And-Property"><a href="#EventEmitter-Static-Method-And-Property" class="headerlink" title="EventEmitter Static Method And Property"></a>EventEmitter Static Method And Property</h2><p>挂在到EventEmitter上的静态属性和方法还是很多的，先说明一下静态属性：</p>
+<ul>
+<li>defaultMaxListeners</li>
+<li>usingDomains</li>
+</ul>
+<h3 id="defaultMaxListeners"><a href="#defaultMaxListeners" class="headerlink" title="defaultMaxListeners"></a>defaultMaxListeners</h3><p>顾名思义，默认的最大callback数量，就是如果当前对象没有指定<code>_maxListeners</code>，默认使用的就是这个值，默认是10<br>更多请看<a href="#_maxListeners">_maxListeners</a></p>
+<h3 id="usingDomains"><a href="#usingDomains" class="headerlink" title="usingDomains"></a>usingDomains</h3><p>待定</p>
+<h3 id="init"><a href="#init" class="headerlink" title="init()"></a>init()</h3><figure class="highlight js"><figcaption><span>EventEmitter.init</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L23" target="_blank" rel="noopener">events.js:23</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.init = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.domain = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (EventEmitter.usingDomains) &#123;</span><br><span class="line">    <span class="comment">// if there is an active domain, then attach to it.</span></span><br><span class="line">    domain = domain || <span class="built_in">require</span>(<span class="string">'domain'</span>);</span><br><span class="line">    <span class="keyword">if</span> (domain.active &amp;&amp; !(<span class="keyword">this</span> <span class="keyword">instanceof</span> domain.Domain)) &#123;</span><br><span class="line">      <span class="keyword">this</span>.domain = domain.active;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>._events || <span class="keyword">this</span>._events === <span class="built_in">Object</span>.getPrototypeOf(<span class="keyword">this</span>)._events) &#123;</span><br><span class="line">    <span class="keyword">this</span>._events = &#123;&#125;;</span><br><span class="line">    <span class="keyword">this</span>._eventsCount = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>._maxListeners = <span class="keyword">this</span>._maxListeners || <span class="literal">undefined</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>先不管<code>domain</code>恨死干什么用的，总之<code>init</code>函数给<code>this</code>挂上了以下四个属性：</p>
+<ul>
+<li>domain</li>
+<li><a href="#_events">_events</a></li>
+<li><a href="#_eventsCount">_eventsCount</a></li>
+<li><a href="#_maxListeners">_maxListeners</a></li>
+</ul>
+<h3 id="listenerCount-emitter-type"><a href="#listenerCount-emitter-type" class="headerlink" title="listenerCount(emitter, type)"></a>listenerCount(emitter, type)</h3><p>获取<code>emitter</code>中指定类型的callback数量</p>
+<p>这里有一个比较特殊的地方，就是他对对象是否含有<code>listenerCount</code>方法进行了判断<br><figure class="highlight js"><figcaption><span>listenerCount</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L397" target="_blank" rel="noopener">events.js:397</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.listenerCount = <span class="function"><span class="keyword">function</span>(<span class="params">emitter, type</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> emitter.listenerCount === <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> emitter.listenerCount(type);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> listenerCount.call(emitter, type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h5 id="疑问：为什么要判断原型上是否含有listenerCount方法呢？"><a href="#疑问：为什么要判断原型上是否含有listenerCount方法呢？" class="headerlink" title="疑问：为什么要判断原型上是否含有listenerCount方法呢？"></a>疑问：为什么要判断原型上是否含有<code>listenerCount</code>方法呢？</h5><h2 id="EventEmitter-Property"><a href="#EventEmitter-Property" class="headerlink" title="EventEmitter Property"></a>EventEmitter Property</h2><h3 id="events"><a href="#events" class="headerlink" title="_events"></a>_events</h3><p>这个属性是一个事件的缓存列表，他的<code>key</code>就是事件名称，<code>value</code>就是事件的回调函数，有如下几种取值：</p>
+<ul>
+<li>Function</li>
+<li>Array<br>当只有一个回调函数的时候，就直接存储为回调函数本身，否则包装成数组进行存储</li>
+</ul>
+<h3 id="eventsCount"><a href="#eventsCount" class="headerlink" title="_eventsCount"></a>_eventsCount</h3><p>顾名思义，就是事件的个数，这里有几个需要注意的就是，这个之有且仅在添加一个没有过的事件的时候才会加一，如果你给一个事件添加了多了callback的话，这个值并不会加一的。</p>
+<h3 id="maxListeners"><a href="#maxListeners" class="headerlink" title="_maxListeners"></a>_maxListeners</h3><p>这个就是可以表示一个event的最大callback的个数。如果小于等于这个个数，不会产生任何问题。但是如果大于这个限制，将会弹出警告，说可能会导致内存泄露。<br>我猜测可能是因为过多的callback会保存过多的context，从而导致内存泄露。<br>敬请更正</p>
+<h2 id="EventEmitter-Method"><a href="#EventEmitter-Method" class="headerlink" title="EventEmitter Method"></a>EventEmitter Method</h2><p>先从最常用的讲起，就是添加事件侦听喽</p>
+<h3 id="addListener-on"><a href="#addListener-on" class="headerlink" title="addListener() = on()"></a>addListener() = on()</h3><p>首先大家一定很熟悉<code>on</code>方法，大家一定想不到的是，竟然还有一个叫<code>addListener</code>方法。那么这两个方法有什么区别呢？<br>答案就是什么区别都木有~</p>
+<p>而且在定义的时候，定义的是<code>addListener</code>而不是<code>on</code>，从源码中便可以看出来</p>
+<figure class="highlight js"><figcaption><span>addListener</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L191" target="_blank" rel="noopener">events.js:191</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.addListener = <span class="function"><span class="keyword">function</span> <span class="title">addListener</span>(<span class="params">type, listener</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> m;</span><br><span class="line">  <span class="keyword">var</span> events;</span><br><span class="line">  <span class="keyword">var</span> existing;</span><br><span class="line">  <span class="comment">// .... 此处省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 就是这里，大家看到了么~~</span></span><br><span class="line">EventEmitter.prototype.on = EventEmitter.prototype.addListener;</span><br></pre></td></tr></table></figure>
+<p>所以<code>on</code>更多的是一种简化，而正统的却是<code>addListener</code>，但是虽然这个正统，相信也没有几个人来使用吧，毕竟实在是太那啥了，是吧-_-||</p>
+<p>好的下面言归正传，整个添加函数的流程可以看做是这样的（大家可以对照的源码看，我就不在这里把源码全部都粘贴过来了，并且我这里可能为了语句的通顺改变部分代码的执行顺序，大家请自行看出来。。。）：</p>
+<ol>
+<li>接受两个参数，分别是<code>type</code>表示事件，就是event，第二个是<code>listener</code>，侦听器，也就是callback</li>
+<li>如果<code>listener</code>不是函数，很明显啊，抛出错误不解释</li>
+<li>检测当前对象上是否存在<code>_events</code>属性，如果不存在创建之，并顺手初始化<code>_eventsCount</code>为0.</li>
+<li>另<code>events</code>为<code>this._events</code></li>
+<li>如果<code>events</code>中没有<code>type</code>的<code>listener</code>，那么不解释，添加之~即<code>events[type] = listener</code></li>
+<li>如果<code>events</code>里面有的话，不解释，一个就数组包装一下，两个直接push</li>
+<li>如果<code>type</code>类型的<code>listener</code>超过两个了，那么就检测一下有没有超过长度限制，具体的检测逻辑我就不在这里详细的说明了，总之就是给将检测结果挂到<code>events[type]</code>的<code>warned</code>属性上了。</li>
+<li>如果有对应的<code>newListener</code>事件侦听的话，就直接用<code>type</code>和<code>listener.listener?listener.listener:listener</code>触发之</li>
+<li>返回<code>this</code></li>
+</ol>
+<p>至此函数执行完毕</p>
+<p>那么下一个就讲一下如果触发事件吧</p>
+<h4 id="newListener事件是在事件真正添加之前触发的"><a href="#newListener事件是在事件真正添加之前触发的" class="headerlink" title="newListener事件是在事件真正添加之前触发的"></a><code>newListener</code>事件是在事件真正添加之前触发的</h4><h3 id="emit"><a href="#emit" class="headerlink" title="emit()"></a>emit()</h3><p>很早以前我认为<code>emit</code>只能<code>emit</code>一个参数，到现在我猜明白，想几个就几个，没人限制你。</p>
+<p><code>emit</code>有一个很好玩的特性就是，如果你<code>emit</code>一个<code>&quot;error&quot;</code>，如果没有事件侦听这个error的话，就会直接throw出一个error来，而其他的事件不会又这种效果，这就意味着我们最好要侦听<code>error</code>事件，万一出了一点错误，那将是崩溃的节奏啊~</p>
+<p>源码在<a href="https://github.com/nodejs/node/blob/master/lib/events.js#L117" target="_blank" rel="noopener">events.js:117</a></p>
+<ol>
+<li>检测<code>type</code>是否为<code>&quot;error&quot;</code></li>
+<li>如果是，并且没有监听到<code>error</code>，throw出pass进来的错误或者构建一个未捕捉的错误弹出。</li>
+<li>如果没有对应的回调函数的话，返回<code>false</code></li>
+<li>获取构造函数并赋值给<code>handler</code>，这个值有可能是函数，或者是数组。</li>
+<li>根据参数个数调用对应的函数，顺序依次运行<code>handler</code></li>
+<li>返回<code>true</code></li>
+</ol>
+<h4 id="handler的执行"><a href="#handler的执行" class="headerlink" title="handler的执行"></a><code>handler</code>的执行</h4><p>在<code>handler</code>执行的时候，会先将当前队列复制一份，然后再进行执行。并且根据参数个数用call或者apply执行函数。放置在某一次执行期间突然掺入了其他的callback或者删除了callback，从而引发错误。</p>
+<p>我原本以为会使用<code>process.nextTick</code>进行异步的执行，后来一想不对啊，肯定要按照添加的顺序进行执行，所以依次调用。</p>
+<h4 id="根据参数个数进行加速"><a href="#根据参数个数进行加速" class="headerlink" title="根据参数个数进行加速"></a>根据参数个数进行加速</h4><p>见<br><figure class="highlight js"><figcaption><span>fastToRun</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L65" target="_blank" rel="noopener">events.js:65</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有参数的调用</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitNone</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isFn)</span><br><span class="line">    handler.call(self);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> len = handler.length;</span><br><span class="line">    <span class="keyword">var</span> listeners = arrayClone(handler, len);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; ++i)</span><br><span class="line">      listeners[i].call(self);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitOne</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 两个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitTwo</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 三个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitThree</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 不定参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitMore</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>源码对不同的情况进行了加速，因为人们大部分情况都是使用0参数或者1参数的，所以对这几种情况进行处理是非常高效的。</p>
+<h3 id="once"><a href="#once" class="headerlink" title="once()"></a>once()</h3><p>这个最简单了，就是用一个函数封装一下传入的callback，然后将这个函数，<code>addListener</code>进入到事件中。关于这个封装函数的写法，如下<br><figure class="highlight js"><figcaption><span>g()</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L253" target="_blank" rel="noopener">events.js:253</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fired = <span class="literal">false</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.removeListener(type, g);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!fired) &#123;</span><br><span class="line">    fired = <span class="literal">true</span>;</span><br><span class="line">    listener.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">g.listener = listener;</span><br><span class="line"><span class="comment">// 挂载原先的callback，用于remove的时候比较使用</span></span><br></pre></td></tr></table></figure></p>
+<p>具体的就不多说了，总之就是执行后，先删除这个包装过的callback。</p>
+<h5 id="我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？"><a href="#我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？" class="headerlink" title="我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？"></a>我的疑问：这里我有一点不太理解的地方就是为什么还需要<code>fired</code>进行标记一下呢？</h5><h3 id="removeListener-type-listener"><a href="#removeListener-type-listener" class="headerlink" title="removeListener(type, listener)"></a>removeListener(type, listener)</h3><p>删除指定类型的指定callback的事件<br>很简单，分为一下几步</p>
+<ol>
+<li>如果<code>listener</code>不是函数，抛出错误</li>
+<li>如果<code>events</code>不存在或者对应的事件不存在，返回<code>this</code></li>
+<li>另<code>list</code>为<code>events[type]</code></li>
+<li>如果<code>list</code>就是那个callback或者<code>list.listener</code>是那个callback，删除</li>
+<li>否则如果这是一个数组，那么找到对应的<code>listener</code>删除，否则返回<code>this</code></li>
+<li>如果上面有任意一个删除之后<code>_eventsCount</code>为0了，直接重新赋值<code>this._events = {}</code>（其实并不知道这个意义何在）</li>
+<li>如果有任何一个删除，并且有事件侦听到了<code>removeListener</code>，触发之，传递<code>type</code>和<code>listener</code></li>
+<li>返回<code>this</code></li>
+</ol>
+<h4 id="在事件删除之后才调用removeListener事件"><a href="#在事件删除之后才调用removeListener事件" class="headerlink" title="在事件删除之后才调用removeListener事件"></a>在事件删除之后才调用<code>removeListener</code>事件</h4><h3 id="removeAllListeners-type"><a href="#removeAllListeners-type" class="headerlink" title="removeAllListeners(type)"></a>removeAllListeners(type)</h3><p>根据传递的参数来决定是删除全部的还是只删除指定事件的全部</p>
+<ol>
+<li>确保存在<code>this._events</code>，否则返回<code>this</code></li>
+<li>如果没有侦听<code>removeListener</code><ul>
+<li>如果没有传递<code>type</code>，重新赋值<code>this._events</code>和<code>this._eventsCount</code></li>
+<li>如果传递了<code>type</code>，删除<code>type</code>对应的事件，根据情况重新赋值~~~</li>
+</ul>
+</li>
+<li>如果侦听了<code>removeListener</code>，除了这个本身，依次调用<code>removeAllLiseners()</code>进行删除，最后删除<code>removeListener</code>这个事件</li>
+<li>对于每一个callback，依次调用<code>removeListener</code>方法进行删除</li>
+<li>返回<code>this</code></li>
+</ol>
+<h3 id="listeners-type"><a href="#listeners-type" class="headerlink" title="listeners(type)"></a>listeners(type)</h3><p>获取指定类型的callback，否则为<code>[]</code></p>
+<h3 id="listenerCount-type"><a href="#listenerCount-type" class="headerlink" title="listenerCount(type)"></a>listenerCount(type)</h3><p>获取指定类型的callback的数量</p>
+<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><h2 id="domain-部分没有进行解释"><a href="#domain-部分没有进行解释" class="headerlink" title="domain 部分没有进行解释"></a>domain 部分没有进行解释</h2>
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2015/10/04/nodejs-eventemitter/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    <div class="pagination-bar">
+    <ul class="pagination">
+        
+        
+        <li class="pagination-number">第 1 页 共 1 页</li>
+    </ul>
+</div>
+
+</section>
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+
+</html>
