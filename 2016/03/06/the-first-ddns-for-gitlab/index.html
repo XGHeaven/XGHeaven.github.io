@@ -13,15 +13,15 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="前沿我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。 在这里，我记录一下其中遇到的一些问题。 准备工作 花生壳帐号（有一个免费或者收费的域名） 路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器） 一个域名 一台刚刚安装完成并且成功启动的 Gitlab 服务器  至于如何申请">
+    <meta name="description" content="前言我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。 在这里，我记录一下其中遇到的一些问题。 准备工作 花生壳帐号（有一个免费或者收费的域名）  路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器）  一个域名  一台刚刚安装完成并且成功启动的 Gitlab 服务器   至于">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="使用 DDNS 将 Gitlab 暴露到公网中的第一次尝试">
 <meta property="og:url" content="https://blog.xgheaven.com/2016/03/06/the-first-ddns-for-gitlab/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
-<meta property="og:description" content="前沿我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。 在这里，我记录一下其中遇到的一些问题。 准备工作 花生壳帐号（有一个免费或者收费的域名） 路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器） 一个域名 一台刚刚安装完成并且成功启动的 Gitlab 服务器  至于如何申请">
+<meta property="og:description" content="前言我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。 在这里，我记录一下其中遇到的一些问题。 准备工作 花生壳帐号（有一个免费或者收费的域名）  路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器）  一个域名  一台刚刚安装完成并且成功启动的 Gitlab 服务器   至于">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2016-03-05T16:05:08.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:48:05.149Z">
+<meta property="article:published_time" content="2016-03-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.579Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="Gitlab">
 <meta property="article:tag" content="DDNS">
@@ -278,7 +278,7 @@
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Sun Mar 06 2016 00:05:08 GMT+0800">
+    <time itemprop="datePublished" content="Sun Mar 06 2016 00:00:00 GMT+0800">
 	
 		    3月 06, 2016
     	
@@ -286,7 +286,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/Gitlab/">Gitlab</a>
+    <a class="category-link" href="/categories/Backend/">Backend</a>
 
 
     
@@ -295,36 +295,41 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E6%B2%BF"><span class="toc-text">前沿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%AD%E8%AE%BE%E7%BD%AE-DDNS"><span class="toc-text">在路由器中设置 DDNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="toc-text">配置端口转发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%B0%86-80-%E6%98%A0%E5%B0%84%E5%88%B0-8000%EF%BC%8C%E8%80%8C-ssh-%E5%8D%B4%E4%B8%8D%E7%94%A8%EF%BC%9F"><span class="toc-text">为什么要将 80 映射到 8000，而 ssh 却不用？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%B8%80%E5%88%87%E9%83%BD%E9%85%8D%E7%BD%AE%E5%A5%BD%E4%BA%86%EF%BC%8C%E4%B8%BA%E5%95%A5%E8%BF%98%E6%98%AF%E4%B8%8D%E8%A1%8C%EF%BC%9F"><span class="toc-text">为什么我一切都配置好了，为啥还是不行？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-Gitlab-%E4%B8%AD%E7%9A%84-external-url"><span class="toc-text">配置 Gitlab 中的 external_url</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Over"><span class="toc-text">Over</span></a></li></ol>
-<h3 id="前沿"><a href="#前沿" class="headerlink" title="前沿"></a>前沿</h3><p>我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。</p>
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E8%B7%AF%E7%94%B1%E5%99%A8%E4%B8%AD%E8%AE%BE%E7%BD%AE-DDNS"><span class="toc-text">在路由器中设置 DDNS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="toc-text">配置端口转发</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%B0%86-80-%E6%98%A0%E5%B0%84%E5%88%B0-8000%EF%BC%8C%E8%80%8C-ssh-%E5%8D%B4%E4%B8%8D%E7%94%A8%EF%BC%9F"><span class="toc-text">为什么要将 80 映射到 8000，而 ssh 却不用？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%B8%80%E5%88%87%E9%83%BD%E9%85%8D%E7%BD%AE%E5%A5%BD%E4%BA%86%EF%BC%8C%E4%B8%BA%E5%95%A5%E8%BF%98%E6%98%AF%E4%B8%8D%E8%A1%8C%EF%BC%9F"><span class="toc-text">为什么我一切都配置好了，为啥还是不行？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-Gitlab-%E4%B8%AD%E7%9A%84-external-url"><span class="toc-text">配置 Gitlab 中的 external_url</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Over"><span class="toc-text">Over</span></a></li></ol>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我个人参加了一个外包项目，其中他们有一台 Dell 服务器，里面装有最新版本的 Gitlab，我的任务就是将这个 Gitlab 通过 DDNS 暴露到公网中去。</p>
 <p>在这里，我记录一下其中遇到的一些问题。</p>
-<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><ul>
-<li>花生壳帐号（有一个免费或者收费的域名）</li>
-<li>路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器）</li>
-<li>一个域名</li>
-<li>一台刚刚安装完成并且成功启动的 Gitlab 服务器</li>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ul>
+<li><p>花生壳帐号（有一个免费或者收费的域名）</p>
+</li>
+<li><p>路由器（带有 DDNS 功能的路由器，我这里采用 小米路由器）</p>
+</li>
+<li><p>一个域名</p>
+</li>
+<li><p>一台刚刚安装完成并且成功启动的 Gitlab 服务器</p>
+</li>
 </ul>
 <p>至于如何申请花生壳，我就不在这里多说了，不过我要说一点，在花生壳里面，你注册的时候会给你一个免费的域名。这个域名有一个神奇的名字，叫过<code>壳域名</code>，我第一次没有意识到，这个就是免费域名，找了好久，也没有找到在哪里。😂</p>
-<h3 id="在路由器中设置-DDNS"><a href="#在路由器中设置-DDNS" class="headerlink" title="在路由器中设置 DDNS"></a>在路由器中设置 DDNS</h3><p>进入路由器设置，寻找 DDNS 或者 动态域名解析，选择花生壳服务，填写相关的用户名和密码，以及送与的免费的域名地址。</p>
+<h1 id="在路由器中设置-DDNS"><a href="#在路由器中设置-DDNS" class="headerlink" title="在路由器中设置 DDNS"></a>在路由器中设置 DDNS</h1><p>进入路由器设置，寻找 DDNS 或者动态域名解析，选择花生壳服务，填写相关的用户名和密码，以及送与的免费的域名地址。</p>
 <p>链接测试，路由器显示链接成功，并且进入花生壳域名管理，查看域名解析的情况。</p>
 <p>如果失败了，请查看是否免费的域名填写错误，或者密码用户名错误等等。</p>
 <p>此时，如果你运行如下命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping your.deamon.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping your.deamon.com</span><br></pre></td></tr></table></figure>
 <p>会正常的 <code>ping</code> 到自己的主机。</p>
-<h3 id="配置端口转发"><a href="#配置端口转发" class="headerlink" title="配置端口转发"></a>配置端口转发</h3><p>当解析成功的时候，仅仅说明域名可以正常的找到这台路由器，但是还不能找到路由器内部的主机。</p>
-<p>所以我们需要将路由器的部分端口映射到内部的服务器的主机的端口，这就是端口转发</p>
-<p>根据需要，将服务器的 80 映射到路由器的 8000。<br>因为 Gitlab 需要 ssh 服务端口，所以还需要将 20 端口映射到路由器上。</p>
-<h4 id="为什么要将-80-映射到-8000，而-ssh-却不用？"><a href="#为什么要将-80-映射到-8000，而-ssh-却不用？" class="headerlink" title="为什么要将 80 映射到 8000，而 ssh 却不用？"></a>为什么要将 80 映射到 8000，而 ssh 却不用？</h4><p>这是因为，我们的网络都是接入到外部运营商提供的网络，而运营商不允许用户私自搭建服务器（至于为啥，谁知道这群运营商怎么想的）。所以会封锁 80 端口。</p>
+<h1 id="配置端口转发"><a href="#配置端口转发" class="headerlink" title="配置端口转发"></a>配置端口转发</h1><p>当解析成功的时候，仅仅说明域名可以正常的找到这台路由器，但是还不能找到路由器内部的主机。</p>
+<p>所以我们需要将路由器的部分端口映射到内部的服务器的主机的端口，这就是端口转发。</p>
+<p>根据需要，将服务器的 80 映射到路由器的 8000。</p>
+<p>因为 Gitlab 需要 ssh 服务端口，所以还需要将 20 端口映射到路由器上。</p>
+<h2 id="为什么要将-80-映射到-8000，而-ssh-却不用？"><a href="#为什么要将-80-映射到-8000，而-ssh-却不用？" class="headerlink" title="为什么要将 80 映射到 8000，而 ssh 却不用？"></a>为什么要将 80 映射到 8000，而 ssh 却不用？</h2><p>这是因为，我们的网络都是接入到外部运营商提供的网络，而运营商不允许用户私自搭建服务器（至于为啥，谁知道这群运营商怎么想的）。所以会封锁 80 端口。</p>
 <p>这也就会产生一个很神奇的现象，如果你映射 80 端口，你在内网中，可以通过域名正常，但是你在外网，却不能访问。</p>
 <p>为啥呢？根据 <code>计算机网络</code> 中所说的，获取目标 <code>ip</code>，之后，发现是局域网，于是就直接不走运营商了。。。。</p>
 <p>弄完之后，就可以在地址中输入 <code>http://your.domain.com:8000</code> 访问 Gitlab 了。</p>
-<h4 id="为什么我一切都配置好了，为啥还是不行？"><a href="#为什么我一切都配置好了，为啥还是不行？" class="headerlink" title="为什么我一切都配置好了，为啥还是不行？"></a>为什么我一切都配置好了，为啥还是不行？</h4><p>答案：请尝试关闭防火墙，或者将端口加入白名单。</p>
+<h2 id="为什么我一切都配置好了，为啥还是不行？"><a href="#为什么我一切都配置好了，为啥还是不行？" class="headerlink" title="为什么我一切都配置好了，为啥还是不行？"></a>为什么我一切都配置好了，为啥还是不行？</h2><p>答案：请尝试关闭防火墙，或者将端口加入白名单。</p>
 <p>PS: 因为服务器是 Centos 7， 所以采用了 <code>firewall</code> 的管理方式，而不是以前的 <code>iptables</code>，这一点需要注意。</p>
-<h3 id="配置-Gitlab-中的-external-url"><a href="#配置-Gitlab-中的-external-url" class="headerlink" title="配置 Gitlab 中的 external_url"></a>配置 Gitlab 中的 <code>external_url</code></h3><p>在安装之后，你还需要配置 <code>external_url</code> 来在 repo 中正确显示url。</p>
+<h1 id="配置-Gitlab-中的-external-url"><a href="#配置-Gitlab-中的-external-url" class="headerlink" title="配置 Gitlab 中的 external_url"></a>配置 Gitlab 中的 <code>external_url</code></h1><p>在安装之后，你还需要配置 <code>external_url</code> 来在 repo 中正确显示url。</p>
 <p>之所以没有从 host 中获取 URL ，是因为，很多情况下，git 仓库和前端管理是分离的，所以你需要自己去配置。</p>
-<p>至于配置方式，详情请查看 <a href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab" target="_blank" rel="noopener">Configuring the external URL for GitLab</a></p>
+<p>至于配置方式，详情请查看 <a target="_blank" rel="noopener" href="http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-the-external-url-for-gitlab">Configuring the external URL for GitLab</a></p>
 <p>然后按照教程 <code>gitlab-ctl reconfigure</code> 即可</p>
-<h3 id="Over"><a href="#Over" class="headerlink" title="Over"></a>Over</h3><p>至此，在添加了 Gitlab 成员之后，我就可以洗洗睡了，晚安~~~</p>
+<h1 id="Over"><a href="#Over" class="headerlink" title="Over"></a>Over</h1><p>至此，在添加了 Gitlab 成员之后，我就可以洗洗睡了，晚安~~~</p>
 
             
                 
@@ -415,7 +420,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

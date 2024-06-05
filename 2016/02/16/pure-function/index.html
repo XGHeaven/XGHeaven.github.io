@@ -13,18 +13,17 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="在学习 React&#x2F;Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？ 纯函数简介纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。 简而言之，就是这个与外界交换数据的方式只有 参数值 和 返回值 。 也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。 定义首先纯函数要满足以下两个条件：  函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并">
+    <meta name="description" content="在学习 React&#x2F;Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？ 简介纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。 简而言之，就是这个与外界交换数据的方式只有 参数值 和 返回值 。 也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。 定义首先纯函数要满足以下两个条件：  函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并不依赖">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="函数式编程之纯函数">
 <meta property="og:url" content="https://blog.xgheaven.com/2016/02/16/pure-function/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
-<meta property="og:description" content="在学习 React&#x2F;Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？ 纯函数简介纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。 简而言之，就是这个与外界交换数据的方式只有 参数值 和 返回值 。 也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。 定义首先纯函数要满足以下两个条件：  函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并">
+<meta property="og:description" content="在学习 React&#x2F;Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？ 简介纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。 简而言之，就是这个与外界交换数据的方式只有 参数值 和 返回值 。 也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。 定义首先纯函数要满足以下两个条件：  函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并不依赖">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2016-02-16T13:30:28.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:48:05.149Z">
+<meta property="article:published_time" content="2016-02-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.578Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="Pure Function">
-<meta property="article:tag" content="Function">
 <meta property="article:tag" content="Functional Programming">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@XGHeaven">
@@ -279,7 +278,7 @@
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Tue Feb 16 2016 21:30:28 GMT+0800">
+    <time itemprop="datePublished" content="Tue Feb 16 2016 00:00:00 GMT+0800">
 	
 		    2月 16, 2016
     	
@@ -287,7 +286,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/Functional-Programming/">Functional Programming</a>
+    <a class="category-link" href="/categories/Programming/">Programming</a>
 
 
     
@@ -296,59 +295,71 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%AF%E5%87%BD%E6%95%B0"><span class="toc-text">纯函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-text">解释</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O-%E5%9C%A8%E7%BA%AF%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E4%BE%8B%E5%A4%96"><span class="toc-text">I&#x2F;O 在纯函数中的例外</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C%E7%BA%AF%E5%87%BD%E6%95%B0%E7%9B%B8%E5%85%B3%E7%9A%84-%E2%80%94%E2%80%94-%E7%BA%AF%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">和纯函数相关的 —— 纯表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-text">简介</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E5%A4%84"><span class="toc-text">用处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-text">参考文章</span></a></li></ol>
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-text">解释</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#I-O-%E5%9C%A8%E7%BA%AF%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E4%BE%8B%E5%A4%96"><span class="toc-text">I&#x2F;O 在纯函数中的例外</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%92%8C%E7%BA%AF%E5%87%BD%E6%95%B0%E7%9B%B8%E5%85%B3%E7%9A%84-%E2%80%94%E2%80%94-%E7%BA%AF%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">和纯函数相关的 —— 纯表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E5%A4%84"><span class="toc-text">用处</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-text">优点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-text">参考文章</span></a></li></ol>
 <p>在学习 React/Redux 的时候，提到了纯函数，那么到底什么是纯函数呢？</p>
-<h3 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>纯函数，顾名思义就是很纯净的函数，不会背着你去干什么乱七八糟的事情。</p>
 <p>简而言之，就是这个与外界交换数据的方式只有 <code>参数值</code> 和 <code>返回值</code> 。</p>
 <p>也就是说，所有的数据输入和输出都是显式的，都在你的可监控范围之下。</p>
-<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>首先纯函数要满足以下两个条件：</p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>首先纯函数要满足以下两个条件：</p>
 <ol>
-<li>函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并不依赖任何可能随着程序运行而改变的或者在不同程序中结果不同的隐藏的信息或者状态。也不能隐式依赖任何从 I/O 设备的输入。</li>
-<li>这些计算结果不能引起任何副作用或者输出。例如改变可变对象，或者是输出到 I/O 设备。</li>
+<li><p>函数在给出相同的参数的时候，计算的值总是相同的。同时函数的结果并不依赖任何可能随着程序运行而改变的或者在不同程序中结果不同的隐藏的信息或者状态。也不能隐式依赖任何从 I/O 设备的输入。</p>
+</li>
+<li><p>这些计算结果不能引起任何副作用或者输出。例如改变可变对象，或者是输出到 I/O 设备。</p>
+</li>
 </ol>
 <blockquote>
 <p>计算结果不需要全部依赖输入的参数值。但是，绝对不能依赖除了参数值以外的东西。<br>函数可以返回多重结果（类似py里的元组），那么对于任意一个返回值，都需要满足上面的条件。（这个感觉显得有点多余）<br>如果其中的参数是被引用的，那么修改引用的参数将会导致外部变量修改，从而导致函数变得非纯。（这不是废话么）</p>
 </blockquote>
-<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p>看上面的那几条，肯定会变得很糊涂，那么我稍微总结了以下内容：</p>
+<h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>看上面的那几条，肯定会变得很糊涂，那么我稍微总结了以下内容：</p>
 <ol>
-<li>最最基本的判定方法，就是看参数相同是否结果相同。不相同，是非纯函数。</li>
-<li>在满足 <code>1</code> 的前提下，同时保证输入相同，并且这个函数不管在什么地方，是什么时候运行，结果都并不是完全相同。那么则为非纯函数。<blockquote>
-<p>那么意味着函数内不得使用获取时间，获取进程ID，获取环境变量等等会根据时间环境而变化的内容。例如 <code>Date.now()</code> <code>process.env</code> <code>Math.random()</code></p>
-</blockquote>
+<li><p>最最基本的判定方法，就是看参数相同是否结果相同。不相同，是非纯函数。</p>
 </li>
-<li>换句话说，纯函数内不得使用非纯函数</li>
-<li>纯函数不得与 I/O 产生任何交互，不得从 I/O 输入或者输出，甚至包括网络流。<blockquote>
-<p>也就说不能读取输出文件，读取输出终端内容，不得请求API内容等等，前提，这些是隐式调用的，后文会讲到特例。</p>
-</blockquote>
+<li><p>在满足 <code>1</code> 的前提下，同时保证输入相同，并且这个函数不管在什么地方，是什么时候运行，结果都并不是完全相同。那么则为非纯函数。那么意味着函数内不得使用获取时间，获取进程ID，获取环境变量等等会根据时间环境而变化的内容。例如 <code>Date.now()</code> <code>process.env</code> <code>Math.random()</code></p>
 </li>
-<li>不得产生函数副作用，所谓函数副作用就是指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量）或修改参数。</li>
+<li><p>换句话说，纯函数内不得使用非纯函数</p>
+</li>
+<li><p>纯函数不得与 I/O 产生任何交互，不得从 I/O 输入或者输出，甚至包括网络流。 也就说不能读取输出文件，读取输出终端内容，不得请求API内容等等，前提，这些是隐式调用的，后文会讲到特例。</p>
+</li>
+<li><p>不得产生函数副作用，所谓函数副作用就是指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量）或修改参数。</p>
+</li>
 </ol>
-<h3 id="I-O-在纯函数中的例外"><a href="#I-O-在纯函数中的例外" class="headerlink" title="I/O 在纯函数中的例外"></a>I/O 在纯函数中的例外</h3><p>如果一个函数跟 I/O 产生交互，除非满足以下内容，才不会导致函数变的不纯：</p>
-<p><strong> 这些 I/O 操作是显式通过函数参数或者返回值来传入和传出的，并且当输入内容不合法的时候，I/O 操作失败 </strong></p>
-<p>其中第一点确保了 I/O 操作的函数返回不同值，是因为输入的内容不同。并且必须要作为函数的参数或者返回值。<br>第二点确保了当输入作为函数的参数的时候，必须根据不同的 I/O 动作而改变。也就是针对不同的输入有不同的反应。</p>
+<h1 id="I-O-在纯函数中的例外"><a href="#I-O-在纯函数中的例外" class="headerlink" title="I/O 在纯函数中的例外"></a>I/O 在纯函数中的例外</h1><p>如果一个函数跟 I/O 产生交互，除非满足以下内容，才不会导致函数变的不纯：</p>
+<p><strong>这些 I/O 操作是显式通过函数参数或者返回值来传入和传出的，并且当输入内容不合法的时候，I/O 操作失败</strong></p>
+<p>其中第一点确保了 I/O 操作的函数返回不同值，是因为输入的内容不同。并且必须要作为函数的参数或者返回值。</p>
+<p>第二点确保了当输入作为函数的参数的时候，必须根据不同的 I/O 动作而改变。也就是针对不同的输入有不同的反应。</p>
 <blockquote>
 <p>说明一下，这里的第二点，其实是保证了函数的行为的可预测性，因为输入不同，可能其中包含着很多非法操作，而对于函数来说，面对这些非法操作，没有定义如何去处理，所以统一认为操作失败，这样就增加了行为的可预测性。</p>
 </blockquote>
-<h3 id="和纯函数相关的-——-纯表达式"><a href="#和纯函数相关的-——-纯表达式" class="headerlink" title="和纯函数相关的 —— 纯表达式"></a>和纯函数相关的 —— 纯表达式</h3><h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>类似一个纯函数，就是不论在什么时候，什么地点，执行了多少次纯表达式，结果都不变。</p>
+<h1 id="和纯函数相关的-——-纯表达式"><a href="#和纯函数相关的-——-纯表达式" class="headerlink" title="和纯函数相关的 —— 纯表达式"></a>和纯函数相关的 —— 纯表达式</h1><h2 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h2><p>类似一个纯函数，就是不论在什么时候，什么地点，执行了多少次纯表达式，结果都不变。</p>
 <p>在这里，我就不详细介绍了，很明显的一点，一个常量肯定是纯表达式。</p>
-<h3 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h3><p>讲了这么多，可是纯表达式在什么地方会使用到呢？</p>
+<h2 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h2><p>讲了这么多，可是纯表达式在什么地方会使用到呢？</p>
 <p>就我所知，大约有以下几个地方：</p>
 <ul>
-<li>Redux 的 Reducer</li>
-<li>Scala</li>
-<li>wolfarm</li>
+<li><p>Redux 的 Reducer</p>
+</li>
+<li><p>Scala</p>
+</li>
+<li><p>wolfarm</p>
+</li>
 </ul>
-<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p>优点在不同的语言中有不同的用处，但是最重要的几点就是：</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>优点在不同的语言中有不同的用处，但是最重要的几点就是：</p>
 <ul>
-<li>简单，便于测试</li>
-<li>无状态，可以采用缓存的方式加速计算</li>
-<li>纯函数相互组合，还是纯函数（类似于高中所学的奇函数偶函数）</li>
+<li><p>简单，便于测试</p>
+</li>
+<li><p>无状态，可以采用缓存的方式加速计算</p>
+</li>
+<li><p>纯函数相互组合，还是纯函数（类似于高中所学的奇函数偶函数）</p>
+</li>
 </ul>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><ul>
-<li><a href="https://en.wikipedia.org/wiki/Pure_function" target="_blank" rel="noopener">Wiki</a></li>
-<li><a href="http://america.pink/pure-function_3618964.html" target="_blank" rel="noopener">Pure function</a></li>
-<li><a href="http://www.kancloud.cn/kancloud/scala-quickstart/50726" target="_blank" rel="noopener">纯函数和非纯函数</a></li>
-<li><a href="http://blog.csdn.net/popy007/article/details/8508776" target="_blank" rel="noopener">C++函数式编程（二）纯函数</a></li>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ul>
+<li><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pure_function">Wiki</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://america.pink/pure-function_3618964.html">Pure function</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.kancloud.cn/kancloud/scala-quickstart/50726">纯函数和非纯函数</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://blog.csdn.net/popy007/article/details/8508776">C++函数式编程（二）纯函数</a></p>
+</li>
 </ul>
 
             
@@ -362,7 +373,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-none-link" href="/tags/Function/" rel="tag">Function</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Functional-Programming/" rel="tag">Functional Programming</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Pure-Function/" rel="tag">Pure Function</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Functional-Programming/" rel="tag">Functional Programming</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Pure-Function/" rel="tag">Pure Function</a>
 
             </div>
         
@@ -440,7 +451,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

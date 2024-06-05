@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>学 QuickJS 太难？不如来看看这个 TypeScript 实现的平替项目 - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="不知道有多少前端，曾经像我一样，尝试去学习 V8 让自己可以从底层更好的了解 JS 的实现。但是由于太复杂而放弃，光下载、编译、调试足够让人望而却步了，更别说你需要有足够的 C++ 经验。 幸运的是，Bellard 大佬不久便开源用纯 C 实现的轻量且高性能的 QuickJS，这让我重新燃起了学习的热情，这个项目简单到仅仅有高中的 C 语言知识和数据结构就可以阅读。 无论如何，其还是用 C 实现">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="学 QuickJS 太难？不如来看看这个 TypeScript 实现的平替项目">
+<meta property="og:url" content="https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="不知道有多少前端，曾经像我一样，尝试去学习 V8 让自己可以从底层更好的了解 JS 的实现。但是由于太复杂而放弃，光下载、编译、调试足够让人望而却步了，更别说你需要有足够的 C++ 经验。 幸运的是，Bellard 大佬不久便开源用纯 C 实现的轻量且高性能的 QuickJS，这让我重新燃起了学习的热情，这个项目简单到仅仅有高中的 C 语言知识和数据结构就可以阅读。 无论如何，其还是用 C 实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-05T15:09:12.939Z">
+<meta property="article:author" content="XGHeaven">
+<meta property="article:tag" content="QuickJS">
+<meta property="article:tag" content="JSVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            学 QuickJS 太难？不如来看看这个 TypeScript 实现的平替项目
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Wed Jun 05 2024 00:00:00 GMT+0800">
+	
+		    6月 05, 2024
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Frontend/">Frontend</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jsscript"><span class="toc-text">jsscript</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8E-QuickJS-%E7%9A%84%E5%AF%B9%E7%85%A7"><span class="toc-text">与 QuickJS 的对照</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-text">启动流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="toc-text">错误处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E5%A4%9A"><span class="toc-text">更多</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CLI"><span class="toc-text">CLI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#API"><span class="toc-text">API</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="toc-text">基本使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Feature"><span class="toc-text">Feature</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BF%83%E9%87%8C%E8%AF%9D"><span class="toc-text">心里话</span></a></li></ol>
+<p>不知道有多少前端，曾经像我一样，尝试去学习 V8 让自己可以从底层更好的了解 JS 的实现。但是由于太复杂而放弃，光下载、编译、调试足够让人望而却步了，更别说你需要有足够的 C++ 经验。</p>
+<p>幸运的是，Bellard 大佬不久便开源用纯 C 实现的轻量且高性能的 QuickJS，这让我重新燃起了学习的热情，这个项目简单到仅仅有高中的 C 语言知识和数据结构就可以阅读。</p>
+<p>无论如何，其还是用 C 实现的，内部会有很多 C 语言的 hack 写法（为了性能），阅读起来也不是那么的流畅。正巧我就是研究小程序的，小程序内部限制了动态脚本的执行，不如顺势把 QuickJS 迁移到 TypeScript 上，这样在小程序中也可以做到动态脚本执行了！</p>
+<p>于是，这个项目便诞生了，我将其命名为 <code>jsscript</code>，<a target="_blank" rel="noopener" href="https://github.com/XGHeaven/jsscript">https://github.com/XGHeaven/jsscript</a></p>
+<h1 id="jsscript"><a href="#jsscript" class="headerlink" title="jsscript"></a>jsscript</h1><blockquote>
+<p>目前这个项目还在开发中，部分能力缺失，只是我个人能力有限，JS 引擎又是一个很大的内容，很难短时间内完全支持，但最终的目标是不变的。</p>
+</blockquote>
+<p>在立项之初，我了解到社区内有很多类似的项目都可以实现相同的功能，所以在一开始，我就觉得尽量不合他们的特性或者能力重叠，而是将更多的精力放在学习、易用性上：</p>
+<ul>
+<li><p><strong>原生 ES6、ESNext 支持</strong>。截止写文时，<a target="_blank" rel="noopener" href="https://github.com/tc39/test262">test262</a> 覆盖率为 25%。</p>
+</li>
+<li><p><strong>易维护</strong>。项目用纯 TypeScript 编写，所有的操作函数和参数都有完整的类型提示。</p>
+</li>
+<li><p><strong>易阅读</strong>。代码核心逻辑和 QuickJS 几乎无异，核心 API 命名大部分也保持一致，数据结构有所不同，使之更加适合于 TypeScript。</p>
+</li>
+<li><p><strong>易修改</strong>。项目内几乎所有能力都是可插拔的，你甚至可以把所有内置的对象（例如 Array、Function）删除，变身成普通的表达式计算器，按需定制。</p>
+</li>
+<li><p><strong>Tree Shaking 友好</strong>。代码全部以无副作用和函数的方式提供（部分封装会用 class），只要你不用，就不会被打包进去，体积随你所控。</p>
+</li>
+<li><p><strong>架构简易</strong>。所有的事件循环依赖外部环境（例如 Node、Browser）、部分内置对象的原型方法直接代理到外部环境、只支持严格模式等。</p>
+</li>
+</ul>
+<p>有人好奇，为啥我这里没有列出来性能呢？一般这种项目不都是要做到第一的性能么？</p>
+<p>其实，自从我决定将可读性、易用性、灵活性作为首要目标的时候，性能就不再是核心目标了。原因也很简单，这两者很难兼得。当然，性能也会是考虑的点，但不是现在的目标。</p>
+<h1 id="与-QuickJS-的对照"><a href="#与-QuickJS-的对照" class="headerlink" title="与 QuickJS 的对照"></a>与 QuickJS 的对照</h1><h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><p>QuickJS 的基本启动流程可以简单理解为：</p>
+<ul>
+<li><p>创建 Runtime</p>
+<ul>
+<li><p>Runtime 提供了执行 JavaScript 代码所需的基础设施和功能,如内存管理、垃圾收集、事件循环等。</p>
+</li>
+<li><p>Runtime 是整个 JavaScript 执行过程的基础，简单理解就是初始化一个引擎。</p>
+</li>
+</ul>
+</li>
+<li><p>然后通过 Runtime 创建 Context</p>
+<ul>
+<li><p>Context 指的是 JavaScript 代码执行时的执行环境或上下文。</p>
+</li>
+<li><p>这两者之间的关系是一对多的，也就是说一个 Runtime 可以创建多个 Context，Context 之间可以相互访问。</p>
+</li>
+<li><p>之所以这样设计，是因为浏览器中有 iframe，如果没有 Context，每次创建一个 iframe，就需要起一个引擎，这是很浪费的。而引入 Context 可以避免创建多个引擎的情况。</p>
+</li>
+</ul>
+</li>
+<li><p>初始化 Context 内的对象和属性。会初始化各类内建对象和其原型方法，例如 Array、Boolean、String 等。</p>
+</li>
+<li><p>通过 Eval 方法执行代码</p>
+</li>
+</ul>
+<p>在 jsscript 中，大部分流程还是一致的，只不过我们将最后 Eval 的过程拆分成了先编译后运行的过程</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>在 QuickJS 中，所有的 JS 的值都会用一个叫做 JSValue 的结构体表示，它不和任何 Context 或者 Value 绑定，是一个独立的存在，具体的结构体定义这里就不再详细解释。而在 jsscript 中，自然也是沿用了一样的设定，唯一的不同是采用了 TypeScript 的 Tagged Union 而非 C 中的 union，并且采用了更加适合前端的命名规则。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">JSSaftHostValue</span> = <span class="title class_">JSNumberValue</span> | <span class="title class_">JSBoolValue</span> | <span class="title class_">JSStringValue</span> | <span class="title class_">JSUndefinedValue</span> | <span class="title class_">JSNullValue</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">JSHostValue</span> = <span class="title class_">JSSaftHostValue</span> | <span class="title class_">JSSymbolValue</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">JSInstrinsicValue</span> = <span class="title class_">JSHostValue</span> | <span class="title class_">JSObjectValue</span> | <span class="title class_">JSSymbolValue</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">type</span> <span class="title class_">JSValue</span> = <span class="title class_">JSInstrinsicValue</span> | <span class="title class_">JSExpectionValue</span> | <span class="title class_">JSTryContextValue</span></span><br></pre></td></tr></table></figure>
+<p>这里的细节可能会有些多，比如：</p>
+<ul>
+<li><p><code>null</code> 和对象其实是用不同的 tag 表示，虽然 typeof 这两者都返回的是 <code>&quot;object&quot;</code>，但在引擎层面是不一样的</p>
+</li>
+<li><p>所有的 Object 都是使用 JSObjectValue 所表示，不论是普通对象还是函数。当然，在 JSObjectValue 内也会有具体对象类型的细分，但这不在 JSValue 这个层面所讨论的内容。</p>
+</li>
+</ul>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>在 QuickJS 中，错误本身和 JS 内的实现是不同的，引擎将错误状态和错误内容拆分成了两部分：</p>
+<ul>
+<li><p>错误状态会通过一个特殊的 JSValue 实现，在 jsscript 内叫做 JSExceptionValue。</p>
+</li>
+<li><p>错误内容则会直接存储在 runtime 内，也就是说每次运行完想去拿错误信息的时候，需要去 runtime 上拿，而不是直接从返回的 value 中获取。</p>
+</li>
+</ul>
+<p>所以在引擎的实现过程中，如果你想表示某个过程发生了错误，只需要：</p>
+<ul>
+<li><p>创建错误对象，并存储到 runtime 中</p>
+</li>
+<li><p>返回 JSExceptionValue，告知调用者，这里有错误</p>
+</li>
+</ul>
+<p>所以，当我们尝试调用一个函数的时候，都需要先检查返回值是否为错误，虽然这很麻烦，但这是必要的做法。（Golang 开发者是不是很眼熟，捂脸）</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">JSDiv</span>(<span class="params">ctx, leftVal, rightVal</span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> left = <span class="title class_">JSToNumber</span>(ctx, leftVal)</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_">isExceptionValue</span>(left)) &#123;</span><br><span class="line">		<span class="comment">// 检查错误，如果出错了，就直接返回就好</span></span><br><span class="line">		<span class="keyword">return</span> left</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">const</span> right = <span class="title class_">JSToNumber</span>(ctx, rightVal)</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_">isExceptionValue</span>(right)) &#123;</span><br><span class="line">		<span class="keyword">return</span> right</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="title function_">createNumberValue</span>(left.<span class="property">value</span> - right.<span class="property">value</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>更多内容可以看源码，包括如何创建值、新增属性、函数调用等。</p>
+<p>进入 <a target="_blank" rel="noopener" href="https://github.com/XGHeaven/jsscript/tree/main/src">https://github.com/XGHeaven/jsscript/tree/main/src</a> 文件夹之后，可以按照入口（Runtime）的方式阅读，也可以按照文件命名的方式，找寻自己好奇的那部分点进去看即可。</p>
+<h1 id="CLI"><a href="#CLI" class="headerlink" title="CLI"></a>CLI</h1><p>最简单的体验的方式，就是安装 CLI</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局安装</span></span><br><span class="line">npm install @xgheaven/jsscript -g</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行脚本</span></span><br><span class="line">jsscript run file.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// script.js</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">fn</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">	<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> + <span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">fn</span>()</span><br></pre></td></tr></table></figure>
+<p>不过目前还有些问题还没有处理：</p>
+<ul>
+<li><p>不支持 REPL</p>
+</li>
+<li><p>不支持模块，只能运行单一脚本</p>
+</li>
+<li><p>部分 API 缺失，不确保能够运行所有脚本</p>
+</li>
+</ul>
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><blockquote>
+<p>目前 API 的定义都处于 unstable 状态，预计后续会大改，目前仅限于了解和学习即可，请勿在生产环境使用。</p>
+</blockquote>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Runtime</span>, <span class="title class_">Features</span>, parseScript, parseBytecode, toHostValue &#125; <span class="keyword">from</span> <span class="string">&#x27;@xgheaven/jsscript&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> runtime = <span class="keyword">new</span> <span class="title class_">Runtime</span>(&#123;</span><br><span class="line">  <span class="attr">features</span>: [</span><br><span class="line">	  <span class="comment">// 注入所有在 ECMA262 中定义的方法</span></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Features</span>.<span class="title class_">ECMA262Feature</span>(),</span><br><span class="line">    <span class="comment">// 注入和系统相关，例如 setTimeout 等</span></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Features</span>.<span class="title class_">OsFeature</span>(),</span><br><span class="line">  ],</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> context = runtime.<span class="title function_">newContext</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> script = <span class="string">`&lt;your-script&gt;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 直接解析成函数</span></span><br><span class="line"><span class="keyword">const</span> fn = <span class="title function_">parseScript</span>(context, script)</span><br><span class="line"><span class="comment">// 或者分成两步，先解析为字节码，然后再将字节码解析成函数。</span></span><br><span class="line"><span class="comment">// 字节码是可序列化的，你可以将其 stringify 之后存储下来，方便下次直接使用</span></span><br><span class="line"><span class="keyword">const</span> bc = <span class="title function_">compileToBytecode</span>(script)</span><br><span class="line"><span class="keyword">const</span> fn = <span class="title function_">parseBytecode</span>(context, bc)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 运行刚才生成的函数</span></span><br><span class="line"><span class="keyword">const</span> ret = context.<span class="title function_">run</span>(fn)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值是 vm 内的值，需要通过 toHostValue 转换成 JS 可识别的对象</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">toHostValue</span>(ret))</span><br></pre></td></tr></table></figure>
+<h2 id="Feature"><a href="#Feature" class="headerlink" title="Feature"></a>Feature</h2><p>Feature 是灵活性的根本，vm 内的各种行为和功能，都可以通过 Feature 的方式进行组合和定制。</p>
+<p>目前提供以下几种：</p>
+<ul>
+<li><p><code>ECMA262Feature</code> 提供 ECMA262 规范中提供的对象，例如 Array/Boolean/String 等构造函数和其原型方法。如果不引用这个，VM 环境内将不会有这些构造函数和相关的原型方法，但是并不影响其字面量的使用。</p>
+</li>
+<li><p><code>JobSchedulerFeature</code> 用于提供 Promise 的任务调度，如果代码不曾使用 Promise，则无需引用。当然，你也可以定义自己的任务调度方法</p>
+</li>
+<li><p><code>BrowserFeature</code> 用于一定程度上模拟浏览器的环境，例如 window 对象</p>
+</li>
+<li><p><code>OsFeature</code> 提供和系统交互的一些方法，例如 setTimeout 等</p>
+</li>
+</ul>
+<p>除了以上几种，也可以自定义 Feature：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">Feature</span>, createNumberValue &#125; <span class="keyword">from</span> <span class="string">&#x27;@xgheaven/jsscript&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DemoFeature</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Feature</span> &#123;</span><br><span class="line">	<span class="title function_">initContext</span>(<span class="params">ctx</span>) &#123;</span><br><span class="line">		<span class="comment">// Context 初始化回调，你可以注入任何你想要的东西</span></span><br><span class="line">		<span class="comment">// 在 VM 内的全局对象中注册一个 xxx 的全局属性</span></span><br><span class="line">		ctx.<span class="title function_">defineGlobalValue</span>(<span class="string">&#x27;xxx&#x27;</span>, <span class="title function_">createNumberValue</span>(<span class="number">1</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="title function_">initRuntime</span>(<span class="params">rt</span>) &#123;</span><br><span class="line">		<span class="comment">// Runtime 初始化回调</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> runtime = <span class="keyword">new</span> <span class="title class_">Runtime</span>(&#123; <span class="attr">features</span>: [<span class="keyword">new</span> <span class="title class_">DemoFeature</span>] &#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="心里话"><a href="#心里话" class="headerlink" title="心里话"></a>心里话</h1><p>其实吧，这个项目主要还是以个人学习目的为准，目前没有准确的实用目标。如果你看完之后觉得一般般，我完全表示理解，因为本身就没有特别出众的功能和能力。</p>
+<p>但如果你也对 JSVM 感兴趣，又奈何很难、没时间直接学习 QuickJS/V8，可以尝试来一起来学习和实现。</p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/JSVM/" rel="tag">JSVM</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/QuickJS/" rel="tag">QuickJS</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2023/06/14/use-dom-to-improve-double-performance-in-mini-program/" data-tooltip="返璞归真「DOM」兼容接口的引入让飞书小程序性能获得 2 倍以上的提升">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2023/06/14/use-dom-to-improve-double-performance-in-mini-program/" data-tooltip="返璞归真「DOM」兼容接口的引入让飞书小程序性能获得 2 倍以上的提升">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'https://blog.xgheaven.com/2024/06/05/jsscript-for-learning-quickjs/';
+                 
+                    this.page.identifier = '2024/06/05/jsscript-for-learning-quickjs/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xgheaven-blog';
+                s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

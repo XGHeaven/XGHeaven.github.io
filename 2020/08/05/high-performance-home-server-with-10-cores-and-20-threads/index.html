@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://blog.xgheaven.com/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/b0816a31-4345-45bd-a47b-41dd1846f9a6.jpg">
 <meta property="og:image" content="https://blog.xgheaven.com/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/10269076-e461-432e-a4b1-8dfc41ed4cff.jpg">
 <meta property="article:published_time" content="2020-08-04T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:51:09.759Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.640Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="捡垃圾">
 <meta property="article:tag" content="Home Server">
@@ -324,7 +324,7 @@
 </li>
 </ul>
 <p>整机装好 unraid 系统后空盘待机功耗 35W 左右，CPU 温度 40 度；系统满载在 130W 左右，温度 75 度左右。整体来说我是非常满意的，因为我另外一台 j1900 的 nas 待机也要 15W，虽然高了 20W 但是带来的性能提升可不止 20W 这么一点。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/8e97a58c-76fe-4688-8d44-52e5f8aa8c1d.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/8e97a58c-76fe-4688-8d44-52e5f8aa8c1d.jpg" class="">
 <p>可能你会有很多疑惑，为什么要搞这个，为什么选用这样的配置，那么接下来让我一一来解释下我为啥选用这套配置，也给想要相同想法的朋友一个选择方案。</p>
 <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>在具体讲选择配件过程中，我们现在对齐目标，只有我们的目标相同，才能更好的理解我为什么选择这套配置：</p>
 <ul>
@@ -351,11 +351,11 @@
 <p>说道这里，可能就有人会说 AMD 线程撕裂者不香么。确实，当初看到觉得特别符合我的要求，核心多单核强，但问题就在于这玩意上万块啊，就算是线程撕裂者一代，也要 1w，这对于我来说太难以接受了。</p>
 <p>逛了一圈，实在是找不到，于是我不得不降低要求，就是放弃消费级别 CPU。一是因为没有核心数合适的，在锐龙以前的时代，intel 一直在四核心徘徊，就算是在锐龙之后，intel 的核心数也少。而锐龙核心够，但这又牵扯出另外一个问题，就是消费级别的 U 实在是贵啊，7700K 都还 1800 块呢，想要搞个便宜的，只能去找 4 代 3 代的 intel U，但这个时代的 U 和 E5 洋垃圾也差不多。所以最后将目光投向了服务器 E5 洋垃圾</p>
 <p>而 E5 最难选择的其实就是 v2 系列还是 v3 系列了。v2 系列意味着可以用 DDR3 内存以及更便宜的主板，但是他的待机功耗要大不少。但 v3 系列相比要用更贵的 DDR4 内存和主板，但他的性能更强，待机功耗更低。具体对比可以看图</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/bd1c55d9-6b74-4442-b07b-c8bae4f3d38f.png">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/bd1c55d9-6b74-4442-b07b-c8bae4f3d38f.png" class="">
 <p>可以发现，同样是 2660，v3 比 v2 的性能提升了 20% 还要多，单核心性能比 r5 1600 来说才低了 20% 左右，比我想象中的好多了，一般来说同代的服务器都要比同代的消费级性能至少低 30% 多，如果是更高端的消费级可能要低 50%。而且总分更是比万元的 1900x 一代线程撕裂者还要高。</p>
 <p>当然了，这里应该拿 intel 的做对比，拿 AMD 不太恰当，AMD 本身同代单核就比 intel 低不少，不过我手上只有 AMD 的 u，所以就拿 AMD 的来对比了。</p>
 <p>那我为啥选择 2660 而不是 2650 或者 2678 呢？其实原因很简单，2650 以上基本就符合我的需求了，但是我发现 2660 竟然比 2650 还要便宜，那为啥不用 2660 呢？如果等以后我对性能有更高要求的时候，再换也不迟。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/cc377345-f967-44e2-aa29-e0bd973fef47.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/cc377345-f967-44e2-aa29-e0bd973fef47.jpg" class="">
 <h2 id="准系统？"><a href="#准系统？" class="headerlink" title="准系统？"></a>准系统？</h2><p>在考虑的过程中，我也曾经看过一些准系统，二手服务器 dell r620 r730xd 准系统、二手的塔式服务器准系统，但都被我 pass 掉了，主要原因是：</p>
 <ul>
 <li><p>二手塔式服务器太贵了，光一个准系统就要 3000+ 了，而且还是 v2 的 u。</p>
@@ -369,7 +369,7 @@
 <p>支持 V3 的主板基本有两种，一种是国产的寨板，另外一种就是拆机的服务器主板。</p>
 <p>寨板有一个最大的好处，就是便宜，基本上五六百就可以搞定，但是缺点就是可扩展性太差了，内存插槽少，SATA 少，PCI-E 更少，而且还容易 BOOM，最终我放弃了寨板</p>
 <p>那就只有拆机服务器主板可以选了，这其中就有微星、华硕的可以选，我最后选定了华硕 z10pa-u8 10g-2s 只有一个原因，便宜。微星的拆机件某宝基本上要 2000 左右，而话说的这个只需要 1400 多，运气好的话还能找到 1200 多的，就比如我下单的这个，而且还是湖北店铺，就当支持湖北朋友了。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/9f6dbdfa-8022-4228-a125-1716e8f266eb.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/9f6dbdfa-8022-4228-a125-1716e8f266eb.jpg" class="">
 <p>简答介绍一下我这个主板，大家来感受下这 1200 块到底值不值：</p>
 <ul>
 <li><p>双板载千兆网卡，双板载万兆网卡，一个 IPMI 管理端口（板载万兆啊，普通的万兆扩展卡都要三四百呢，注意，不是所有的板子都有万兆网卡的，不带 10g-2s 的就没有）</p>
@@ -390,11 +390,11 @@
 <p>于是我就去看了看普通的塔式机箱，基本上比较符合我的心意，最多有 10 盘位的，支持 E-ATX 主板，而且价钱也才 300 多块，最主要是能够支持普通的机箱配件，而且还有一定的热插拔能力。简直太完美了，唯一的缺点就是外观不够有范</p>
 <p>直到有一天无意间看到 4u 的工控机箱，发现这玩意好帅气，很符合我对一个服务器的定位。虽然只有 7 盘位，但是配合光驱位也能有 10 盘位。最主要的这个带钥匙，就不用怕我家里的猫一不小心碰到开关就给我关机了。而且体积比塔式的还要小巧一点，毕竟是租的方式，能小一点是一点，不过就是损失了热插拔的能力。好在价格更便宜，而且还躺着，于是心血来潮的我就定了这款机箱。</p>
 <p>PS：在我实际装机之后，我觉得奉劝大家，还是塔式的好啊，工控机内部走线实在是太难了，没有热插拔能力测试的时候太难了。不过样子很好看，很有感觉，一次装机之后只要是不加硬盘基本不会动他了，也算是能接受吧。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/1c55d487-c227-4f3e-a069-c62aa0abaa7a.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/1c55d487-c227-4f3e-a069-c62aa0abaa7a.jpg" class="">
 <h2 id="其他配件"><a href="#其他配件" class="headerlink" title="其他配件"></a>其他配件</h2><p>其他的配件基本上就是随便买的，内存选了 2133 频率的，为了保证兼容性。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/b0816a31-4345-45bd-a47b-41dd1846f9a6.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/b0816a31-4345-45bd-a47b-41dd1846f9a6.jpg" class="">
 <p>有个好玩的事情就是电源，原本想买个金牌的 450W 直出电源就够了，毕竟就几个硬盘，最多可能外加一个计算卡，其他的也不会需要了。但正好赶上 618 活动，550W 金牌全模比 450W 金牌直出还便宜，于是我就买了 550W 了。但后来经过朋友提醒，想起来有个最佳转换效率区间，如果负载太低的话，就算是金牌，转换效率也不会太高的，理论上搞个 200W 就够了。</p>
-<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/10269076-e461-432e-a4b1-8dfc41ed4cff.jpg">
+<img src="/2020/08/05/high-performance-home-server-with-10-cores-and-20-threads/10269076-e461-432e-a4b1-8dfc41ed4cff.jpg" class="">
 <p>哎，就这样吧，买都买了。</p>
 <h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>一切装好之后，我就安装了 unraid 作为宿主系统，原因很简单：</p>
 <ul>
@@ -503,7 +503,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

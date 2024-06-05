@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://blog.xgheaven.com/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/d818bba2-d78d-48eb-aae8-94d54e0ed449.png">
 <meta property="og:image" content="https://blog.xgheaven.com/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/9593b7a1-4bec-492e-8d87-ebf66c65e8b2.png">
 <meta property="article:published_time" content="2021-01-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:51:09.886Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.647Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="小程序">
 <meta property="article:tag" content="NFC">
@@ -315,7 +315,7 @@
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
             <blockquote>
-<p>本文主要是以「飞书」小程序为准，兼容「微信」小程序，如果没有了解过「飞书」的同学，可以<a href="https://www.feishu.cn/" target="_blank" rel="noopener">点击此处</a>去官网了解</p>
+<p>本文主要是以「飞书」小程序为准，兼容「微信」小程序，如果没有了解过「飞书」的同学，可以<a target="_blank" rel="noopener" href="https://www.feishu.cn/">点击此处</a>去官网了解</p>
 </blockquote>
 <h2 id="什么是-NFC"><a href="#什么是-NFC" class="headerlink" title="什么是 NFC"></a>什么是 NFC</h2><p><strong>近距离无线通信</strong>（英语：Near-field communication，NFC），又简称<strong>近距离通信</strong>或<strong>近场通信</strong>，是一套通信协议，让两个电子设备（其中一个通常是移动设备，例如智能手机）在相距几厘米之内进行通信。</p>
 <p>近场通信技术由非接触式射频识别（RFID）演变而来，由飞利浦半导体（现恩智浦半导体，缩写 NXP）、诺基亚和索尼共同于2004年研制开发，其基础是RFID及互连技术。近场通信是一种短距高频的无线电技术，在13.56MHz频率运行于20厘米距离内。其传输速度有106 Kbit/秒、212 Kbit/秒或者424 Kbit/秒三种。</p>
@@ -330,7 +330,7 @@
 <li><p>现在很常见的比如 Apple Pay，BYD NFC 钥匙，都是能够实现在断电情况下的刷卡</p>
 </li>
 </ul>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/7d10579f-6855-49b3-adca-4a1d4ffe1b6e.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/7d10579f-6855-49b3-adca-4a1d4ffe1b6e.png" class="">
 <p><strong>主机模拟模式</strong></p>
 <ul>
 <li><p>该模式与卡模拟模式很类似，只不过卡模拟无需供电或者说无需 App 的参与就可以完成，但是主机模拟模式是不行的，他是通过将所有的消息转发给应用，由应用去决定该模拟什么内容，也就说该返回什么内容</p>
@@ -338,7 +338,7 @@
 <li><p>现阶段很多支付钱包，比如云闪付、京东闪付等等都是通过该模式实现的。</p>
 </li>
 </ul>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/32aa547c-ce6a-40e1-8b2c-454dba2caa87.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/32aa547c-ce6a-40e1-8b2c-454dba2caa87.png" class="">
 <p><strong>读卡写卡模式</strong></p>
 <ul>
 <li><p>NFC手机可以通过触碰NFC标签（Tag），从中读取非接触标签中的内容，采集数据并发送到对应的应用进行处理。</p>
@@ -346,7 +346,7 @@
 <li><p>最常见的应用其实就是华为的一碰系列，除此之外，支付宝支持直接读取信用卡、储蓄卡的卡号。</p>
 </li>
 </ul>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/2a9b4dd4-545c-43c5-8b37-104f9ea93403.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/2a9b4dd4-545c-43c5-8b37-104f9ea93403.png" class="">
 <p><strong>P2P 模式</strong></p>
 <ul>
 <li><p>两个NFC设备可以近距离内互相连接，直接传递数据，实现点对点数据传输。</p>
@@ -356,7 +356,7 @@
 <li><p>最常见的是手机互传、Android Beam。</p>
 </li>
 </ul>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/6830ab77-4423-45d4-a4f2-30703d8ace5a.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/6830ab77-4423-45d4-a4f2-30703d8ace5a.png" class="">
 <h3 id="协议标准类型"><a href="#协议标准类型" class="headerlink" title="协议标准类型"></a><strong>协议标准类型</strong></h3><p>因为 NFC 的发展过程的原因，曾经出现过多个协议，甚至每家公司都有不同的协议内容。但现在主要是有一下几个协议标准：</p>
 <p><strong>ISO / IEC</strong></p>
 <p>主要定义了一下几个协议：</p>
@@ -372,13 +372,13 @@
 <p>ISO-14443 协议有两个子类，分别是 Type-A 和 Type-B，这两个在 Android 也被称为 NFC-A 和 NFC-B。</p>
 <p>但不幸的是，这些协议也不能免费看，要花钱的</p>
 <p><strong>NFC Forum</strong></p>
-<p><a href="https://nfc-forum.org/" target="_blank" rel="noopener">NFC Forum</a> 是一个在 2004 年创建的非盈利行业协会，其成员来自NFC生态系统的各个部分。另外我主要关注了下国内公司，比较知名的有小米、中国移动通讯。</p>
+<p><a target="_blank" rel="noopener" href="https://nfc-forum.org/">NFC Forum</a> 是一个在 2004 年创建的非盈利行业协会，其成员来自NFC生态系统的各个部分。另外我主要关注了下国内公司，比较知名的有小米、中国移动通讯。</p>
 <p>但是你想要从该组织获取任何关于 NFC 相关的技术标准，首先你的公司要成为该组织的成员才行，因为字节根本不在该组织，所以没法从这里获得一手的信息。</p>
 <p>不过办法也是有的，该协会的创办者 NXP 公司网站上是有相关的数据资源，后文的参考此资源。</p>
 <p><strong>其他</strong></p>
 <p>不用管.jpg</p>
 <h3 id="沟通协议"><a href="#沟通协议" class="headerlink" title="沟通协议"></a><strong>沟通协议</strong></h3><p>以 NFC-A 为例</p>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/f4d39ae5-9c5e-4f4e-8b22-9cbc17cedd14.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/f4d39ae5-9c5e-4f4e-8b22-9cbc17cedd14.png" class="">
 <p>整个 NFC 卡片其实内部就是一个有限状态机，根据当前不同的状态需要不同的操作。这个图看起来很复杂，其实主要额外包含了两个操作：</p>
 <ul>
 <li><p>密码校验</p>
@@ -401,7 +401,7 @@
 <p>当没有上面两个操作的时候，可以简单的执行 IDLE -&gt; ACTIVE -&gt; HALT 的状态流程，也就是说连接、操作（也就是读写）、关闭。</p>
 <h3 id="存储设计"><a href="#存储设计" class="headerlink" title="存储设计"></a><strong>存储设计</strong></h3><p>NFC 在存储上设计了页的概念，一个页表示 4 个字节，以页为最小单位进行操作。所以 NFC 卡片的存储容量其实都是 4 的整数倍。</p>
 <p>这里以 NTAG213 180 字节的存储结构为例</p>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/d818bba2-d78d-48eb-aae8-94d54e0ed449.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/d818bba2-d78d-48eb-aae8-94d54e0ed449.png" class="">
 <p>这里只需要关注两点：</p>
 <ul>
 <li><p>用户数据存储的空间是从第四页开始</p>
@@ -422,11 +422,11 @@
 <h2 id="NFC-卡片"><a href="#NFC-卡片" class="headerlink" title="NFC 卡片"></a>NFC 卡片</h2><p>在有了设备之后，还要选择正确的 NFC 卡片，因为不是任意一个 NFC 卡片都是可以用的，比如工牌、银行卡等等。这是因为 NFC 卡片是带有加密的，在操作之前必须要通过验证才能操作，所以建议去淘宝买一些可读可写无加密的 NFC 贴纸用于测试。</p>
 <p>不过你在淘宝上买的可能是写着 NTAG213 的型号，其实这个是 NXP 出的一款设备，但是支持兼容 ISO NFC-A 协议以及 NFC Forum Type 2 协议，所以大家可以放心使用。</p>
 <p>当然了，你也可能看到 NTAG215/NTAG216，这两个都没有任何区别，只是存储空间不同而已。</p>
-<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/9593b7a1-4bec-492e-8d87-ebf66c65e8b2.png">
+<img src="/2021/01/02/the-quick-start-about-develop-nfc-in-mini-program/9593b7a1-4bec-492e-8d87-ebf66c65e8b2.png" class="">
 <h2 id="小程序-API"><a href="#小程序-API" class="headerlink" title="小程序 API"></a>小程序 API</h2><p>此时在有了上述的基础知识后，别急，还要了解下小程序的 API 才能更好的开发。</p>
 <p>就目前来说，所有与 NFC 相关的操作都被封装到了 <code>NfcAdaptar</code> 类中，通过 <code>tt.getNFCAdaptar()</code> 获取 <code>nfcAfaptar</code> 对象。</p>
 <blockquote>
-<p>具体的 API 参数细节请参考「<a href="https://open.feishu.cn/document/uYjL24iN/ugTN4YjL4UDO24CO1gjN" target="_blank" rel="noopener">飞书开放平台</a>」</p>
+<p>具体的 API 参数细节请参考「<a target="_blank" rel="noopener" href="https://open.feishu.cn/document/uYjL24iN/ugTN4YjL4UDO24CO1gjN">飞书开放平台</a>」</p>
 </blockquote>
 <h3 id="NFC-整体流程"><a href="#NFC-整体流程" class="headerlink" title="NFC 整体流程"></a><strong>NFC 整体流程</strong></h3><ul>
 <li><p>注册 NFC 发现事件回调 <code>nfcAdaptar.onDiscovered</code></p>
@@ -489,15 +489,15 @@
 </tbody>
 </table>
 <p>比如我要读取第四页的数据，可以写如下代码</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nfca.transceive(&#123;</span><br><span class="line">    data: <span class="keyword">new</span> <span class="built_in">Uint8Array</span>([<span class="number">0x30</span>, <span class="number">0x04</span>]).buffer, <span class="comment">// 必须要传入 ArrayBuffer</span></span><br><span class="line">    success: <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// res.data 是 ArrayBuffer，转成数组方便查看</span></span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Uint8Array</span>(res.data))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>根据协议，其实还要传 <a href="CRC:2B" target="_blank" rel="noopener">CRC:2B</a>，也就是校验位，不过这个操作已经由 Android 去做掉了，所以就不需要传了，也不需要去了解校验算法</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nfca.<span class="title function_">transceive</span>(&#123;</span><br><span class="line">    <span class="attr">data</span>: <span class="keyword">new</span> <span class="title class_">Uint8Array</span>([<span class="number">0x30</span>, <span class="number">0x04</span>]).<span class="property">buffer</span>, <span class="comment">// 必须要传入 ArrayBuffer</span></span><br><span class="line">    <span class="attr">success</span>: <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// res.data 是 ArrayBuffer，转成数组方便查看</span></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Array</span>.<span class="title function_">from</span>(<span class="keyword">new</span> <span class="title class_">Uint8Array</span>(res.<span class="property">data</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>根据协议，其实还要传 <a href="CRC:2B">CRC:2B</a>，也就是校验位，不过这个操作已经由 Android 去做掉了，所以就不需要传了，也不需要去了解校验算法</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，NFC 开发算是入门了，不过这里要注意不同的 NFC 卡片不同的协议会有不同的读写方式，这里要根据你们各自具体的卡片来看。而且有的还有密码保护，还需要额外再走校验的逻辑。</p>
 <h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><ul>
-<li><p><a href="https://blog.csdn.net/xiaozy115/article/details/103171143" target="_blank" rel="noopener">NFC 简介 - CSDN</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiaozy115/article/details/103171143">NFC 简介 - CSDN</a></p>
 </li>
-<li><p><a href="https://bitexperts.com/Question/Detail/3360/difference-between-iso-14443-and-iso-18092-i-e-rfid-vs-nfc" target="_blank" rel="noopener">Difference between ISO 14443 and ISO 18092, i.e. RFID vs NFC</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://bitexperts.com/Question/Detail/3360/difference-between-iso-14443-and-iso-18092-i-e-rfid-vs-nfc">Difference between ISO 14443 and ISO 18092, i.e. RFID vs NFC</a></p>
 </li>
-<li><p><a href="https://www.nxp.com.cn/docs/en/data-sheet/NTAG213_215_216.pdf" target="_blank" rel="noopener">NTAG213 协议文档</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://www.nxp.com.cn/docs/en/data-sheet/NTAG213_215_216.pdf">NTAG213 协议文档</a></p>
 </li>
 </ul>
 
@@ -590,7 +590,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

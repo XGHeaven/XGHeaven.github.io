@@ -272,77 +272,100 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2018/04/16/nest-js-try-first/">
-                            Nest.js 入手以及企业化的思考
+                        <a class="link-unstyled" href="/2017/12/30/Reflect-metadata/">
+                            Reflect-Metadata 详解
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Mon Apr 16 2018 01:18:00 GMT+0800">
+    <time itemprop="datePublished" content="Sat Dec 30 2017 00:00:00 GMT+0800">
 	
-		    4月 16, 2018
+		    12月 30, 2017
     	
     </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Frontend/">Frontend</a>
+
+
     
 </div>
             </div>
             
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <blockquote>
-<p>本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async/Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。</p>
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metadata"><span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reflect-Metadata"><span class="toc-text">Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-%E4%BD%BF%E7%94%A8"><span class="toc-text">安装&#x2F;使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB-%E5%B1%9E%E6%80%A7-%E6%96%B9%E6%B3%95-%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-text">类&#x2F;属性&#x2F;方法 装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%9F%A5%E6%89%BE"><span class="toc-text">原型链查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E9%80%94"><span class="toc-text">用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#API"><span class="toc-text">API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5-Reflect-Metadata"><span class="toc-text">深入 Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">实现原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#End"><span class="toc-text">End</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="toc-text">题外话</span></a></li></ol>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在 ES6 的规范当中，就已经存在 <code>Reflect</code> API 了。简单来说这个 API 的作用就是可以实现对变量操作的函数化，也就是反射。具体的关于这个 API 的内容，可以查看这个<a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/#docs/reflect">教程</a></p>
+<p>然而我们在这里讲到的，却是 <code>Reflect</code> 里面还没有的一个规范，那么就是 <code>Reflect Metadata</code>。</p>
+<h2 id="Metadata"><a href="#Metadata" class="headerlink" title="Metadata"></a>Metadata</h2><p>想必对于其他语言的 Coder 来说，比如说 Java 或者 C#，Metadata 是很熟悉的。最简单的莫过于通过反射来获取类属性上面的批注（在 JS 当中，也就是所谓的装饰器）。从而可以更加优雅的对代码进行控制。</p>
+<p>而 JS 现在有<a target="_blank" rel="noopener" href="https://github.com/tc39/proposal-decorators">装饰器</a>，虽然现在还在 <code>Stage2</code> 阶段。但是 JS 的装饰器更多的是存在于对函数或者属性进行一些操作，比如修改他们的值，代理变量，自动绑定 this 等等功能。</p>
+<blockquote>
+<p>所以，后文当中我就使用 TypeScript 来进行讲解，因为 TypeScript 已经完整的实现了装饰器。<br>虽然 Babel 也可以，但是需要各种配置，人懒，不想配置那么多。</p>
 </blockquote>
-<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a href="https://nestjs.com/" target="_blank" rel="noopener">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
+<p>但是却无法实现通过反射来获取究竟有哪些装饰器添加到这个类/方法上。</p>
+<p>于是 <code>Reflect Metadata</code> 应运而生。</p>
+<h2 id="Reflect-Metadata"><a href="#Reflect-Metadata" class="headerlink" title="Reflect Metadata"></a>Reflect Metadata</h2><p>Relfect Metadata，简单来说，你可以通过装饰器来给类添加一些自定义的信息。然后通过反射将这些信息提取出来。当然你也可以通过反射来添加这些信息。<br>就像是下面这个例子所示。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">hello</span>(): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, A) <span class="comment">// &#x27;A&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="keyword">new</span> <span class="title function_">A</span>()) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="comment">// 这里为什么要用 new A()，用 A 不行么？后文会讲到</span></span><br></pre></td></tr></table></figure>
+<p>是不是很简单，那么我简单来介绍一下~</p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>首先，在这里有四个概念要区分一下：</p>
+<ol>
+<li><p><code>Metadata Key</code> {Any} 后文简写 <code>k</code>。元数据的 Key，对于一个对象来说，他可以有很多元数据，每一个元数据都对应有一个 Key。一个很简单的例子就是说，你可以在一个对象上面设置一个叫做 <code>&#39;name&#39;</code> 的 Key 用来设置他的名字，用一个 <code>&#39;created time&#39;</code> 的 Key 来表示他创建的时间。这个 Key 可以是任意类型。在后面会讲到内部本质就是一个 <code>Map</code> 对象。</p>
+</li>
+<li><p><code>Metadata Value</code> {Any} 后文简写 <code>v</code>。元数据的类型，任意类型都行。</p>
+</li>
+<li><p><code>Target</code> {Object} 后文简写 <code>o</code>。表示要在这个对象上面添加元数据</p>
+</li>
+<li><p><code>Property</code> {String|Symbol} 后文简写 <code>p</code>。用于设置在那个属性上面添加元数据。大家可能会想，这个是干什么用的，不是可以在对象上面添加元数据了么？其实不仅仅可以在对象上面添加元数据，甚至还可以在对象的属性上面添加元数据。其实大家可以这样理解，当你给一个对象定义元数据的时候，相当于你是默认指定了 <code>undefined</code> 作为 Property。下面有一个例子大家可以看一下。</p>
+</li>
+</ol>
+<p>大家明白了上面的概念之后，我之前给的那个例子就很简单了~不用我多说了。</p>
+<h3 id="安装-使用"><a href="#安装-使用" class="headerlink" title="安装/使用"></a>安装/使用</h3><p>下面不如正题，我们怎么开始使用 <code>Reflect Metadata</code> 呢？<br>首先，你需要安装 <code>reflect-metadata</code> polyfill，然后引入之后就可以看到在 <code>Reflect</code> 对象下面有很多关于 Metadata 的函数了。因为这个还没有进入正式的协议，所以需要安装垫片使用。</p>
+<blockquote>
+<p>啥，Reflect 是啥，一个全局变量而已。</p>
+</blockquote>
+<p>你不需要担心这个垫片的质量，因为连 Angular 都在使用呢，你怕啥。</p>
+<p>之后你就可以安装我上面写的示例，在 TypeScript 当中去跑了。</p>
+<h3 id="类-属性-方法-装饰器"><a href="#类-属性-方法-装饰器" class="headerlink" title="类/属性/方法 装饰器"></a>类/属性/方法 装饰器</h3><p>看这个例子。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> objs = [A, <span class="keyword">new</span> A, A.<span class="property"><span class="keyword">prototype</span></span>]</span><br><span class="line"><span class="keyword">const</span> res = objs.<span class="title function_">map</span>(<span class="function"><span class="params">obj</span> =&gt;</span> [</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj, <span class="string">&#x27;hello&#x27;</span>),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj ,<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">])</span><br><span class="line"><span class="comment">// 大家猜测一下 res 的值会是多少？</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>想好了么？再给你 10 秒钟</p>
+</blockquote>
+<blockquote>
+<p>10<br>9<br>8<br>7<br>6<br>5<br>4<br>3<br>2<br>1</p>
+</blockquote>
+<p>res</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [<span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>],</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>那么我来解释一下为什么回是这样的结果。</p>
+<p>首先所有的对类的修饰，都是定义在类这个对象上面的，而所有的对类的属性或者方法的修饰，都是定义在类的原型上面的，并且以属性或者方法的 key 作为 property，这也就是为什么 <code>getMetadata</code> 会产生这样的效果了。</p>
+<p>那么带 <code>Own</code> 的又是什么情况呢？</p>
+<p>这就要从元数据的查找规则开始讲起了</p>
+<h3 id="原型链查找"><a href="#原型链查找" class="headerlink" title="原型链查找"></a>原型链查找</h3><p>类似于类的继承，查找元数据的方式也是通过原型链进行的。</p>
+<p>就像是上面那个例子，我实例化了一个 <code>new A()</code>，但是我依旧可以找到他原型链上的元数据。</p>
+<p>举个例子</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> t1 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="keyword">const</span> t2 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">defineMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t1, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// undefined</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>其实所有的用途都是一个目的，给对象添加额外的信息，但是不影响对象的结构。这一点很重要，当你给对象添加了一个原信息的时候，对象是不会有任何的变化的，不会多 property，也不会有的 property 被修改了。<br>但是可以衍生出很多其他的用途。</p>
 <ul>
-<li>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</li>
-<li>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</li>
-<li>依赖注入。从 Angular 那里学习而来，但是进行了一些简化，但是完全够用。比如说简化掉了 deps。</li>
-<li>模块思想。Node 社区的后端框架，其实都被 Express 导向到了中间件的模式。而 Nest.js 却从 Angular 当中吸取到了模块的思想。不同的 Service、Controller、Component 组成不同的模块。模块之间可以相互依赖，也可以独立存在，这大大减少了测试和逻辑的复杂度。</li>
-<li>易于扩展。以往的框架，你能做的就是编写业务逻辑，而其他的你都很难去做到。于是传统的后端框架不得不引入了一套插件机制来增强框架的扩展性。但是 Nest.js 将插件的功能直接内置到了框架当中。传统的插件在这里可以认为就是一个模块，通过加载不同的模块来添加不同的功能。</li>
-<li>Express 基石。有人会说，不是现在 Koa 才是更好的模型么？洋葱模型可以解决更多复杂的问题。没错，我不反对这个言论。但是我想说的是，Express 还是最简单最通用的方式，因为他不赖 Generator/Promise，只需要你又一个 Node.js 运行环境，支持 Callback 就可以了。（话说应该没有不支持 Callback 的 Node.js 环境吧，哈哈哈）不管怎么样，Express 的覆盖面还是比 Koa 要广不少。</li>
-<li>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</li>
-<li>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</li>
-<li>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</li>
-<li>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a href="https://docs.nestjs.com/pipes" target="_blank" rel="noopener">教程</a></li>
-<li>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</li>
-<li>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</li>
-</ul>
-<h2 id="Nest-js-企业化当中的问题"><a href="#Nest-js-企业化当中的问题" class="headerlink" title="Nest.js 企业化当中的问题"></a>Nest.js 企业化当中的问题</h2><ul>
-<li>目录无约束。在企业当中，不对目录进行约束会导致代码越来越乱。从而降低了代码可维护性。</li>
-<li>没有配置管理功能。在框架开发中，配置往往是一个很重要的功能。比如说配置数据库的连接，配置监听的端口。</li>
-<li>没有进程管理。虽然有提供 <code>@nestjs/cli</code>，但是这个提供的仅仅是一个项目的创建的能力。</li>
-<li>部分文档讲解不详细，会提高入门的门槛。</li>
-</ul>
-<p>不过总的来说，前面几点也正是 Nest.js 灵活性的保证。但是我们真正在开发当中，还是需要一种合理的约束来保证开发的统一。</p>
-<h2 id="Nest-js-企业化的尝试"><a href="#Nest-js-企业化的尝试" class="headerlink" title="Nest.js 企业化的尝试"></a>Nest.js 企业化的尝试</h2><p>那么我们这里针对上面的几个问题，尝试采用一些方式来进行约束。</p>
-<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p>我们对项目指定如下的规则：</p>
-<ul>
-<li>全部通过 TypeScript 书写，并且全部位于 <code>src</code> 目录下</li>
-<li>入口文件是 <code>main.ts</code> 如果没有特殊情况，不动这个文件</li>
-<li>配置放在 <code>src/config</code> 文件夹下</li>
-<li>所有的 Service/Controller/Logic/Component 等都挂载到 <code>MainModule</code> 下。</li>
-<li>其中 <code>module</code> 文件夹存放自定义的 Module，或者说希望独立成模块但是还没有完全独立出来的。其中目录结构和这个项目目录结构类似</li>
-<li><code>boot</code> 文件夹是项目启动代码的时候执行的，这部分在 Nest.js 当中没有给出。我这里打算添加这个功能，但是还没有想好具体的实现形式，所以待定。</li>
-<li><code>interface</code>/<code>enum</code> 等数据随着对应的 service 导出。不另做说明。比如说 <code>car.service.ts</code> 除了可以导出 <code>CarService</code> 类以外，还可以导出 <code>CarType</code> enum。</li>
-<li><code>dest</code> 文件夹是编译之后的文件，可以直接输入 <code>node dest/main.js</code> 运行。</li>
-<li>命名规则<ul>
-<li>所有的文件除了 main.ts 和类文件以外，都要添加类型后缀，比如说 <code>user.model.ts</code> <code>car.controller.ts</code> <code>google.logic.ts</code>。但是比如说只是一个 <code>Car</code> 类，那么可以直接命名成 <code>car.ts</code></li>
-<li>不允许通过 <code>export default</code> 导出数据。一方面是为了方便导入的时候保证命名的统一，另一方面可以随时导出 interface/enum 等内容。</li>
-<li>所有的测试文件后缀名都以 <code>.spec.ts</code> 或 <code>.test.ts</code> 结尾。</li>
-</ul>
+<li><p>Anuglar 中对特殊字段进行修饰 (Input)，从而提升代码的可读性。</p>
+</li>
+<li><p>可以让装饰器拥有真正装饰对象而不改变对象的能力。让对象拥有更多语义上的功能。</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">|-- dest</span><br><span class="line">    |--- ...</span><br><span class="line">|-- src</span><br><span class="line">    |-- config</span><br><span class="line">    |-- controller</span><br><span class="line">    |-- model</span><br><span class="line">    |-- service</span><br><span class="line">    |-- logic</span><br><span class="line">    |-- component</span><br><span class="line">    |-- boot</span><br><span class="line">    |-- module</span><br><span class="line">        |-- module-name</span><br><span class="line">            |-- config</span><br><span class="line">            |-- index.ts</span><br><span class="line">            |-- module-name.module.ts</span><br><span class="line">    |-- main.ts</span><br><span class="line">    |-- main.module.ts</span><br></pre></td></tr></table></figure>
-<h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>我目前初步的想法是通过提供一个 <code>ConfigModule</code> 暴露出一个 <code>ConfigService</code> 来提供配置的获取和查看。</p>
-<p>在某些情况下，可能需要多级配置，模块级别的配置，应用级别的配置。那么 <code>ConfigService</code> 可以在获取配置的时候自动合并这些规则。</p>
-<h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><p>现在已经是 18 年了，不用 Docker 你真的对得起自己么？很明显是对不起的。所以进程管理这一块，我们就交给 Docker 来处理。包括启动、停止、重启、日志等，都交给 Docker。</p>
-<p>于是启动命令就可以简化成 <code>node dest/main.js</code> 即可。</p>
-<p>那么你可能会想到，如果一个 Docker 环境给你分配了两个 u，那岂不是会浪费一个 u。理论上是的，那么你就可以通过 pm2 啊啥的自己去管理吧，哈哈哈，不管。</p>
-<h2 id="Iron-js"><a href="#Iron-js" class="headerlink" title="Iron.js"></a>Iron.js</h2><p>说了这么多，把上面的内容都沉淀下来，我得要给他取个名字，于是我就取成了 Iron。为啥叫 Iron 呢？因为 Iron Man。那为啥因为 Iron Man 呢？因为他制作的盔甲可以自由拆分，自动拼合。非常适合我们这个项目的形态。</p>
-<p>不过这个项目什么时候能沉淀下来，看我心情了。不过定个时间线吧，就在 4 月底，争取搞定。</p>
-<p>因为这里面最大的问题就是配置的问题，需要深入依赖注入，所以会麻烦一些。但是其他的方面更多的只是一种约束吧。</p>
-<p>这就是我用 Nest.js 一周以来的心得。暂时就想到这么多，更多的内容等我后面再分析吧。</p>
-<p>写完睡觉，答应女票了，啦啦啦~</p>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title class_">Reflect</span> &#123;</span><br><span class="line">  <span class="comment">// 用于装饰器</span></span><br><span class="line">  <span class="title function_">metadata</span>(k, v): <span class="function">(<span class="params">target, property?</span>) =&gt;</span> <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 在对象上面定义元数据</span></span><br><span class="line">  <span class="title function_">defineMetadata</span>(k, v, o, p?): <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 是否存在元数据</span></span><br><span class="line">  <span class="title function_">hasMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="title function_">hasOwnMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="comment">// 获取元数据</span></span><br><span class="line">  <span class="title function_">getMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="title function_">getOwnMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="comment">// 获取所有元数据的 Key</span></span><br><span class="line">  <span class="title function_">getMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="title function_">getOwnMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="comment">// 删除元数据</span></span><br><span class="line">  <span class="title function_">deleteMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>大家可能注意到，针对某些操作，会有 <code>Own</code> 的函数。这是因为有的操作是可以通过原型链进行操作的。这个后文讲解。</p>
+</blockquote>
+<h2 id="深入-Reflect-Metadata"><a href="#深入-Reflect-Metadata" class="headerlink" title="深入 Reflect Metadata"></a>深入 Reflect Metadata</h2><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>如果你去翻看官网的文档，他会和你说，所有的元数据都是存在于对象下面的 <code>[[Metadata]]</code> 属性下面。一开始我也是这样认为的，新建一个 <code>Symbol(&#39;Metadata&#39;)</code>，然后将元数据放到这个 Symbol 对应的 Property 当中。直到我看了源码才发现并不是这样。请看例子</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;&#125;</span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">getOwnPropertySymbols</span>(A) <span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>哈哈，并没有所谓的 Symbol，那么这些元数据都存在在哪里呢？</p>
+<p>其实是内部的一个 WeakMap 中。他正是利用了 WeakMap 不增加引用计数的特点，将对象作为 Key，元数据集合作为 Value，存到 WeakMap 中去。</p>
+<p>如果你认真探寻的话，你会发现其内部的数据结构其实是这样的</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">WeakMap</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="built_in">any</span>&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>是不是超级绕，但是我们从调用的角度来思考，这就一点都不绕了。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">weakMap.<span class="title function_">get</span>(o).<span class="title function_">get</span>(p).<span class="title function_">get</span>(k)</span><br></pre></td></tr></table></figure>
+<p>先根据对象获取，然后在根据属性，最后根据元数据的 Key 获取最终要的数据。</p>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>因为 Reflect Metadata 实在是比较简单，这里就不多讲解了。更多内容请查看 <a target="_blank" rel="noopener" href="https://rbuckton.github.io/reflect-metadata">Spec</a></p>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>其实看了源码之后还是挺惊讶的，按照一般的套路，很多 polyfill 会让你提供一些前置的 polyfill 之后，当前的 polyfill 才能使用。但是 <code>reflect-metadata</code> 竟然内部自己实现了很多的 polyfill 和算法。比如 Map, Set, WeakMap, UUID。最惊讶的莫过于 WeakMap 了。不是很仔细的阅读了一下，好像还是会增加引用计数。</p>
 
                     
                         
@@ -350,7 +373,7 @@
                     
                     
                         <p>
-                            <a href="/2018/04/16/nest-js-try-first/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2017/12/30/Reflect-metadata/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -374,7 +397,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

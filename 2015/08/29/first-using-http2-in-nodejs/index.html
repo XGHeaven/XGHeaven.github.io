@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="XGHeaven&#39;s Blog">
+    <title>Http2在nodejs中的初尝试 - XGHeaven&#39;s Blog</title>
+    <meta name="author" content="XGHeaven">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Http2在nodejs中的初尝试">
+<meta property="og:url" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/index.html">
+<meta property="og:site_name" content="XGHeaven&#39;s Blog">
+<meta property="og:description" content="HTTP2 简介请大家自行搜索百度 Or Google 前言本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~ 如果本文章有问题的话，请及时进行评论，并和我联系 准备工作通过翻墙打开Google.com测试浏览器是否支持http2Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 Network 中查看 Protocol 使用的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/a2ed80a5-375e-47ac-a607-0cdd7406e54b.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/0cac562d-f182-4736-9c62-77715e0ea434.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/48d9ba4d-99af-43c7-a12c-4ad17e7deb42.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/58556875-af12-46b8-a133-ec0eb81894e9.gif">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/ebdcb7a8-a9c1-466e-ba09-b934fd054506.gif">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/667942ce-e174-47cd-aaab-78316e4440c4.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/a720374c-99b5-490d-9059-b7db63dc76f3.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/dc35cb3a-06f1-43c1-8eb5-3b3575723304.jpg">
+<meta property="og:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/ebf78a40-0a4f-4332-bde1-b1b8cb0443de.jpg">
+<meta property="article:published_time" content="2015-08-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-17T09:29:46.521Z">
+<meta property="article:author" content="XGHeaven">
+<meta property="article:tag" content="HTTP2">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="HTTPS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/a2ed80a5-375e-47ac-a607-0cdd7406e54b.jpg">
+<meta name="twitter:creator" content="@XGHeaven">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=640"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-mhhgzztqkaub4zd4cl8bd83f7mgh9j6njnhilft4hamhrjsliqyzwo2cfzdk.min.css">
+
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-71388235-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    
+    <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?9894361f828b64144ac1f2ac0c58c300";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+    
+
+<header id="header" data-behavior="3">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <h1 class="header-title">
+        <a class="header-title-link" href="/%20">XGHeaven&#39;s Blog</a>
+    </h1>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=90"/>
+        
+        </a>
+    
+</header>
+            <!-- Define author's picture -->
+
+
+    
+
+<nav id="sidebar" data-behavior="3">
+    
+        <div class="sidebar-profile">
+            <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+            </a>
+            <span class="sidebar-profile-name">XGHeaven</span>
+        </div>
+    
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/%20"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+                    <span class="sidebar-button-desc">首页</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-categories"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+                    <span class="sidebar-button-desc">分类</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-tags"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+                    <span class="sidebar-button-desc">标签</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/all-archives"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+                    <span class="sidebar-button-desc">归档</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="#about"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+                    <span class="sidebar-button-desc">关于</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/friend-link"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-link"></i>
+                    <span class="sidebar-button-desc">友情链接</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://github.com/XGHeaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+                    <span class="sidebar-button-desc">GitHub</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://twitter.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+                    <span class="sidebar-button-desc">Twitter</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://facebook.com/xgheaven" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-facebook"></i>
+                    <span class="sidebar-button-desc">Facebook</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="https://www.linkedin.com/xgheaven/" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+                    <span class="sidebar-button-desc">LinkedIn</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link " href="mailto:xgheaven@gmail.com" target="_blank">
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-envelope-o"></i>
+                    <span class="sidebar-button-desc">邮箱</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+        <ul class="sidebar-buttons">
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/atom.xml"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+                    <span class="sidebar-button-desc">RSS</span>
+                </a>
+        </li>
+        
+            <li class="sidebar-button">
+                
+                    <a  class="sidebar-button-link "
+                         href="/changelog"
+                        
+                    >
+                
+                    <i class="sidebar-button-icon fa fa-lg fa-line-chart"></i>
+                    <span class="sidebar-button-desc">Changelog</span>
+                </a>
+        </li>
+        
+    </ul>
+    
+</nav>
+
+            
+            <div id="main" data-behavior="3"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Http2在nodejs中的初尝试
+        </h1>
+    
+    <div class="post-meta">
+    <time itemprop="datePublished" content="Sat Aug 29 2015 00:00:00 GMT+0800">
+	
+		    8月 29, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP2-%E7%AE%80%E4%BB%8B"><span class="toc-text">HTTP2 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E7%BF%BB%E5%A2%99%E6%89%93%E5%BC%80Google-com%E6%B5%8B%E8%AF%95%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81http2"><span class="toc-text">通过翻墙打开Google.com测试浏览器是否支持http2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Chrome"><span class="toc-text">Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-net-intervals-%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81"><span class="toc-text">通过 net-intervals 查看是否支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E8%AF%B7%E5%B0%9D%E8%AF%95%E6%89%93%E5%BC%80http2%E5%BC%80%E5%85%B3"><span class="toc-text">如果不支持，请尝试打开http2开关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%A6%E5%88%99%E7%9A%84%E8%AF%9D%EF%BC%8C%E6%88%91%E4%B9%9F%E4%B8%8D%E7%9F%A5%E9%81%93%E4%BA%86"><span class="toc-text">否则的话，我也不知道了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#firefox"><span class="toc-text">firefox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-text">其他浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BNodejs%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95%EF%BC%8C%E5%B9%B6%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">建立Nodejs工作目录，并安装依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8openssl%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%92%8C%E8%AF%81%E4%B9%A6"><span class="toc-text">使用openssl生成密钥和证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8-start-server-%E5%88%86%E6%94%AF"><span class="toc-text">创建服务器(start-server 分支)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE-https-localhost"><span class="toc-text">访问 https:&#x2F;&#x2F;localhost&#x2F;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%EF%BC%88server-push-%E5%88%86%E6%94%AF%EF%BC%89"><span class="toc-text">尝试服务器推（server-push 分支）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E9%A6%96%E9%A1%B5-index-html"><span class="toc-text">建立一个首页 index.html</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E5%8A%A0%E5%85%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%8A%E9%9D%A2%E9%82%A3%E4%B8%AA%E4%B8%BB%E9%A1%B5"><span class="toc-text">在代码中加入服务器推的代码，并返回上面那个主页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E5%B9%B6%E8%AE%BF%E9%97%AE%E4%B9%8B"><span class="toc-text">启动服务器，并访问之</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GitHub-%E6%BA%90%E7%A0%81"><span class="toc-text">GitHub 源码</span></a></li></ol>
+<h1 id="HTTP2-简介"><a href="#HTTP2-简介" class="headerlink" title="HTTP2 简介"></a>HTTP2 简介</h1><p>请大家自行搜索百度 Or Google</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~</p>
+<p>如果本文章有问题的话，请及时进行评论，并和我联系</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="通过翻墙打开Google-com测试浏览器是否支持http2"><a href="#通过翻墙打开Google-com测试浏览器是否支持http2" class="headerlink" title="通过翻墙打开Google.com测试浏览器是否支持http2"></a>通过翻墙打开Google.com测试浏览器是否支持http2</h2><p>Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 <code>Network</code> 中查看 <code>Protocol</code> 使用的协议。</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/a2ed80a5-375e-47ac-a607-0cdd7406e54b.jpg" class="" title="查看Google的网络">
+<p>这里有一个问题，就是如果你的没有 <code>Protocol</code> ，这个怎么办？你可以在上面单击右键，就会弹出来有哪一些列可以让你选择，然后你选择 <code>Protocol</code> 即可。 </p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/0cac562d-f182-4736-9c62-77715e0ea434.jpg" class="" title="开启Protocol">
+<h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><h3 id="通过-net-intervals-查看是否支持"><a href="#通过-net-intervals-查看是否支持" class="headerlink" title="通过 net-intervals 查看是否支持"></a>通过 net-intervals 查看是否支持</h3><p>对于Chrome浏览器，可以在地址栏上输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://net-internals</span><br></pre></td></tr></table></figure>
+<p>并在左上角的下拉菜单中寻找 <code>HTTP/2</code> 的字样，如果有的话，说明你的浏览器就支持http2，否则就话可能是另外一种情况</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/48d9ba4d-99af-43c7-a12c-4ad17e7deb42.jpg" class="" title="查看是否存在HTTP2">
+<h3 id="如果不支持，请尝试打开http2开关"><a href="#如果不支持，请尝试打开http2开关" class="headerlink" title="如果不支持，请尝试打开http2开关"></a>如果不支持，请尝试打开http2开关</h3><p>在Chrome地址栏中输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://flags</span><br></pre></td></tr></table></figure>
+<p>当前页面搜索 <code>http2</code> ，找到相应的内容，并开启。然后重启浏览器尝试</p>
+<h3 id="否则的话，我也不知道了"><a href="#否则的话，我也不知道了" class="headerlink" title="否则的话，我也不知道了"></a>否则的话，我也不知道了</h3><p>如果还是前面两种都不可以的话，那么就请自行百度吧。</p>
+<h3 id="firefox"><a href="#firefox" class="headerlink" title="firefox"></a>firefox</h3><p>这个由于我没有firefox的浏览器，就留给读者自行百度了。</p>
+<h3 id="其他浏览器"><a href="#其他浏览器" class="headerlink" title="其他浏览器"></a>其他浏览器</h3><p>同样自行百度吧</p>
+<h3 id="建立Nodejs工作目录，并安装依赖"><a href="#建立Nodejs工作目录，并安装依赖" class="headerlink" title="建立Nodejs工作目录，并安装依赖"></a>建立Nodejs工作目录，并安装依赖</h3><p>浏览器都支持之后，那么就是开始准备我们的工作目录了。创建一个目录，我这里就叫做 <code>try-http2</code>。并安装<code>http2</code>包。</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/58556875-af12-46b8-a133-ec0eb81894e9.gif" class="" title="准备工作">
+<h3 id="使用openssl生成密钥和证书"><a href="#使用openssl生成密钥和证书" class="headerlink" title="使用openssl生成密钥和证书"></a>使用openssl生成密钥和证书</h3><p>这里不再重复，请尝试百度，并将证书和密钥拷贝到目录下面</p>
+<p>准备工作结束</p>
+<h2 id="创建服务器-start-server-分支"><a href="#创建服务器-start-server-分支" class="headerlink" title="创建服务器(start-server 分支)"></a>创建服务器(start-server 分支)</h2><p>使用http2服务创建服务器和使用https是基本一样的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.<span class="title function_">createServer</span>(&#123;</span><br><span class="line">    <span class="attr">key</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;privatekey.pem&#x27;</span>),</span><br><span class="line">    <span class="attr">cert</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;certificate.pem&#x27;</span>)</span><br><span class="line">&#125;, <span class="keyword">function</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">    res.<span class="title function_">end</span>(<span class="string">&#x27;hello world&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">443</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listen on 443&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>此时在terminal中启动服务器即可</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/ebdcb7a8-a9c1-466e-ba09-b934fd054506.gif" class="" title="启动服务器">
+<blockquote>
+<p>记住，这里一定要用sudo来启动，因为在Linux的系统中（Mac也是和Linux相同祖先），普通用户是无法监听到1024端口一下的端口，所以要用sudo来让程序监听443端口，因为https服务就是监听在443端口的</p>
+</blockquote>
+<h2 id="访问-https-localhost"><a href="#访问-https-localhost" class="headerlink" title="访问 https://localhost/"></a>访问 <em><a target="_blank" rel="noopener" href="https://localhost/">https://localhost/</a></em></h2><p>在浏览器中访问上面那个地址，然后在<code>Network</code>中查看<code>Protocol</code>是否为h2</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/667942ce-e174-47cd-aaab-78316e4440c4.jpg" class="" title="浏览localhost">
+<p>看成功了，已经成功通过http2协议打开了这个网页。</p>
+<p>你会发现在地址栏上https证书出现了错误，这是因为证书是你自己发布的，Chrome自然是不认识了</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/a720374c-99b5-490d-9059-b7db63dc76f3.jpg" class="" title="https error">
+<h2 id="尝试服务器推（server-push-分支）"><a href="#尝试服务器推（server-push-分支）" class="headerlink" title="尝试服务器推（server-push 分支）"></a>尝试服务器推（server-push 分支）</h2><p>说到服务器推，大家一定第一个想到的是<code>WebSocket</code>，但是相比于<code>WebSocket</code>来说，服务器推的东西不是数据，而是网络请求。</p>
+<p>其实他的正规说法是，服务器会推测你需要的东西，在解析HTML前将你需要的文件或者数据给你请求回来。这样，你请求了一次数据，返回了好几个资源</p>
+<h3 id="建立一个首页-index-html"><a href="#建立一个首页-index-html" class="headerlink" title="建立一个首页 index.html"></a>建立一个首页 <em>index.html</em></h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>haha<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;/client.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    Hello world</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="在代码中加入服务器推的代码，并返回上面那个主页"><a href="#在代码中加入服务器推的代码，并返回上面那个主页" class="headerlink" title="在代码中加入服务器推的代码，并返回上面那个主页"></a>在代码中加入服务器推的代码，并返回上面那个主页</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.<span class="title function_">createServer</span>(&#123;</span><br><span class="line">    <span class="attr">key</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;privatekey.pem&#x27;</span>),</span><br><span class="line">    <span class="attr">cert</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;certificate.pem&#x27;</span>)</span><br><span class="line">&#125;, <span class="keyword">function</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> push = res.<span class="title function_">push</span>(<span class="string">&#x27;/client.js&#x27;</span>)</span><br><span class="line">    push.<span class="title function_">end</span>(<span class="string">&#x27;alert(&quot;this is a server push&quot;);&#x27;</span>);</span><br><span class="line">    fs.<span class="title function_">createReadStream</span>(<span class="string">&#x27;index.html&#x27;</span>).<span class="title function_">pipe</span>(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">443</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listen on 443&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="启动服务器，并访问之"><a href="#启动服务器，并访问之" class="headerlink" title="启动服务器，并访问之"></a>启动服务器，并访问之</h3><img src="/2015/08/29/first-using-http2-in-nodejs/dc35cb3a-06f1-43c1-8eb5-3b3575723304.jpg" class="">
+<p>看成功执行了client.js中的代码。</p>
+<p>下面我们来看看<code>Network</code>中的请求</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/ebf78a40-0a4f-4332-bde1-b1b8cb0443de.jpg" class="" title="服务推送">
+<p>你会发现虽然是请求了两次，但是<code>client.js</code>是服务器推送过来的请求，并不是浏览器去请求的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然服务器推跟我们的心里落差较大，但是这并不影响这个技术的实施。</p>
+<p>有了服务器推，可以很好的加快网站的加载速度，完全可以不需要等待整张页面加载完成之后再加载相关的数据。像一些script，CSS之类的可以在渲染页面之前就加载完成。</p>
+<p>但是这个服务器推仍然无法替代WebSocket的地位，因为两个东西本质和目的都是不同的。而且服务器推相比来说，我们能控制的能力更少。</p>
+<p>但是服务器推也有缺点，就是会无故增加浏览网页的流量，对于移动端来说，这将是致命的！</p>
+<h1 id="GitHub-源码"><a href="#GitHub-源码" class="headerlink" title="GitHub 源码"></a>GitHub 源码</h1><p><a target="_blank" rel="noopener" href="https://github.com/XGHeaven/try-http2">GitHub</a></p>
+
+            
+                
+
+            
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/HTTP2/" rel="tag">HTTP2</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/HTTPS/" rel="tag">HTTPS</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Node-js/" rel="tag">Node.js</a>
+
+            </div>
+        
+        <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/10/04/nodejs-eventemitter/"  data-tooltip="Nodejs EventEmitter 解读">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/08/28/mac-is-case-sensitive/" data-tooltip="Mac 是否区分大小写">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="3">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/10/04/nodejs-eventemitter/"  data-tooltip="Nodejs EventEmitter 解读">
+                
+                    <i class="fa fa-angle-left"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2015/08/28/mac-is-case-sensitive/" data-tooltip="Mac 是否区分大小写">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions"  href="#btn-open-shareoptions">
+                <i class="fa fa-share-alt"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-google-plus"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-facebook-official"></i>
+            </a>
+        </li>
+        <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-twitter"></i>
+            </a>
+        </li>
+        
+            <li class="post-action">
+                <a class="post-action-btn btn btn--default" href="#disqus_thread">
+                    <i class="fa fa-comment-o"></i>
+                </a>
+            </li>
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
+            
+                <i class="fa fa-list"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="3">
+    <ul class="share-options">
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-google-plus"></i><span class="">分享到 Google+</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-facebook-official"></i><span>分享到 Facebook</span>
+            </a>
+        </li>
+        <li class="share-option">
+            <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/">
+                <i class="fa fa-twitter"></i><span>分享到 Twitter</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+            
+        </div>
+        
+
+
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+        
+            <h4 id="about-card-name">XGHeaven</h4>
+        
+            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
+</h5>
+        
+        
+            <h5 id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>杭州电子科技大学学生一枚</p>
+
+            </h5>
+        
+        
+            <h5 id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Weifang Shandong, China
+            </h5>
+        
+    </div>
+</div>
+
+        
+<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
+    </body>
+    <!--SCRIPTS-->
+
+<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+    
+        <script>
+             var disqus_config = function () {
+                 this.page.url = 'https://blog.xgheaven.com/2015/08/29/first-using-http2-in-nodejs/';
+                 
+                    this.page.identifier = '2015/08/29/first-using-http2-in-nodejs/';
+                                  
+             };
+            (function() {
+                var d = document, s = d.createElement('script');
+                var disqus_shortname = 'xgheaven-blog';
+                s.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+
+
+
+</html>

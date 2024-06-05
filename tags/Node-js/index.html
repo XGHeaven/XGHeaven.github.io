@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="XGHeaven&#39;s Blog">
-    <title>标签: node.js - XGHeaven&#39;s Blog</title>
+    <title>标签: Node.js - XGHeaven&#39;s Blog</title>
     <meta name="author" content="XGHeaven">
     
     
@@ -15,7 +15,7 @@
     
     <meta property="og:type" content="blog">
 <meta property="og:title" content="XGHeaven&#39;s Blog">
-<meta property="og:url" content="https://blog.xgheaven.com/tags/node-js/index.html">
+<meta property="og:url" content="https://blog.xgheaven.com/tags/Node-js/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="XGHeaven">
@@ -272,15 +272,15 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2015/10/04/nodejs-eventemitter/">
-                            Nodejs EventEmitter 解读
+                        <a class="link-unstyled" href="/2019/09/07/some-tips-for-create-npm-cli/">
+                            Node Cli 设计上的几点建议
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sun Oct 04 2015 00:25:46 GMT+0800">
+    <time itemprop="datePublished" content="Sat Sep 07 2019 00:00:00 GMT+0800">
 	
-		    10月 04, 2015
+		    9月 07, 2019
     	
     </time>
     
@@ -295,107 +295,92 @@
             
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#events-moudle"><span class="toc-text">events moudle</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Class-EventEmitter"><span class="toc-text">Class EventEmitter</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Static-Method-And-Property"><span class="toc-text">EventEmitter Static Method And Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#defaultMaxListeners"><span class="toc-text">defaultMaxListeners</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#usingDomains"><span class="toc-text">usingDomains</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init"><span class="toc-text">init()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-emitter-type"><span class="toc-text">listenerCount(emitter, type)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%96%91%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%A4%E6%96%AD%E5%8E%9F%E5%9E%8B%E4%B8%8A%E6%98%AF%E5%90%A6%E5%90%AB%E6%9C%89listenerCount%E6%96%B9%E6%B3%95%E5%91%A2%EF%BC%9F"><span class="toc-text">疑问：为什么要判断原型上是否含有listenerCount方法呢？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Property"><span class="toc-text">EventEmitter Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#events"><span class="toc-text">_events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eventsCount"><span class="toc-text">_eventsCount</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maxListeners"><span class="toc-text">_maxListeners</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Method"><span class="toc-text">EventEmitter Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addListener-on"><span class="toc-text">addListener() &#x3D; on()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#newListener%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%9C%A8%E4%BA%8B%E4%BB%B6%E7%9C%9F%E6%AD%A3%E6%B7%BB%E5%8A%A0%E4%B9%8B%E5%89%8D%E8%A7%A6%E5%8F%91%E7%9A%84"><span class="toc-text">newListener事件是在事件真正添加之前触发的</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#emit"><span class="toc-text">emit()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#handler%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-text">handler的执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E5%8F%82%E6%95%B0%E4%B8%AA%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-text">根据参数个数进行加速</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#once"><span class="toc-text">once()</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%88%91%E7%9A%84%E7%96%91%E9%97%AE%EF%BC%9A%E8%BF%99%E9%87%8C%E6%88%91%E6%9C%89%E4%B8%80%E7%82%B9%E4%B8%8D%E5%A4%AA%E7%90%86%E8%A7%A3%E7%9A%84%E5%9C%B0%E6%96%B9%E5%B0%B1%E6%98%AF%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81fired%E8%BF%9B%E8%A1%8C%E6%A0%87%E8%AE%B0%E4%B8%80%E4%B8%8B%E5%91%A2%EF%BC%9F"><span class="toc-text">我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeListener-type-listener"><span class="toc-text">removeListener(type, listener)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8%E4%BA%8B%E4%BB%B6%E5%88%A0%E9%99%A4%E4%B9%8B%E5%90%8E%E6%89%8D%E8%B0%83%E7%94%A8removeListener%E4%BA%8B%E4%BB%B6"><span class="toc-text">在事件删除之后才调用removeListener事件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeAllListeners-type"><span class="toc-text">removeAllListeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listeners-type"><span class="toc-text">listeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-type"><span class="toc-text">listenerCount(type)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#domain-%E9%83%A8%E5%88%86%E6%B2%A1%E6%9C%89%E8%BF%9B%E8%A1%8C%E8%A7%A3%E9%87%8A"><span class="toc-text">domain 部分没有进行解释</span></a></li></ol></li></ol>
-<h1 id="events-moudle"><a href="#events-moudle" class="headerlink" title="events moudle"></a><code>events</code> moudle</h1><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>).EventEmitter;</span><br></pre></td></tr></table></figure></p>
-<p>然而在源码当中有这样的一句话<br><figure class="highlight js"><figcaption><span>模块定义</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L8" target="_blank" rel="noopener">events.js:8</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = EventEmitter;</span><br><span class="line">EventEmitter.EventEmitter = EventEmitter;</span><br></pre></td></tr></table></figure></p>
-<p>所以<code>require(&#39;events&#39;).EventEmitter</code>和<code>require(&#39;events&#39;)</code>是一样的。所以以后大家可以直接写</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">'events'</span>);</span><br></pre></td></tr></table></figure>
-<h1 id="Class-EventEmitter"><a href="#Class-EventEmitter" class="headerlink" title="Class EventEmitter"></a>Class EventEmitter</h1><p>在源码中，构造函数极其的简单。</p>
-<figure class="highlight js"><figcaption><span>constructor</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L5" target="_blank" rel="noopener">event.js:5</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EventEmitter</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	EventEmitter.init.call(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>思路很简单，就是直接调用<code>EventEmitter</code>上的静态方法<code>init</code>进行构造。之后我们会介绍<code>EventEmitter.init</code>方法</p>
-<h2 id="EventEmitter-Static-Method-And-Property"><a href="#EventEmitter-Static-Method-And-Property" class="headerlink" title="EventEmitter Static Method And Property"></a>EventEmitter Static Method And Property</h2><p>挂在到EventEmitter上的静态属性和方法还是很多的，先说明一下静态属性：</p>
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E4%B9%8B%E5%89%8D%E8%AF%B7%E6%80%9D%E8%80%83"><span class="toc-text">写之前请思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%97%B6%E8%AF%B7%E9%81%B5%E5%BE%AA%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%82%B9"><span class="toc-text">开发时请遵循以下几点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E8%AE%BE%E8%AE%A1%E4%B8%8A%E8%AF%B7%E9%81%B5%E5%BE%AA%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%82%B9"><span class="toc-text">交互设计上请遵循以下几点</span></a></li></ol>
+<p>在平时的开发中，我发现大家特别喜欢将很多自己常用或者公司常用的脚本封装成一个 cli，这虽然无可厚非，但是作为一个有强迫症的患者来说，我认为这其实做不好会导致 cli 非常不好用的。所以这里总结了下平时写 cli 的经验希望和大家分享下。</p>
+<h3 id="写之前请思考"><a href="#写之前请思考" class="headerlink" title="写之前请思考"></a>写之前请思考</h3><ol>
+<li><p>我是不是为了 cli 而去写 cli，换句话我觉得这样比较 cool。如果是，那么请放弃这种想法。</p>
+</li>
+<li><p>这个 cli 一定会减轻工作量么？</p>
 <ul>
-<li>defaultMaxListeners</li>
-<li>usingDomains</li>
-</ul>
-<h3 id="defaultMaxListeners"><a href="#defaultMaxListeners" class="headerlink" title="defaultMaxListeners"></a>defaultMaxListeners</h3><p>顾名思义，默认的最大callback数量，就是如果当前对象没有指定<code>_maxListeners</code>，默认使用的就是这个值，默认是10<br>更多请看<a href="#_maxListeners">_maxListeners</a></p>
-<h3 id="usingDomains"><a href="#usingDomains" class="headerlink" title="usingDomains"></a>usingDomains</h3><p>待定</p>
-<h3 id="init"><a href="#init" class="headerlink" title="init()"></a>init()</h3><figure class="highlight js"><figcaption><span>EventEmitter.init</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L23" target="_blank" rel="noopener">events.js:23</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.init = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.domain = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (EventEmitter.usingDomains) &#123;</span><br><span class="line">    <span class="comment">// if there is an active domain, then attach to it.</span></span><br><span class="line">    domain = domain || <span class="built_in">require</span>(<span class="string">'domain'</span>);</span><br><span class="line">    <span class="keyword">if</span> (domain.active &amp;&amp; !(<span class="keyword">this</span> <span class="keyword">instanceof</span> domain.Domain)) &#123;</span><br><span class="line">      <span class="keyword">this</span>.domain = domain.active;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>._events || <span class="keyword">this</span>._events === <span class="built_in">Object</span>.getPrototypeOf(<span class="keyword">this</span>)._events) &#123;</span><br><span class="line">    <span class="keyword">this</span>._events = &#123;&#125;;</span><br><span class="line">    <span class="keyword">this</span>._eventsCount = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>._maxListeners = <span class="keyword">this</span>._maxListeners || <span class="literal">undefined</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>先不管<code>domain</code>恨死干什么用的，总之<code>init</code>函数给<code>this</code>挂上了以下四个属性：</p>
-<ul>
-<li>domain</li>
-<li><a href="#_events">_events</a></li>
-<li><a href="#_eventsCount">_eventsCount</a></li>
-<li><a href="#_maxListeners">_maxListeners</a></li>
-</ul>
-<h3 id="listenerCount-emitter-type"><a href="#listenerCount-emitter-type" class="headerlink" title="listenerCount(emitter, type)"></a>listenerCount(emitter, type)</h3><p>获取<code>emitter</code>中指定类型的callback数量</p>
-<p>这里有一个比较特殊的地方，就是他对对象是否含有<code>listenerCount</code>方法进行了判断<br><figure class="highlight js"><figcaption><span>listenerCount</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L397" target="_blank" rel="noopener">events.js:397</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.listenerCount = <span class="function"><span class="keyword">function</span>(<span class="params">emitter, type</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> emitter.listenerCount === <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> emitter.listenerCount(type);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> listenerCount.call(emitter, type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h5 id="疑问：为什么要判断原型上是否含有listenerCount方法呢？"><a href="#疑问：为什么要判断原型上是否含有listenerCount方法呢？" class="headerlink" title="疑问：为什么要判断原型上是否含有listenerCount方法呢？"></a>疑问：为什么要判断原型上是否含有<code>listenerCount</code>方法呢？</h5><h2 id="EventEmitter-Property"><a href="#EventEmitter-Property" class="headerlink" title="EventEmitter Property"></a>EventEmitter Property</h2><h3 id="events"><a href="#events" class="headerlink" title="_events"></a>_events</h3><p>这个属性是一个事件的缓存列表，他的<code>key</code>就是事件名称，<code>value</code>就是事件的回调函数，有如下几种取值：</p>
-<ul>
-<li>Function</li>
-<li>Array<br>当只有一个回调函数的时候，就直接存储为回调函数本身，否则包装成数组进行存储</li>
-</ul>
-<h3 id="eventsCount"><a href="#eventsCount" class="headerlink" title="_eventsCount"></a>_eventsCount</h3><p>顾名思义，就是事件的个数，这里有几个需要注意的就是，这个之有且仅在添加一个没有过的事件的时候才会加一，如果你给一个事件添加了多了callback的话，这个值并不会加一的。</p>
-<h3 id="maxListeners"><a href="#maxListeners" class="headerlink" title="_maxListeners"></a>_maxListeners</h3><p>这个就是可以表示一个event的最大callback的个数。如果小于等于这个个数，不会产生任何问题。但是如果大于这个限制，将会弹出警告，说可能会导致内存泄露。<br>我猜测可能是因为过多的callback会保存过多的context，从而导致内存泄露。<br>敬请更正</p>
-<h2 id="EventEmitter-Method"><a href="#EventEmitter-Method" class="headerlink" title="EventEmitter Method"></a>EventEmitter Method</h2><p>先从最常用的讲起，就是添加事件侦听喽</p>
-<h3 id="addListener-on"><a href="#addListener-on" class="headerlink" title="addListener() = on()"></a>addListener() = on()</h3><p>首先大家一定很熟悉<code>on</code>方法，大家一定想不到的是，竟然还有一个叫<code>addListener</code>方法。那么这两个方法有什么区别呢？<br>答案就是什么区别都木有~</p>
-<p>而且在定义的时候，定义的是<code>addListener</code>而不是<code>on</code>，从源码中便可以看出来</p>
-<figure class="highlight js"><figcaption><span>addListener</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L191" target="_blank" rel="noopener">events.js:191</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">EventEmitter.prototype.addListener = <span class="function"><span class="keyword">function</span> <span class="title">addListener</span>(<span class="params">type, listener</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> m;</span><br><span class="line">  <span class="keyword">var</span> events;</span><br><span class="line">  <span class="keyword">var</span> existing;</span><br><span class="line">  <span class="comment">// .... 此处省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 就是这里，大家看到了么~~</span></span><br><span class="line">EventEmitter.prototype.on = EventEmitter.prototype.addListener;</span><br></pre></td></tr></table></figure>
-<p>所以<code>on</code>更多的是一种简化，而正统的却是<code>addListener</code>，但是虽然这个正统，相信也没有几个人来使用吧，毕竟实在是太那啥了，是吧-_-||</p>
-<p>好的下面言归正传，整个添加函数的流程可以看做是这样的（大家可以对照的源码看，我就不在这里把源码全部都粘贴过来了，并且我这里可能为了语句的通顺改变部分代码的执行顺序，大家请自行看出来。。。）：</p>
-<ol>
-<li>接受两个参数，分别是<code>type</code>表示事件，就是event，第二个是<code>listener</code>，侦听器，也就是callback</li>
-<li>如果<code>listener</code>不是函数，很明显啊，抛出错误不解释</li>
-<li>检测当前对象上是否存在<code>_events</code>属性，如果不存在创建之，并顺手初始化<code>_eventsCount</code>为0.</li>
-<li>另<code>events</code>为<code>this._events</code></li>
-<li>如果<code>events</code>中没有<code>type</code>的<code>listener</code>，那么不解释，添加之~即<code>events[type] = listener</code></li>
-<li>如果<code>events</code>里面有的话，不解释，一个就数组包装一下，两个直接push</li>
-<li>如果<code>type</code>类型的<code>listener</code>超过两个了，那么就检测一下有没有超过长度限制，具体的检测逻辑我就不在这里详细的说明了，总之就是给将检测结果挂到<code>events[type]</code>的<code>warned</code>属性上了。</li>
-<li>如果有对应的<code>newListener</code>事件侦听的话，就直接用<code>type</code>和<code>listener.listener?listener.listener:listener</code>触发之</li>
-<li>返回<code>this</code></li>
-</ol>
-<p>至此函数执行完毕</p>
-<p>那么下一个就讲一下如果触发事件吧</p>
-<h4 id="newListener事件是在事件真正添加之前触发的"><a href="#newListener事件是在事件真正添加之前触发的" class="headerlink" title="newListener事件是在事件真正添加之前触发的"></a><code>newListener</code>事件是在事件真正添加之前触发的</h4><h3 id="emit"><a href="#emit" class="headerlink" title="emit()"></a>emit()</h3><p>很早以前我认为<code>emit</code>只能<code>emit</code>一个参数，到现在我猜明白，想几个就几个，没人限制你。</p>
-<p><code>emit</code>有一个很好玩的特性就是，如果你<code>emit</code>一个<code>&quot;error&quot;</code>，如果没有事件侦听这个error的话，就会直接throw出一个error来，而其他的事件不会又这种效果，这就意味着我们最好要侦听<code>error</code>事件，万一出了一点错误，那将是崩溃的节奏啊~</p>
-<p>源码在<a href="https://github.com/nodejs/node/blob/master/lib/events.js#L117" target="_blank" rel="noopener">events.js:117</a></p>
-<ol>
-<li>检测<code>type</code>是否为<code>&quot;error&quot;</code></li>
-<li>如果是，并且没有监听到<code>error</code>，throw出pass进来的错误或者构建一个未捕捉的错误弹出。</li>
-<li>如果没有对应的回调函数的话，返回<code>false</code></li>
-<li>获取构造函数并赋值给<code>handler</code>，这个值有可能是函数，或者是数组。</li>
-<li>根据参数个数调用对应的函数，顺序依次运行<code>handler</code></li>
-<li>返回<code>true</code></li>
-</ol>
-<h4 id="handler的执行"><a href="#handler的执行" class="headerlink" title="handler的执行"></a><code>handler</code>的执行</h4><p>在<code>handler</code>执行的时候，会先将当前队列复制一份，然后再进行执行。并且根据参数个数用call或者apply执行函数。放置在某一次执行期间突然掺入了其他的callback或者删除了callback，从而引发错误。</p>
-<p>我原本以为会使用<code>process.nextTick</code>进行异步的执行，后来一想不对啊，肯定要按照添加的顺序进行执行，所以依次调用。</p>
-<h4 id="根据参数个数进行加速"><a href="#根据参数个数进行加速" class="headerlink" title="根据参数个数进行加速"></a>根据参数个数进行加速</h4><p>见<br><figure class="highlight js"><figcaption><span>fastToRun</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L65" target="_blank" rel="noopener">events.js:65</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有参数的调用</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitNone</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isFn)</span><br><span class="line">    handler.call(self);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> len = handler.length;</span><br><span class="line">    <span class="keyword">var</span> listeners = arrayClone(handler, len);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; ++i)</span><br><span class="line">      listeners[i].call(self);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitOne</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 两个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitTwo</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 三个参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitThree</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 不定参数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">emitMore</span>(<span class="params">handler, isFn, self</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>源码对不同的情况进行了加速，因为人们大部分情况都是使用0参数或者1参数的，所以对这几种情况进行处理是非常高效的。</p>
-<h3 id="once"><a href="#once" class="headerlink" title="once()"></a>once()</h3><p>这个最简单了，就是用一个函数封装一下传入的callback，然后将这个函数，<code>addListener</code>进入到事件中。关于这个封装函数的写法，如下<br><figure class="highlight js"><figcaption><span>g()</span><a href="https://github.com/nodejs/node/blob/master/lib/events.js#L253" target="_blank" rel="noopener">events.js:253</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fired = <span class="literal">false</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">g</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.removeListener(type, g);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!fired) &#123;</span><br><span class="line">    fired = <span class="literal">true</span>;</span><br><span class="line">    listener.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">g.listener = listener;</span><br><span class="line"><span class="comment">// 挂载原先的callback，用于remove的时候比较使用</span></span><br></pre></td></tr></table></figure></p>
-<p>具体的就不多说了，总之就是执行后，先删除这个包装过的callback。</p>
-<h5 id="我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？"><a href="#我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？" class="headerlink" title="我的疑问：这里我有一点不太理解的地方就是为什么还需要fired进行标记一下呢？"></a>我的疑问：这里我有一点不太理解的地方就是为什么还需要<code>fired</code>进行标记一下呢？</h5><h3 id="removeListener-type-listener"><a href="#removeListener-type-listener" class="headerlink" title="removeListener(type, listener)"></a>removeListener(type, listener)</h3><p>删除指定类型的指定callback的事件<br>很简单，分为一下几步</p>
-<ol>
-<li>如果<code>listener</code>不是函数，抛出错误</li>
-<li>如果<code>events</code>不存在或者对应的事件不存在，返回<code>this</code></li>
-<li>另<code>list</code>为<code>events[type]</code></li>
-<li>如果<code>list</code>就是那个callback或者<code>list.listener</code>是那个callback，删除</li>
-<li>否则如果这是一个数组，那么找到对应的<code>listener</code>删除，否则返回<code>this</code></li>
-<li>如果上面有任意一个删除之后<code>_eventsCount</code>为0了，直接重新赋值<code>this._events = {}</code>（其实并不知道这个意义何在）</li>
-<li>如果有任何一个删除，并且有事件侦听到了<code>removeListener</code>，触发之，传递<code>type</code>和<code>listener</code></li>
-<li>返回<code>this</code></li>
-</ol>
-<h4 id="在事件删除之后才调用removeListener事件"><a href="#在事件删除之后才调用removeListener事件" class="headerlink" title="在事件删除之后才调用removeListener事件"></a>在事件删除之后才调用<code>removeListener</code>事件</h4><h3 id="removeAllListeners-type"><a href="#removeAllListeners-type" class="headerlink" title="removeAllListeners(type)"></a>removeAllListeners(type)</h3><p>根据传递的参数来决定是删除全部的还是只删除指定事件的全部</p>
-<ol>
-<li>确保存在<code>this._events</code>，否则返回<code>this</code></li>
-<li>如果没有侦听<code>removeListener</code><ul>
-<li>如果没有传递<code>type</code>，重新赋值<code>this._events</code>和<code>this._eventsCount</code></li>
-<li>如果传递了<code>type</code>，删除<code>type</code>对应的事件，根据情况重新赋值~~~</li>
+<li><p>有很多公司喜欢将各种 webpack/eslint/babel 工具封装成一个 cli，那么这真的会降低使用者的工作量么？如果你封装的不好，相反会增加很大的工作量。最神奇的是，封装了这么多工具，配置文件却一个都没少，babelrc/eslintrc/prettierrc，那封装了有何用。</p>
+</li>
+<li><p>cli 的不透明性就会导致使用者永远都是有使用成本的，不论这个 cli 有多简单。他不会知道你是干了什么。所以能避免写一个 cli 就避免写一个 cli。那如果真的要写，有其他方案么？请看第三条</p>
+</li>
 </ul>
 </li>
-<li>如果侦听了<code>removeListener</code>，除了这个本身，依次调用<code>removeAllLiseners()</code>进行删除，最后删除<code>removeListener</code>这个事件</li>
-<li>对于每一个callback，依次调用<code>removeListener</code>方法进行删除</li>
-<li>返回<code>this</code></li>
+<li><p>除了写 node cli 真的没有其他方案了么？</p>
+<ul>
+<li><p>大部分情况下，写 shell 的效率远远高于写 cli，将一个命令拆分成多个 shell，然后配合简单的帮助文档即可。如果用户不知道是做什么的，那么直接就可以去看源码。</p>
+</li>
+<li><p>而且使用 git 管理 shell 也同样高效，比如将个人的一些脚本放到 private github 上，然后直接 clone 下来就可以用了。这样不需要每次都 npm publish，进而污染 npm。</p>
+</li>
+<li><p>大部分情况下，去写 Makefile/Rakefile 同样可行。当然，Node 生态也有 Jake，不过不推荐用，因为要装 <code>jake</code> 包。</p>
+</li>
+<li><p>如果你这个 cli 是作为一个项目的脚手架工具，那么是不是用 <code>yeoman</code> 或者 <code>degit</code> 这类工具更好？除非你的项目非常热门，功能自定义程度高，否则完全不需要自己去写一个脚手架。如果你只是觉得好玩，想写一个脚手架的话，那么请去看第一条，问问自己。</p>
+</li>
+<li><p>如果是一个团队使用，那么除非有很大的普世性，那么用 git 管理同样比 npm 管理要强的多。</p>
+</li>
+</ul>
+</li>
+<li><p>最后如果决定一定要写 cli 的话，有必要发布到 npm 么？</p>
+<ul>
+<li><p>是不是发布到自己的 scope 下也是一个不错的选择？</p>
+</li>
+<li><p>是不是直接让别人通过 <code>npm install [github.com/user/package](http://github.com/user/package)</code> 也是一个不错的选择？</p>
+</li>
+<li><p>是不是上传到公司 or 个人的私有 npm 更好？</p>
+</li>
+</ul>
+</li>
 </ol>
-<h3 id="listeners-type"><a href="#listeners-type" class="headerlink" title="listeners(type)"></a>listeners(type)</h3><p>获取指定类型的callback，否则为<code>[]</code></p>
-<h3 id="listenerCount-type"><a href="#listenerCount-type" class="headerlink" title="listenerCount(type)"></a>listenerCount(type)</h3><p>获取指定类型的callback的数量</p>
-<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><h2 id="domain-部分没有进行解释"><a href="#domain-部分没有进行解释" class="headerlink" title="domain 部分没有进行解释"></a>domain 部分没有进行解释</h2>
+<h3 id="开发时请遵循以下几点"><a href="#开发时请遵循以下几点" class="headerlink" title="开发时请遵循以下几点"></a>开发时请遵循以下几点</h3><ol>
+<li><p>请使用 npm</p>
+</li>
+<li><p>不要写死版本号，优先使用 <code>^</code></p>
+<ul>
+<li>这是因为有可能你的 cli 会被直接当做依赖安装到项目中，如果你写死了版本号，那么可能会装多分依赖。比如项目依赖了 <code>yargs@^13.2.0</code> ，但是你锁死了 <a href="mailto:`yargs@13.1.0">`yargs@13.1.0</a>`，就会导致安装两个 yargs。</li>
+</ul>
+</li>
+<li><p>避免引入一些功能很大，而自己只用其中一部分的包</p>
+<ul>
+<li>因为没有 webpack 工具，无法进行 tree shaking，所以导致安装了很多比较大的包。比如你只是用了 <code>lodash</code> 的 <code>cloneDepp</code> 却安装了整个包。优先使用 <code>[lodash.xxx](http://lodash.xxx)</code> 子包。</li>
+</ul>
+</li>
+<li><p>如果你使用了某些构建工具(babel,webpack,typescript,flow)，那么请将构建之后的文件也加入代码仓库。</p>
+<ul>
+<li><p>比如有一个 <code>src</code> 目录存放了 ts 源文件，而 <code>dist</code> 存放了构建之后的 js 文件。那么很多人的选择往往是将这 <code>dist</code> 文件夹加入 gitignore。这样其实是不太好的，原因如下：</p>
+</li>
+<li><p>第一，方便追踪变化，比如你自己添加了一些 debug 代码，这个时候构建之后发现没有问题。又把 debug 代码删除，当你提交的时候就可以很清楚的看到自己修改了之后没有构建代码</p>
+</li>
+<li><p>第二，方便通过 <a target="_blank" rel="noopener" href="http://unpkg.com/">unpkg.com</a> 等工具访问</p>
+</li>
+<li><p>第三，在版本开发依赖升级之后，可以很方便的看到改变的内容。一般使用者会放心升级 cli 之类的开发工具，所以这部分的质量需要我们自己来保证。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="交互设计上请遵循以下几点"><a href="#交互设计上请遵循以下几点" class="headerlink" title="交互设计上请遵循以下几点"></a>交互设计上请遵循以下几点</h3><ol>
+<li><p>Throw as possible，将可能的所有报错向上抛出，是一个好系统所必备的能力。但是在错误展示的时候，可以向用户隐藏部分调用栈信息等，只保留关键信息即可。</p>
+</li>
+<li><p>尽可能遵循 linux 下的 cli 规范。</p>
+</li>
+<li><p>不要让用户产生无畏的等待，通过添加进度条或者输出完成列表等告诉用户你依旧是在工作中的。</p>
+</li>
+<li><p>给予用户想查看所有日志的能力。可以通过 <code>vvv</code> <code>vvv</code> 或者 <code>-log-level debug</code> 来控制显示级别</p>
+</li>
+<li><p>对所有命令的描述都不要超过一行。不论屏幕宽度如何（一般默认 80），最好不要超过 70。如果需要大量描述，请尝试通过 man 或者单独的页面。</p>
+</li>
+<li><p>帮助是最好的文档，写好 cli 的 help 远比去写好一个文档网站要关键</p>
+</li>
+</ol>
+
                     
                         
 
                     
                     
                         <p>
-                            <a href="/2015/10/04/nodejs-eventemitter/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2019/09/07/some-tips-for-create-npm-cli/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -406,164 +391,336 @@
         
     </article>
     
-    <div class="pagination-bar">
-    <ul class="pagination">
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/04/16/nest-js-try-first/">
+                            Nest.js 入手以及企业化的思考
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Apr 16 2018 00:00:00 GMT+0800">
+	
+		    4月 16, 2018
+    	
+    </time>
+    
+        <span>发布在 </span>
         
-        
-        <li class="pagination-number">第 1 页 共 1 页</li>
-    </ul>
-</div>
-
-</section>
-
-
-                <footer id="footer" class="main-content-wrap">
-    <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
-    </span>
-</footer>
-
-            </div>
-            
-        </div>
-        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
 
 
     
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="toc-text">框架简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nest-js-%E4%BC%81%E4%B8%9A%E5%8C%96%E5%BD%93%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">Nest.js 企业化当中的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nest-js-%E4%BC%81%E4%B8%9A%E5%8C%96%E7%9A%84%E5%B0%9D%E8%AF%95"><span class="toc-text">Nest.js 企业化的尝试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-text">配置管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-text">进程管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Iron-js"><span class="toc-text">Iron.js</span></a></li></ol>
+<blockquote>
+<p>本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async/Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。</p>
+</blockquote>
+<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a target="_blank" rel="noopener" href="https://nestjs.com/">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
+<ul>
+<li><p>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</p>
+</li>
+<li><p>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</p>
+</li>
+<li><p>依赖注入。从 Angular 那里学习而来，但是进行了一些简化，但是完全够用。比如说简化掉了 deps。</p>
+</li>
+<li><p>模块思想。Node 社区的后端框架，其实都被 Express 导向到了中间件的模式。而 Nest.js 却从 Angular 当中吸取到了模块的思想。不同的 Service、Controller、Component 组成不同的模块。模块之间可以相互依赖，也可以独立存在，这大大减少了测试和逻辑的复杂度。</p>
+</li>
+<li><p>易于扩展。以往的框架，你能做的就是编写业务逻辑，而其他的你都很难去做到。于是传统的后端框架不得不引入了一套插件机制来增强框架的扩展性。但是 Nest.js 将插件的功能直接内置到了框架当中。传统的插件在这里可以认为就是一个模块，通过加载不同的模块来添加不同的功能。</p>
+</li>
+<li><p>Express 基石。有人会说，不是现在 Koa 才是更好的模型么？洋葱模型可以解决更多复杂的问题。没错，我不反对这个言论。但是我想说的是，Express 还是最简单最通用的方式，因为他不赖 Generator/Promise，只需要你又一个 Node.js 运行环境，支持 Callback 就可以了。（话说应该没有不支持 Callback 的 Node.js 环境吧，哈哈哈）不管怎么样，Express 的覆盖面还是比 Koa 要广不少。</p>
+</li>
+<li><p>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</p>
+</li>
+<li><p>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</p>
+</li>
+<li><p>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</p>
+</li>
+<li><p>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a target="_blank" rel="noopener" href="https://docs.nestjs.com/pipes">教程</a></p>
+</li>
+<li><p>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</p>
+</li>
+<li><p>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</p>
+</li>
+</ul>
+<h2 id="Nest-js-企业化当中的问题"><a href="#Nest-js-企业化当中的问题" class="headerlink" title="Nest.js 企业化当中的问题"></a>Nest.js 企业化当中的问题</h2><ul>
+<li><p>目录无约束。在企业当中，不对目录进行约束会导致代码越来越乱。从而降低了代码可维护性。</p>
+</li>
+<li><p>没有配置管理功能。在框架开发中，配置往往是一个很重要的功能。比如说配置数据库的连接，配置监听的端口。</p>
+</li>
+<li><p>没有进程管理。虽然有提供 <code>@nestjs/cli</code>，但是这个提供的仅仅是一个项目的创建的能力。</p>
+</li>
+<li><p>部分文档讲解不详细，会提高入门的门槛。</p>
+</li>
+</ul>
+<p>不过总的来说，前面几点也正是 Nest.js 灵活性的保证。但是我们真正在开发当中，还是需要一种合理的约束来保证开发的统一。</p>
+<h2 id="Nest-js-企业化的尝试"><a href="#Nest-js-企业化的尝试" class="headerlink" title="Nest.js 企业化的尝试"></a>Nest.js 企业化的尝试</h2><p>那么我们这里针对上面的几个问题，尝试采用一些方式来进行约束。</p>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p>我们对项目指定如下的规则：</p>
+<ul>
+<li><p>全部通过 TypeScript 书写，并且全部位于 <code>src</code> 目录下</p>
+</li>
+<li><p>入口文件是 <code>main.ts</code> 如果没有特殊情况，不动这个文件</p>
+</li>
+<li><p>配置放在 <code>src/config</code> 文件夹下</p>
+</li>
+<li><p>所有的 Service/Controller/Logic/Component 等都挂载到 <code>MainModule</code> 下。</p>
+</li>
+<li><p>其中 <code>module</code> 文件夹存放自定义的 Module，或者说希望独立成模块但是还没有完全独立出来的。其中目录结构和这个项目目录结构类似</p>
+</li>
+<li><p><code>boot</code> 文件夹是项目启动代码的时候执行的，这部分在 Nest.js 当中没有给出。我这里打算添加这个功能，但是还没有想好具体的实现形式，所以待定。</p>
+</li>
+<li><p><code>interface</code>/<code>enum</code> 等数据随着对应的 service 导出。不另做说明。比如说 <code>car.service.ts</code> 除了可以导出 <code>CarService</code> 类以外，还可以导出 <code>CarType</code> enum。</p>
+</li>
+<li><p><code>dest</code> 文件夹是编译之后的文件，可以直接输入 <code>node dest/main.js</code> 运行。</p>
+</li>
+<li><p>命名规则</p>
+<ul>
+<li><p>所有的文件除了 main.ts 和类文件以外，都要添加类型后缀，比如说 <code>user.model.ts</code> <code>car.controller.ts</code> <code>google.logic.ts</code>。但是比如说只是一个 <code>Car</code> 类，那么可以直接命名成 <code>car.ts</code></p>
+</li>
+<li><p>不允许通过 <code>export default</code> 导出数据。一方面是为了方便导入的时候保证命名的统一，另一方面可以随时导出 interface/enum 等内容。</p>
+</li>
+<li><p>所有的测试文件后缀名都以 <code>.spec.ts</code> 或 <code>.test.ts</code> 结尾。</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">|-- dest</span><br><span class="line">    |--- ...</span><br><span class="line">|-- src</span><br><span class="line">    |-- config</span><br><span class="line">    |-- controller</span><br><span class="line">    |-- model</span><br><span class="line">    |-- service</span><br><span class="line">    |-- logic</span><br><span class="line">    |-- component</span><br><span class="line">    |-- boot</span><br><span class="line">    |-- module</span><br><span class="line">        |-- module-name</span><br><span class="line">            |-- config</span><br><span class="line">            |-- index.ts</span><br><span class="line">            |-- module-name.module.ts</span><br><span class="line">    |-- main.ts</span><br><span class="line">    |-- main.module.ts</span><br></pre></td></tr></table></figure>
+<h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>我目前初步的想法是通过提供一个 <code>ConfigModule</code> 暴露出一个 <code>ConfigService</code> 来提供配置的获取和查看。</p>
+<p>在某些情况下，可能需要多级配置，模块级别的配置，应用级别的配置。那么 <code>ConfigService</code> 可以在获取配置的时候自动合并这些规则。</p>
+<h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><p>现在已经是 18 年了，不用 Docker 你真的对得起自己么？很明显是对不起的。所以进程管理这一块，我们就交给 Docker 来处理。包括启动、停止、重启、日志等，都交给 Docker。</p>
+<p>于是启动命令就可以简化成 <code>node dest/main.js</code> 即可。</p>
+<p>那么你可能会想到，如果一个 Docker 环境给你分配了两个 u，那岂不是会浪费一个 u。理论上是的，那么你就可以通过 pm2 啊啥的自己去管理吧，哈哈哈，不管。</p>
+<h2 id="Iron-js"><a href="#Iron-js" class="headerlink" title="Iron.js"></a>Iron.js</h2><p>说了这么多，把上面的内容都沉淀下来，我得要给他取个名字，于是我就取成了 Iron。为啥叫 Iron 呢？因为 Iron Man。那为啥因为 Iron Man 呢？因为他制作的盔甲可以自由拆分，自动拼合。非常适合我们这个项目的形态。</p>
+<p>不过这个项目什么时候能沉淀下来，看我心情了。不过定个时间线吧，就在 4 月底，争取搞定。</p>
+<p>因为这里面最大的问题就是配置的问题，需要深入依赖注入，所以会麻烦一些。但是其他的方面更多的只是一种约束吧。</p>
+<p>这就是我用 Nest.js 一周以来的心得。暂时就想到这么多，更多的内容等我后面再分析吧。</p>
+<p>写完睡觉，答应女票了，啦啦啦~</p>
 
-<div id="about">
-    <div id="about-card">
-        <div id="about-btn-close">
-            <i class="fa fa-remove"></i>
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/04/16/nest-js-try-first/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
         </div>
         
-            <img id="about-card-picture" src="https://www.gravatar.com/avatar/f34474afe04544ffbe944a804f0ae762?s=110"/>
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/05/03/cli-build-tools-for-yargs/">
+                            命令行构造工具之 Yargs 详细介绍
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Wed May 03 2017 00:00:00 GMT+0800">
+	
+		    5月 03, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
         
-            <h4 id="about-card-name">XGHeaven</h4>
-        
-            <h5 id="about-card-bio"><p>一个弱弱的码农</p>
-</h5>
-        
-        
-            <h5 id="about-card-job">
-                <i class="fa fa-briefcase"></i>
-                <br/>
-                <p>杭州电子科技大学学生一枚</p>
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
 
-            </h5>
-        
-        
-            <h5 id="about-card-location">
-                <i class="fa fa-map-marker"></i>
-                <br/>
-                Weifang Shandong, China
-            </h5>
-        
-    </div>
+
+    
 </div>
-
-        
-<div id="cover" style="background-image:url('/static/images/20170217-TombRaider.jpg');"></div>
-    </body>
-    <!--SCRIPTS-->
-
-<script src="/assets/js/scrip-z6xcdnzggiy56kzp83ux5nnbwra1acrauxruz3kdi3u5xladb6jh4n3ylebm.min.js"></script>
-
-<!--SCRIPTS END-->
-
-
-
-</html>
-lass="literal">true</span> ],</span><br><span class="line">  <span class="string">'$0'</span>: <span class="string">'alias.js'</span> &#125;</span><br></pre></td></tr></table></figure>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%89%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="toc-text">光速开始</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#argv-%E4%B8%80%E5%88%87%E7%9A%84%E5%BC%80%E5%A7%8B%EF%BC%8C%E7%AE%80%E5%8D%95%E7%9A%84%E4%B8%8D%E8%A6%81%E4%B8%8D%E8%A6%81%E7%9A%84"><span class="toc-text">.argv 一切的开始，简单的不要不要的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E5%8F%82%E6%95%B0"><span class="toc-text">普通参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%86%99%E5%8F%82%E6%95%B0"><span class="toc-text">简写参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%86%99%E5%8F%82%E6%95%B0"><span class="toc-text">全写参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C%E5%90%88%E5%B9%B6"><span class="toc-text">结果合并</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%88%91%E5%B0%B1%E8%A6%81%E4%BD%A0%E5%9C%A8%E6%88%91%E7%9A%84%E8%BA%AB%E8%BE%B9%EF%BC%8C-demandOption-key-msg"><span class="toc-text">我就要你在我的身边，.demandOption(key, msg)**</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%EF%BC%9F%E4%BD%A0%E5%AB%8C%E6%88%91%E5%A4%AA%E9%95%BF%EF%BC%9F%E8%BF%98%E6%98%AF%E5%A4%AA%E7%9F%AD-alias"><span class="toc-text">啥？你嫌我太长？还是太短:).alias</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%A0%E8%A6%81%E6%88%91%E6%80%8E%E6%A0%B7%E6%88%91%E5%B0%B1%E6%80%8E%E6%A0%B7%EF%BC%8C-boolean-array-number-count-choices"><span class="toc-text">你要我怎样我就怎样，.boolean .array .number .count .choices</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#array-key"><span class="toc-text">.array(key)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#boolean-key"><span class="toc-text">.boolean(key)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#number-key"><span class="toc-text">.number(key)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#count-key"><span class="toc-text">.count(key)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#choices-key-list"><span class="toc-text">.choices(key, list)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AC%E8%AF%B4%E4%BD%A0%E5%92%8C%E5%88%AB%E4%BA%BA%E6%9C%89%E5%8D%83%E4%B8%9D%E4%B8%87%E7%BC%95%E7%9A%84%E5%85%B3%E7%B3%BB-conflicts-implies"><span class="toc-text">听说你和别人有千丝万缕的关系:( .conflicts .implies</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%AE%B6%E5%9C%A8%E4%B8%80%E8%B5%B7%E5%90%A7-option-options"><span class="toc-text">大家在一起吧 :) .option .options</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E7%94%A8%E4%BD%86%E6%98%AF%E5%BE%88%E7%AE%80%E5%8D%95%E5%85%B6%E4%BD%99%E5%8F%82%E6%95%B0"><span class="toc-text">有用但是很简单其余参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E5%BC%9F%E6%9D%A5%E4%BA%86-command"><span class="toc-text">小弟来了 (-_-) **.command**</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E4%B8%AA%E4%BD%8D%E7%BD%AE%E6%98%AF%E4%BD%A0%E7%9A%84%EF%BC%8C%E5%88%AB%E4%BA%BA%E6%8A%A2%E4%B8%8D%E8%B5%B0-arg1-lt-arg2-gt"><span class="toc-text">这个位置是你的，别人抢不走 [arg1] &lt;arg2&gt;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%91%BD%E4%BB%A4"><span class="toc-text">默认命令 </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E4%BE%BF%E4%B8%80%E7%82%B9-commandDir"><span class="toc-text">方便一点 .commandDir</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E%E5%88%AB%E7%9A%84%E5%9C%B0%E6%96%B9%E6%9D%A5-config-env-coerce"><span class="toc-text">从别的地方来 .config .env .coerce</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>话说 yargs 是什么呢？简单来说，就是用来解析 cli 参数的。话不多说，我们来简单了解一下。</p>
+<h1 id="光速开始"><a href="#光速开始" class="headerlink" title="光速开始"></a>光速开始</h1><h2 id="argv-一切的开始，简单的不要不要的"><a href="#argv-一切的开始，简单的不要不要的" class="headerlink" title=".argv 一切的开始，简单的不要不要的"></a>.argv 一切的开始，简单的不要不要的</h2><p>使用这个最简单的方式就是直接调用 <code>.argv</code> 这个 getter，他会自动对 <code>process.argv</code> 进行解析。并返回解析后的对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// argv.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="property">argv</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -v --version --name whos</span></span><br><span class="line">&#123; _: [], v: <span class="literal">true</span>, version: <span class="literal">true</span>, name: <span class="string">&#x27;whos&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>什么缩写，什么参数，统统搞定。是不是 so easy。</p>
+<p>在默认情况下，所有的参数只有三种值，<code>Boolean</code>、<code>String</code>、<code>Array&lt;Boolean|String</code>。</p>
+<p>而且 <code>$0</code> 代表当前脚本的名称，这个就不多讲了</p>
+<p>参数后面可以使用空格或者 <code>=</code> 。例如 <code>-d=ok —name=bill</code></p>
+<h3 id="普通参数"><a href="#普通参数" class="headerlink" title="普通参数"></a>普通参数</h3><p>如果参数没有 <code>-</code> 开头，那么将它放入 <code>_</code> ，简称为普通参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js a b c</span></span><br><span class="line">&#123; _: [ <span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="简写参数"><a href="#简写参数" class="headerlink" title="简写参数"></a>简写参数</h3><p>如果参数只有一个 <code>-</code> 开头，那么后面的参数为缩写参数，缩写参数的值默认设置成 <code>true</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -a -b -c</span></span><br><span class="line">&#123; _: [], a: <span class="literal">true</span>, b: <span class="literal">true</span>, c: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>同时，<code>yargs</code> 支持将缩写参数合并在一起书写。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -abc</span></span><br><span class="line">&#123; _: [], a: <span class="literal">true</span>, b: <span class="literal">true</span>, c: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>效果和上面是一样的。</p>
+<p>如果缩写参数后面跟着普通参数，那么缩写参数的值就会自动设置成普通参数的值而不再是 <code>true</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -a haha -b lala -c hehe</span></span><br><span class="line">&#123; _: [], a: <span class="string">&#x27;haha&#x27;</span>, b: <span class="string">&#x27;lala&#x27;</span>, c: <span class="string">&#x27;hehe&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>那么有人问了，如果我这样写会怎么样？ <code>-abc hahaha</code>，let’s try.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -abc hahaha</span></span><br><span class="line">&#123; _: [], a: <span class="literal">true</span>, b: <span class="literal">true</span>, c: <span class="string">&#x27;hahaha&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>结果显示，其实就和</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -a -b -c hahaha</span></span><br></pre></td></tr></table></figure>
+<p>是一样的，可以见得，代码中其实就是将 <code>-abc</code> 拆成了 <code>-a -b -c</code> 进行解析的。</p>
+<h3 id="全写参数"><a href="#全写参数" class="headerlink" title="全写参数"></a>全写参数</h3><p>除去上面两种参数，就剩下全写参数（不要吐槽为啥叫全写参数，因为实在是不知道该叫什么名字）</p>
+<p>全写参数和缩写参数差不多，只不过他不能合并成一个书写，其他都是一样的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js --version --laugh haha</span></span><br><span class="line">&#123; _: [], version: <span class="literal">true</span>, laugh: <span class="string">&#x27;haha&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="结果合并"><a href="#结果合并" class="headerlink" title="结果合并"></a>结果合并</h3><p>作为一个好 Module ，怎么会没有考虑到下面这种奇葩情况呢？</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js -a -a -a -a -a -a -a</span></span><br></pre></td></tr></table></figure>
+<p>大家猜猜会是什么结果 :) 此处略过 10000 秒。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; _: [],</span><br><span class="line">  a: [ <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>没错，<code>yargs</code> 将每一个参数单独处理，然后最后合并成了一个数组，是不是很有意思，也就是说你可以写出下面的东东。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node argv.js --fuck whose --fuck your --fuck daddy --fuck</span></span><br><span class="line">&#123; _: [],</span><br><span class="line">  fuck: [ <span class="string">&#x27;whose&#x27;</span>, <span class="string">&#x27;your&#x27;</span>, <span class="string">&#x27;daddy&#x27;</span>, <span class="literal">true</span> ],</span><br><span class="line">  <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;argv.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>最简单的模式，也是最有趣的模式，值得去玩。</p>
+<h2 id="我就要你在我的身边，-demandOption-key-msg"><a href="#我就要你在我的身边，-demandOption-key-msg" class="headerlink" title="我就要你在我的身边，.demandOption(key, msg)**"></a>我就要你在我的身边，<code>.demandOption(key, msg)</code><em>**</em></h2><p>如果你需要某个参数一定存在，这怎么办呢？难道要自己手动 <code>if</code> 一下，那真的好蠢啊。</p>
+<p><code>.demandOption</code> 就是这么来了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demand.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="title function_">demandOption</span>(<span class="string">&#x27;baby&#x27;</span>).<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<p><code>baby</code> 在，世界一切太平，不管他是怎么在我的身边的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node demand.js --baby</span></span><br><span class="line">&#123; _: [], baby: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;demand.js&#x27;</span> &#125;</span><br><span class="line"><span class="comment"># node demand.js --baby I</span></span><br><span class="line">&#123; _: [], baby: <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;demand.js&#x27;</span> &#125;</span><br><span class="line"><span class="comment"># node demand.js --baby --baby --baby --baby I</span></span><br><span class="line">&#123; _: [], baby: [ <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span>, <span class="string">&#x27;I&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;demand.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<p><code>baby</code> 不在，世界爆炸(exit code != 0)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node demand.js</span></span><br><span class="line">Options:</span><br><span class="line">  --baby                                     [required]</span><br><span class="line"></span><br><span class="line">Missing required argument: baby</span><br></pre></td></tr></table></figure>
+<p><code>.demandOption(key, msg)</code> 的 <code>key</code> 支持数组和字符串，分别表示单个和多个 <code>required</code> 的参数。而第二个参数值在没有满足条件的时候显示的文字。</p>
+<h2 id="啥？你嫌我太长？还是太短-alias"><a href="#啥？你嫌我太长？还是太短-alias" class="headerlink" title="啥？你嫌我太长？还是太短:).alias"></a>啥？你嫌我太长？还是太短:)<code>.alias</code></h2><blockquote>
+<p>俗话说的好，参数太长怎么办，变短一点喽</p>
+</blockquote>
+<p>其实是我自己说的，可以给一个命令取一个别名，不管是变长还是变短，都很简单。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// alias.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="title function_">alias</span>(<span class="string">&#x27;long&#x27;</span>, [<span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;lo&#x27;</span>]).<span class="title function_">alias</span>(<span class="string">&#x27;short&#x27;</span>, <span class="string">&#x27;s&#x27;</span>).<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node alias.js -l --long --lo -s --short</span></span><br><span class="line">&#123; _: [],</span><br><span class="line">  l: [ <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  long: [ <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  lo: [ <span class="literal">true</span>, <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  s: [ <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  short: [ <span class="literal">true</span>, <span class="literal">true</span> ],</span><br><span class="line">  <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;alias.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
 <p>可以看到 <code>l</code> <code>lo</code> <code>long</code> 是一样的，<code>s</code> <code>short</code> 是一样的，可长可短，自由随意。</p>
-<h3 id="你要我怎样我就怎样，-boolean-array-number-count-choices"><a href="#你要我怎样我就怎样，-boolean-array-number-count-choices" class="headerlink" title="你要我怎样我就怎样，.boolean .array .number .count .choices"></a>你要我怎样我就怎样，<code>.boolean</code> <code>.array</code> <code>.number</code> <code>.count</code> <code>.choices</code></h3><p>有的时候，需要某些参数是固定的格式，而不是其他的方式，那么就需要这些方法来描述一个参数的类型。这些参数对于 <code>alias</code> 之后的参数同样也是可以的。</p>
-<h4 id="array-key"><a href="#array-key" class="headerlink" title=".array(key)"></a><code>.array(key)</code></h4><p>顾名思义，直接将参数的类型设置为数组，他会将后面所有的非普通参数作为当前参数的值。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// array.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>).array(<span class="string">'girls'</span>).argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node array.js --girls Abby Aimee --stop --girls Alisa Angelia Amanda</span></span><br><span class="line">&#123; _: [],</span><br><span class="line">  girls: [ <span class="string">'Abby'</span>, <span class="string">'Aimee'</span>, <span class="string">'Alisa'</span>, <span class="string">'Angelia'</span>, <span class="string">'Amanda'</span> ],</span><br><span class="line">  stop: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">'$0'</span>: <span class="string">'array.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="boolean-key"><a href="#boolean-key" class="headerlink" title=".boolean(key)"></a><code>.boolean(key)</code></h4><p>将参数类型设置为 <code>Boolean</code> 类型。如果后面的类型不是 <code>Boolean</code> 类型(<code>true</code>、<code>false</code>)，那么将不会设置为当前参数的值，并且当有多个的时候，不会合并成数组。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// boolean.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>).boolean(<span class="string">'love'</span>).argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node boolean.js I --love you and --love again</span></span><br><span class="line">&#123; _: [ <span class="string">'I'</span>, <span class="string">'you'</span>, <span class="string">'and'</span>, <span class="string">'again'</span> ],</span><br><span class="line">  love: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">'$0'</span>: <span class="string">'boolean.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="number-key"><a href="#number-key" class="headerlink" title=".number(key)"></a><code>.number(key)</code></h4><p>将参数类型设置为 <code>Number</code> 类型。基本规则如下：</p>
+<h2 id="你要我怎样我就怎样，-boolean-array-number-count-choices"><a href="#你要我怎样我就怎样，-boolean-array-number-count-choices" class="headerlink" title="你要我怎样我就怎样，.boolean .array .number .count .choices"></a>你要我怎样我就怎样，<code>.boolean</code> <code>.array</code> <code>.number</code> <code>.count</code> <code>.choices</code></h2><p>有的时候，需要某些参数是固定的格式，而不是其他的方式，那么就需要这些方法来描述一个参数的类型。这些参数对于 <code>alias</code> 之后的参数同样也是可以的。</p>
+<h3 id="array-key"><a href="#array-key" class="headerlink" title=".array(key)"></a><code>.array(key)</code></h3><p>顾名思义，直接将参数的类型设置为数组，他会将后面所有的非普通参数作为当前参数的值。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// array.js</span><br><span class="line">const argv = require(<span class="string">&#x27;yargs&#x27;</span>).array(<span class="string">&#x27;girls&#x27;</span>).argv</span><br><span class="line">console.dir(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node array.js --girls Abby Aimee --stop --girls Alisa Angelia Amanda</span></span><br><span class="line">&#123; _: [],</span><br><span class="line">  girls: [ <span class="string">&#x27;Abby&#x27;</span>, <span class="string">&#x27;Aimee&#x27;</span>, <span class="string">&#x27;Alisa&#x27;</span>, <span class="string">&#x27;Angelia&#x27;</span>, <span class="string">&#x27;Amanda&#x27;</span> ],</span><br><span class="line">  stop: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;array.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="boolean-key"><a href="#boolean-key" class="headerlink" title=".boolean(key)"></a><code>.boolean(key)</code></h3><p>将参数类型设置为 <code>Boolean</code> 类型。如果后面的类型不是 <code>Boolean</code> 类型(<code>true</code>、<code>false</code>)，那么将不会设置为当前参数的值，并且当有多个的时候，不会合并成数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// boolean.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="title function_">boolean</span>(<span class="string">&#x27;love&#x27;</span>).<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node boolean.js I --love you and --love again</span></span><br><span class="line">&#123; _: [ <span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;you&#x27;</span>, <span class="string">&#x27;and&#x27;</span>, <span class="string">&#x27;again&#x27;</span> ],</span><br><span class="line">  love: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;boolean.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="number-key"><a href="#number-key" class="headerlink" title=".number(key)"></a><code>.number(key)</code></h3><p>将参数类型设置为 <code>Number</code> 类型。基本规则如下：</p>
 <ol>
-<li>如果没有填写值，那么默认是 <code>undefined</code></li>
-<li>如果设置的值不合法，那么是 <code>NaN</code></li>
-<li>否则是格式化为数字，使用 <code>Number</code> 构造方法</li>
+<li><p>如果没有填写值，那么默认是 <code>undefined</code></p>
+</li>
+<li><p>如果设置的值不合法，那么是 <code>NaN</code></p>
+</li>
+<li><p>否则是格式化为数字，使用 <code>Number</code> 构造方法</p>
+</li>
 </ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// number.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>).number([<span class="string">'bust'</span>, <span class="string">'waist'</span>, <span class="string">'hips'</span>, <span class="string">'height'</span>]).argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node number.js --bust --waist 24 --hips zz</span></span><br><span class="line">&#123; _: [], bust: undefined, waist: 24, hips: NaN, <span class="string">'$0'</span>: <span class="string">'number.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="count-key"><a href="#count-key" class="headerlink" title=".count(key)"></a><code>.count(key)</code></h4><p>统计一下这个参数被使用了多少次，使用 <code>.count</code> 之后，参数默认就变成了 <code>Boolean</code> 类型，但是只统计他出现的次数。经常用来作为设置 debug 的输出级别。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// count.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>).count(<span class="string">'v'</span>).count(<span class="string">'people'</span>).argv</span><br><span class="line"><span class="built_in">console</span>.log(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node count.js -v -vv --people --people false</span></span><br><span class="line">&#123; _: [], v: 3, people: 2, <span class="string">'$0'</span>: <span class="string">'count.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="choices-key-list"><a href="#choices-key-list" class="headerlink" title=".choices(key, list)"></a><code>.choices(key, list)</code></h4><p>设置某个参数只能为某些值，可以和<code>number</code> <code>boolean</code> <code>count</code> 组合。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// number.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="title function_">number</span>([<span class="string">&#x27;bust&#x27;</span>, <span class="string">&#x27;waist&#x27;</span>, <span class="string">&#x27;hips&#x27;</span>, <span class="string">&#x27;height&#x27;</span>]).<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node number.js --bust --waist 24 --hips zz</span></span><br><span class="line">&#123; _: [], bust: undefined, waist: 24, hips: NaN, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;number.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="count-key"><a href="#count-key" class="headerlink" title=".count(key)"></a><code>.count(key)</code></h3><p>统计一下这个参数被使用了多少次，使用 <code>.count</code> 之后，参数默认就变成了 <code>Boolean</code> 类型，但是只统计他出现的次数。经常用来作为设置 debug 的输出级别。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// count.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>).<span class="title function_">count</span>(<span class="string">&#x27;v&#x27;</span>).<span class="title function_">count</span>(<span class="string">&#x27;people&#x27;</span>).<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node count.js -v -vv --people --people false</span></span><br><span class="line">&#123; _: [], v: 3, people: 2, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;count.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="choices-key-list"><a href="#choices-key-list" class="headerlink" title=".choices(key, list)"></a><code>.choices(key, list)</code></h3><p>设置某个参数只能为某些值，可以和<code>number</code> <code>boolean</code> <code>count</code> 组合。</p>
 <p>其本质是 <code>indexOf</code> 操作，也就是 <code>===</code> 做比较操作，所以这也就是为啥 <code>array</code> 不能和他匹配的原因。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// choices</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>)</span><br><span class="line">	.choices(<span class="string">'look'</span>, [<span class="string">'beatuify'</span>, <span class="string">'oh, god'</span>])</span><br><span class="line">	.choices(<span class="string">'time'</span>, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]).number(<span class="string">'time'</span>)</span><br><span class="line">	.choices(<span class="string">'many'</span>, [<span class="number">1</span>,<span class="number">2</span>]).count(<span class="string">'many'</span>)</span><br><span class="line">	.argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node choices.js --look "oh, god"</span></span><br><span class="line">&#123; _: [], look: <span class="string">'oh, god'</span>, <span class="string">'$0'</span>: <span class="string">'choices.js'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --look no</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: look, Given: <span class="string">"no"</span>, Choices: <span class="string">"beatuify"</span>, <span class="string">"oh, god"</span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># node choices.js --time 1</span></span><br><span class="line">&#123; _: [], time: 1, <span class="string">'$0'</span>: <span class="string">'choices.js'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --time 5</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: time, Given: 5, Choices: 1, 2, 3, 4</span><br><span class="line"> </span><br><span class="line"><span class="comment"># node choices.js --many --many</span></span><br><span class="line">&#123; _: [], many: 2, <span class="string">'$0'</span>: <span class="string">'choices.js'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --many --many --many</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: many, Given: 3, Choices: 1, 2</span><br></pre></td></tr></table></figure>
-<h3 id="听说你和别人有千丝万缕的关系-conflicts-implies"><a href="#听说你和别人有千丝万缕的关系-conflicts-implies" class="headerlink" title="听说你和别人有千丝万缕的关系:( .conflicts .implies"></a>听说你和别人有千丝万缕的关系:( <code>.conflicts</code> <code>.implies</code></h3><p>简单一说：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// choices</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>)</span><br><span class="line">  .<span class="title function_">choices</span>(<span class="string">&#x27;look&#x27;</span>, [<span class="string">&#x27;beatuify&#x27;</span>, <span class="string">&#x27;oh, god&#x27;</span>])</span><br><span class="line">  .<span class="title function_">choices</span>(<span class="string">&#x27;time&#x27;</span>, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]).<span class="title function_">number</span>(<span class="string">&#x27;time&#x27;</span>)</span><br><span class="line">  .<span class="title function_">choices</span>(<span class="string">&#x27;many&#x27;</span>, [<span class="number">1</span>,<span class="number">2</span>]).<span class="title function_">count</span>(<span class="string">&#x27;many&#x27;</span>)</span><br><span class="line">  .<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node choices.js --look &quot;oh, god&quot;</span></span><br><span class="line">&#123; _: [], look: <span class="string">&#x27;oh, god&#x27;</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;choices.js&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --look no</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: look, Given: <span class="string">&quot;no&quot;</span>, Choices: <span class="string">&quot;beatuify&quot;</span>, <span class="string">&quot;oh, god&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --time 1</span></span><br><span class="line">&#123; _: [], time: 1, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;choices.js&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --time 5</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: time, Given: 5, Choices: 1, 2, 3, 4</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --many --many</span></span><br><span class="line">&#123; _: [], many: 2, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;choices.js&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node choices.js --many --many --many</span></span><br><span class="line">Invalid values:</span><br><span class="line">  Argument: many, Given: 3, Choices: 1, 2</span><br></pre></td></tr></table></figure>
+<h2 id="听说你和别人有千丝万缕的关系-conflicts-implies"><a href="#听说你和别人有千丝万缕的关系-conflicts-implies" class="headerlink" title="听说你和别人有千丝万缕的关系:( .conflicts .implies"></a>听说你和别人有千丝万缕的关系:( <code>.conflicts</code> <code>.implies</code></h2><p>简单一说：</p>
 <ul>
-<li><code>.implies(我, 她)</code> 有我先有她，有她不一定有我</li>
-<li><code>.confilcts(我, 他)</code> 有我没他，有他没我</li>
+<li><p><code>.implies(我, 她)</code> 有我先有她，有她不一定有我</p>
+</li>
+<li><p><code>.confilcts(我, 他)</code> 有我没他，有他没我</p>
+</li>
 </ul>
 <p>如果两个都存在在一个参数上面的时候，<code>implies</code> 优先级会更高。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// imcon.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>)</span><br><span class="line">	.conflicts(<span class="string">'me'</span>, <span class="string">'him'</span>)</span><br><span class="line">	.implies(<span class="string">'me'</span>, <span class="string">'her'</span>)</span><br><span class="line">	.argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node imcon.js --me --him --her</span></span><br><span class="line">Arguments me and him are mutually exclusive</span><br><span class="line"></span><br><span class="line"><span class="comment"># implies 有更高的优先级</span></span><br><span class="line"><span class="comment"># node imcon.js --me --him</span></span><br><span class="line">Implications failed:</span><br><span class="line">  me -&gt; her</span><br><span class="line">  </span><br><span class="line"><span class="comment"># node imcon.js --me</span></span><br><span class="line">Implications failed:</span><br><span class="line">  me -&gt; her</span><br><span class="line">  </span><br><span class="line"><span class="comment"># node imcon.js --me --her</span></span><br><span class="line">&#123; _: [], me: <span class="literal">true</span>, her: <span class="literal">true</span>, <span class="string">'$0'</span>: <span class="string">'imcon.js'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node imcon.js --him --her</span></span><br><span class="line">&#123; _: [], him: <span class="literal">true</span>, her: <span class="literal">true</span>, <span class="string">'$0'</span>: <span class="string">'imcon.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="可以"><a href="#可以" class="headerlink" title="可以"></a>可以</h3><h3 id="大家在一起吧-option-options"><a href="#大家在一起吧-option-options" class="headerlink" title="大家在一起吧 :) .option .options"></a>大家在一起吧 :) <code>.option</code> <code>.options</code></h3><p>其实就是将上面的的所有的命令合并成一个 object，里面的 <code>key</code> 就是对应的函数名，而值就是参数。只不过 <code>.options</code> 是很多 <code>.option</code> 的集合。</p>
-<p>这个就请看官网的<a href="http://yargs.js.org/docs/#methods-optionskey-opt" target="_blank" rel="noopener">例子</a>和<a href="https://github.com/yargs/yargs/blob/master/yargs.js#L176" target="_blank" rel="noopener">源码</a></p>
-<h4 id="有用但是很简单其余参数"><a href="#有用但是很简单其余参数" class="headerlink" title="有用但是很简单其余参数"></a>有用但是很简单其余参数</h4><ul>
-<li><code>.default</code> <code>.defaults</code> 设置默认参数值</li>
-<li><code>.describe</code> 对参数的描述</li>
-<li><code>.usage</code> 设置命令的提示的使用方法</li>
-<li><code>.help</code> 设置帮助的指令，添加 <code>--help</code> ，但是没有 <code>-h</code> ，需要手动添加，可以选择是否添加 <code>help</code> 子命令</li>
-<li><code>.group</code> 分组，比如可以设置启动参数为一组，停止参数为一组，只是看起来比较舒服一些，并不影响什么内容。</li>
-<li><code>.normalize</code> 对参数的值用 <code>path.normalize</code> </li>
-<li><code>.version</code> 添加版本显示参数 <code>--version</code>，不过不添加缩写参数</li>
-<li><code>.wrap</code> 设置信息输出的最大的列宽度，比如说 <code>--help</code> 显示帮助参数。<code>.wrap(null)</code> 取消列宽限制，<code>.wrap(require(&#39;yargs&#39;).terminalWidth())</code> 设置为当前宽度。默认是 <code>Math.min(80, windowWidth</code></li>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// imcon.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>)</span><br><span class="line">  .<span class="title function_">conflicts</span>(<span class="string">&#x27;me&#x27;</span>, <span class="string">&#x27;him&#x27;</span>)</span><br><span class="line">  .<span class="title function_">implies</span>(<span class="string">&#x27;me&#x27;</span>, <span class="string">&#x27;her&#x27;</span>)</span><br><span class="line">  .<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node imcon.js --me --him --her</span></span><br><span class="line">Arguments me and him are mutually exclusive</span><br><span class="line"></span><br><span class="line"><span class="comment"># implies 有更高的优先级</span></span><br><span class="line"><span class="comment"># node imcon.js --me --him</span></span><br><span class="line">Implications failed:</span><br><span class="line">  me -&gt; her</span><br><span class="line"></span><br><span class="line"><span class="comment"># node imcon.js --me</span></span><br><span class="line">Implications failed:</span><br><span class="line">  me -&gt; her</span><br><span class="line"></span><br><span class="line"><span class="comment"># node imcon.js --me --her</span></span><br><span class="line">&#123; _: [], me: <span class="literal">true</span>, her: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;imcon.js&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node imcon.js --him --her</span></span><br><span class="line">&#123; _: [], him: <span class="literal">true</span>, her: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;imcon.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="大家在一起吧-option-options"><a href="#大家在一起吧-option-options" class="headerlink" title="大家在一起吧 :) .option .options"></a>大家在一起吧 :) <code>.option</code> <code>.options</code></h2><p>其实就是将上面的的所有的命令合并成一个 object，里面的 <code>key</code> 就是对应的函数名，而值就是参数。只不过 <code>.options</code> 是很多 <code>.option</code> 的集合。</p>
+<p>这个就请看官网的<a target="_blank" rel="noopener" href="http://yargs.js.org/docs/#methods-optionskey-opt">例子</a>和<a target="_blank" rel="noopener" href="https://github.com/yargs/yargs/blob/master/yargs.js#L176">源码</a></p>
+<h3 id="有用但是很简单其余参数"><a href="#有用但是很简单其余参数" class="headerlink" title="有用但是很简单其余参数"></a>有用但是很简单其余参数</h3><ul>
+<li><p><code>.default</code> <code>.defaults</code> 设置默认参数值</p>
+</li>
+<li><p><code>.describe</code> 对参数的描述</p>
+</li>
+<li><p><code>.usage</code> 设置命令的提示的使用方法</p>
+</li>
+<li><p><code>.help</code> 设置帮助的指令，添加 <code>-help</code> ，但是没有 <code>h</code> ，需要手动添加，可以选择是否添加 <code>help</code> 子命令</p>
+</li>
+<li><p><code>.group</code> 分组，比如可以设置启动参数为一组，停止参数为一组，只是看起来比较舒服一些，并不影响什么内容。</p>
+</li>
+<li><p><code>.normalize</code> 对参数的值用 <code>path.normalize</code></p>
+</li>
+<li><p><code>.version</code> 添加版本显示参数 <code>-version</code>，不过不添加缩写参数</p>
+</li>
+<li><p><code>.wrap</code> 设置信息输出的最大的列宽度，比如说 <code>-help</code> 显示帮助参数。<code>.wrap(null)</code> 取消列宽限制，<code>.wrap(require(&#39;yargs&#39;).terminalWidth())</code> 设置为当前宽度。默认是 <code>Math.min(80, windowWidth</code></p>
+</li>
 </ul>
-<h3 id="小弟来了-command"><a href="#小弟来了-command" class="headerlink" title="小弟来了 (-_-) .command"></a>小弟来了 (-_-) <code>.command</code></h3><p>最简单的就是想实现类似 git 的那样的带有子命令的命令行操作，那么就需要这个东西。</p>
+<h3 id="小弟来了-command"><a href="#小弟来了-command" class="headerlink" title="小弟来了 (-_-) **.command**"></a><strong>小弟来了 (-_-) </strong><code>**.command**</code></h3><p>最简单的就是想实现类似 git 的那样的带有子命令的命令行操作，那么就需要这个东西。</p>
 <p>他有如下的参数：</p>
 <ul>
-<li><code>.command(cmd, desc, [builder], [handler])</code></li>
-<li><code>.command(cmd, desc, [module])</code></li>
-<li><code>.command(module)</code></li>
-<li><code>builder</code> 是构造器，可以是 <code>Object|yargs =&gt; {}</code>，如果是对象，那么和 <code>.options</code> 是一样的。如果是函数，参数是 <code>yargs</code> 可以通过上面的函数添加参数。</li>
-<li><code>handler</code> 是处理器，当解析完成后，传入解析的结果，此时可以对结果进行处理。</li>
-<li><code>module</code> 最简单了，就是有<ul>
-<li><code>command</code> 命令名</li>
-<li><code>aliases</code> 别名</li>
-<li><code>describe</code> 描述</li>
-<li><code>builder</code> 构造器</li>
-<li><code>handler</code> 处理器</li>
+<li><p><code>.command(cmd, desc, [builder], [handler])</code></p>
+</li>
+<li><p><code>.command(cmd, desc, [module])</code></p>
+</li>
+<li><p><code>.command(module)</code></p>
+</li>
+<li><p><code>builder</code> 是构造器，可以是 <code>Object|yargs =&gt; &#123;&#125;</code>，如果是对象，那么和 <code>.options</code> 是一样的。如果是函数，参数是 <code>yargs</code> 可以通过上面的函数添加参数。</p>
+</li>
+<li><p><code>handler</code> 是处理器，当解析完成后，传入解析的结果，此时可以对结果进行处理。</p>
+</li>
+<li><p><code>module</code> 最简单了，就是有</p>
+<ul>
+<li><p><code>command</code> 命令名</p>
+</li>
+<li><p><code>aliases</code> 别名</p>
+</li>
+<li><p><code>describe</code> 描述</p>
+</li>
+<li><p><code>builder</code> 构造器</p>
+</li>
+<li><p><code>handler</code> 处理器</p>
+</li>
 </ul>
 </li>
 </ul>
 <p>当匹配到一个命令的时候， <code>yargs</code> 会做如下处理：</p>
 <ol>
-<li>把当前命令输入到当前作用域中</li>
-<li>清空所有的非全局的配置</li>
-<li>如果传入了 <code>builder</code>，就通过其设置当前命令</li>
-<li>解析和验证参数</li>
-<li>如何一切正常，那么运行 <code>handle</code>，如果传入了的话</li>
-<li>从当前作用域中弹出</li>
+<li><p>把当前命令输入到当前作用域中</p>
+</li>
+<li><p>清空所有的非全局的配置</p>
+</li>
+<li><p>如果传入了 <code>builder</code>，就通过其设置当前命令</p>
+</li>
+<li><p>解析和验证参数</p>
+</li>
+<li><p>如何一切正常，那么运行 <code>handle</code>，如果传入了的话</p>
+</li>
+<li><p>从当前作用域中弹出</p>
+</li>
 </ol>
-<h4 id="这个位置是你的，别人抢不走-arg1-lt-arg2-gt"><a href="#这个位置是你的，别人抢不走-arg1-lt-arg2-gt" class="headerlink" title="这个位置是你的，别人抢不走 [arg1] &lt;arg2&gt;"></a>这个位置是你的，别人抢不走 <code>[arg1] &lt;arg2&gt;</code></h4><p>有的时候希望命令必须要接受一个参数，或者接受一个可选参数，那么可以对命令使用 <code>&lt;&gt;</code> 和 <code>[]</code> 设置他的位置。<code>&lt;&gt;</code> 表示这个命令必须要有，<code>[]</code> 表示这个参数可选。</p>
+<h3 id="这个位置是你的，别人抢不走-arg1-lt-arg2-gt"><a href="#这个位置是你的，别人抢不走-arg1-lt-arg2-gt" class="headerlink" title="这个位置是你的，别人抢不走 [arg1] &lt;arg2&gt;"></a>这个位置是你的，别人抢不走 <code>[arg1] &lt;arg2&gt;</code></h3><p>有的时候希望命令必须要接受一个参数，或者接受一个可选参数，那么可以对命令使用 <code>&lt;&gt;</code> 和 <code>[]</code> 设置他的位置。<code>&lt;&gt;</code> 表示这个命令必须要有，<code>[]</code> 表示这个参数可选。</p>
 <p>有如下规则：</p>
 <ul>
-<li>通过 <code>|</code> 设置别名，例如 <code>[name|username]</code> ，在最后的解析中，<code>name</code> 和 <code>username</code> 是一样的。</li>
-<li>最后一个可选参数支持添加 <code>…</code> 变成可变参数，例如 <code>downloadto &lt;from&gt; [to…]</code> 那么 <code>to</code> 是一个数组，并且必须要是命令中的最后一个可选参数才能变成可变参数。</li>
+<li><p>通过 <code>|</code> 设置别名，例如 <code>[name|username]</code> ，在最后的解析中，<code>name</code> 和 <code>username</code> 是一样的。</p>
+</li>
+<li><p>最后一个可选参数支持添加 <code>…</code> 变成可变参数，例如 <code>downloadto &lt;from&gt; [to…]</code> 那么 <code>to</code> 是一个数组，并且必须要是命令中的最后一个可选参数才能变成可变参数。</p>
+</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// like.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>)</span><br><span class="line">	.command(<span class="string">'like &lt;who&gt;'</span>, <span class="string">'you like who'</span>, &#123;&#125;, arg =&gt; <span class="built_in">console</span>.dir(arg))</span><br><span class="line">	.command(<span class="string">'dislike [who]'</span>, <span class="string">'you dislike who'</span>, &#123;&#125;, arg =&gt; <span class="built_in">console</span>.dir(arg))</span><br><span class="line">	.argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node like.js like you</span></span><br><span class="line">&#123; _: [ <span class="string">'like'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span>, who: <span class="string">'you'</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">'like'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span>, who: <span class="string">'you'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js like</span></span><br><span class="line">like.js like &lt;who&gt;</span><br><span class="line"></span><br><span class="line">Not enough non-option arguments: got 0, need at least 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js dislike</span></span><br><span class="line">&#123; _: [ <span class="string">'dislike'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">'dislike'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js dislike you</span></span><br><span class="line">&#123; _: [ <span class="string">'dislike'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span>, who: <span class="string">'you'</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">'dislike'</span> ], <span class="string">'$0'</span>: <span class="string">'like.js'</span>, who: <span class="string">'you'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="默认命令"><a href="#默认命令" class="headerlink" title="默认命令 *"></a>默认命令 <code>*</code></h4><p>有的时候当没有任何命令匹配到的时候，希望有一个默认匹配的，那么可以用 <code>*</code> 代替普通命令的位置。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// defaultCommand.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">'yargs'</span>)</span><br><span class="line">	.command(<span class="string">'*'</span>, <span class="string">'default command'</span>, &#123;&#125;, () =&gt; <span class="built_in">console</span>.log(<span class="string">'called command'</span>))</span><br><span class="line">	.argv</span><br><span class="line"><span class="built_in">console</span>.dir(argv)</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node defaultCommand.js --name</span></span><br><span class="line">called <span class="built_in">command</span></span><br><span class="line">&#123; _: [], name: <span class="literal">true</span>, <span class="string">'$0'</span>: <span class="string">'defaultCommand.js'</span> &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="方便一点-commandDir"><a href="#方便一点-commandDir" class="headerlink" title="方便一点 .commandDir"></a>方便一点 <code>.commandDir</code></h4><p>表示直接从文件夹中动态加载命令。详情请参考<a href="http://yargs.js.org/docs/#methods-commanddirdirectory-opts" target="_blank" rel="noopener">文档</a></p>
-<h3 id="从别的地方来-config-env-coerce"><a href="#从别的地方来-config-env-coerce" class="headerlink" title="从别的地方来 .config .env .coerce"></a>从别的地方来 <code>.config</code> <code>.env</code> <code>.coerce</code></h3><p>写到这里，作者累了，所以：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// like.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>)</span><br><span class="line">  .<span class="title function_">command</span>(<span class="string">&#x27;like &lt;who&gt;&#x27;</span>, <span class="string">&#x27;you like who&#x27;</span>, &#123;&#125;, <span class="function"><span class="params">arg</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">dir</span>(arg))</span><br><span class="line">  .<span class="title function_">command</span>(<span class="string">&#x27;dislike [who]&#x27;</span>, <span class="string">&#x27;you dislike who&#x27;</span>, &#123;&#125;, <span class="function"><span class="params">arg</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">dir</span>(arg))</span><br><span class="line">  .<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node like.js like you</span></span><br><span class="line">&#123; _: [ <span class="string">&#x27;like&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span>, <span class="built_in">who</span>: <span class="string">&#x27;you&#x27;</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">&#x27;like&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span>, <span class="built_in">who</span>: <span class="string">&#x27;you&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js like</span></span><br><span class="line">like.js like &lt;<span class="built_in">who</span>&gt;</span><br><span class="line"></span><br><span class="line">Not enough non-option arguments: got 0, need at least 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js dislike</span></span><br><span class="line">&#123; _: [ <span class="string">&#x27;dislike&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">&#x27;dislike&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># node like.js dislike you</span></span><br><span class="line">&#123; _: [ <span class="string">&#x27;dislike&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span>, <span class="built_in">who</span>: <span class="string">&#x27;you&#x27;</span> &#125;</span><br><span class="line">&#123; _: [ <span class="string">&#x27;dislike&#x27;</span> ], <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;like.js&#x27;</span>, <span class="built_in">who</span>: <span class="string">&#x27;you&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="默认命令"><a href="#默认命令" class="headerlink" title="默认命令 "></a>默认命令 <code></code></h3><p>有的时候当没有任何命令匹配到的时候，希望有一个默认匹配的，那么可以用 <code>*</code> 代替普通命令的位置。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// defaultCommand.js</span></span><br><span class="line"><span class="keyword">const</span> argv = <span class="built_in">require</span>(<span class="string">&#x27;yargs&#x27;</span>)</span><br><span class="line">  .<span class="title function_">command</span>(<span class="string">&#x27;*&#x27;</span>, <span class="string">&#x27;default command&#x27;</span>, &#123;&#125;, <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;called command&#x27;</span>))</span><br><span class="line">  .<span class="property">argv</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">dir</span>(argv)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># node defaultCommand.js --name</span></span><br><span class="line">called <span class="built_in">command</span></span><br><span class="line">&#123; _: [], name: <span class="literal">true</span>, <span class="string">&#x27;$0&#x27;</span>: <span class="string">&#x27;defaultCommand.js&#x27;</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="方便一点-commandDir"><a href="#方便一点-commandDir" class="headerlink" title="方便一点 .commandDir"></a>方便一点 <code>.commandDir</code></h3><p>表示直接从文件夹中动态加载命令。详情请参考<a target="_blank" rel="noopener" href="http://yargs.js.org/docs/#methods-commanddirdirectory-opts">文档</a></p>
+<h2 id="从别的地方来-config-env-coerce"><a href="#从别的地方来-config-env-coerce" class="headerlink" title="从别的地方来 .config .env .coerce"></a>从别的地方来 <code>.config</code> <code>.env</code> <code>.coerce</code></h2><p>写到这里，作者累了，所以：</p>
 <ul>
-<li><code>.config</code> 动态的从命令行中接受一个 <code>json</code> 文件路径，并自动加载。 <a href="http://yargs.js.org/docs/#methods-configobject" target="_blank" rel="noopener">doc</a> </li>
-<li><code>.env</code> 设置环境变量的前缀，自动将这些前缀的环境变量去掉前缀，使用小驼峰和下划线方式加载。<a href="http://yargs.js.org/docs/#methods-envprefix" target="_blank" rel="noopener">doc</a></li>
-<li><code>.coerce</code> 获取到变量值之后转化成别的值。<a href="http://yargs.js.org/docs/#methods-coercekey-fn" target="_blank" rel="noopener">doc</a></li>
+<li><p><code>.config</code> 动态的从命令行中接受一个 <code>json</code> 文件路径，并自动加载。 <a target="_blank" rel="noopener" href="http://yargs.js.org/docs/#methods-configobject">doc</a></p>
+</li>
+<li><p><code>.env</code> 设置环境变量的前缀，自动将这些前缀的环境变量去掉前缀，使用小驼峰和下划线方式加载。<a target="_blank" rel="noopener" href="http://yargs.js.org/docs/#methods-envprefix">doc</a></p>
+</li>
+<li><p><code>.coerce</code> 获取到变量值之后转化成别的值。<a target="_blank" rel="noopener" href="http://yargs.js.org/docs/#methods-coercekey-fn">doc</a></p>
+</li>
 </ul>
 <p>还有很多细节的，不过我觉得文档挺详细的，我就不多说了。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>感觉还是不错的，接口很简单，也通俗易懂。相比 <code>commander</code> 是两种不同的风格。<code>commander</code> 上手简单，但是前置知识有一些，而 <code>yargs</code> 相比前置知识的要求比较少，而且更加灵活。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>感觉还是不错的，接口很简单，也通俗易懂。相比 <code>commander</code> 是两种不同的风格。<code>commander</code> 上手简单，但是前置知识有一些，而 <code>yargs</code> 相比前置知识的要求比较少，而且更加灵活。</p>
 
                     
                         
@@ -594,7 +751,7 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Nov 13 2015 15:49:56 GMT+0800">
+    <time itemprop="datePublished" content="Fri Nov 13 2015 00:00:00 GMT+0800">
 	
 		    11月 13, 2015
     	
@@ -617,83 +774,106 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
 <h2 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h2><p>然而虽然<code>ES6</code>很棒，但是现在几乎没有浏览器或者Node（我记得5.0已经全部支持了es6，可是为啥我试着却不行。。。似乎要开启全部的harmony）能够完全支持es6的代码，那么问题来了，如果我想体验一下es6的代码，怎么办？？</p>
 <p>一个很简单的思路便是：</p>
 <blockquote>
-<p>我写个程序，将es6代码转换成es5代码进行运行不就好了，很棒  </p>
+<p>我写个程序，将es6代码转换成es5代码进行运行不就好了，很棒</p>
 </blockquote>
 <p>而<code>Babel</code>就是干的这个事情。</p>
 <h1 id="babel5-和-babel6-的区别"><a href="#babel5-和-babel6-的区别" class="headerlink" title="babel5 和 babel6 的区别"></a>babel5 和 babel6 的区别</h1><p>对于<code>Babel</code>来说，现在有了两个版本，一个是5，一个是6，那么两者有什么区别呢？</p>
 <ul>
-<li>5对新手更加友好，因为只需要安装一个<code>babel</code>就可以了，而6需要安装比较多的东西和插件才可以。</li>
-<li>相比5来说，6将命令行工具和API分开来了，最直观的感觉就是，当你想在代码中运行es6代码的话，需要安装<code>babel-core</code>，而如果你想在终端编译es6或者是运行es6版本的REPL的话，需要安装<code>babel-cli</code></li>
-<li>也许有人问，原先的<code>babel</code>去哪了？是这样的，这个<code>babel</code>的package到了6版本之后虽然还是能安装，但是已经不具有任何的有效的代码了。取而代之的是一段提示文字，提示你需要安装<code>babel-core</code>或者<code>babel-cli</code>。所以你在babel6的情况下，完全不需要安装<code>babel</code></li>
-<li>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require hook的话，你回发现代码无法运行：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require(&apos;babel-core/register&apos;);</span><br></pre></td></tr></table></figure>
+<li><p>5对新手更加友好，因为只需要安装一个<code>babel</code>就可以了，而6需要安装比较多的东西和插件才可以。</p>
+</li>
+<li><p>相比5来说，6将命令行工具和API分开来了，最直观的感觉就是，当你想在代码中运行es6代码的话，需要安装<code>babel-core</code>，而如果你想在终端编译es6或者是运行es6版本的REPL的话，需要安装<code>babel-cli</code></p>
+</li>
+<li><p>也许有人问，原先的<code>babel</code>去哪了？是这样的，这个<code>babel</code>的package到了6版本之后虽然还是能安装，但是已经不具有任何的有效的代码了。取而代之的是一段提示文字，提示你需要安装<code>babel-core</code>或者<code>babel-cli</code>。所以你在babel6的情况下，完全不需要安装<code>babel</code></p>
+</li>
+<li><p>6将babel插件化，当你第一次安装<code>babel-core</code>并且按照以前的方式来加载require<br>hook的话，你会发现代码无法运行：<code>require(&#39;babel-core/register&#39;);</code>就是因为babel6整体插件化了，如果你想使用es6语法，需要手动加载相关插件。</p>
 </li>
 </ul>
-<p>就是因为babel6整体插件化了，如果你想使用es6语法，需要手动加载相关插件。</p>
-<p>这里有一篇文章，建议看一下<a href="http://jamesknelson.com/the-six-things-you-need-to-know-about-babel-6/" target="_blank" rel="noopener">《The Six Things You Need To Know About Babel 6》</a></p>
-<hr>
+<p>这里有一篇文章，建议看一下<a target="_blank" rel="noopener" href="http://jamesknelson.com/the-six-things-you-need-to-know-about-babel-6/">《TheSix Things You Need To Know About Babel 6》</a></p>
+<!-- unsupported divider -->
 <h1 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h1><h2 id="建立空文件夹-babel6"><a href="#建立空文件夹-babel6" class="headerlink" title="建立空文件夹 babel6"></a>建立空文件夹 babel6</h2><p>建立空文件夹babel6作为本次的目录，并<code>npm init</code></p>
-<h2 id="安装Babel6"><a href="#安装Babel6" class="headerlink" title="安装Babel6"></a>安装<code>Babel6</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-core --save</span><br></pre></td></tr></table></figure>
-<p>如果觉得慢，可以使用淘宝镜像<code>cnpm</code>。<br>此时，基础的babel6就安装完成了，如果你想安装babel5，那么执行如下的代码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 --save</span><br></pre></td></tr></table></figure>
+<h2 id="安装Babel6"><a href="#安装Babel6" class="headerlink" title="安装Babel6"></a>安装<code>Babel6</code></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-core --save</span><br></pre></td></tr></table></figure>
+<p>如果觉得慢，可以使用淘宝镜像<code>cnpm</code>。</p>
+<p>此时，基础的babel6就安装完成了，如果你想安装babel5，那么执行如下的代码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 --save</span><br></pre></td></tr></table></figure>
 <p>即可使用babel5，那么在后文的中，统一使用babel6</p>
-<p><img src="install-babel6.gif" alt="安装babel6"></p>
+<img src="/2015/11/13/use-babel6-in-nodejs/acd1633e-5e6d-4b5c-9345-11e1c7277e48.gif" class="" title="安装babel6">
 <h2 id="require-hook"><a href="#require-hook" class="headerlink" title="require hook"></a>require hook</h2><p>安装好之后，问题来了，如何使用呢？</p>
 <p>相信使用过<code>coffee</code>的人一定知道<code>register</code>，那么在babel中同样不例外，也可以使用同样的方法。</p>
-<figure class="highlight plain"><figcaption><span>start.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">require(&apos;babel-core/register&apos;);</span><br><span class="line"></span><br><span class="line">require(&apos;./app&apos;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;babel-core/register&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;./app&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <p>大家可能以为这样我就可以在<code>app.js</code>中优雅的使用es6了，在babel5中确实是这样的，但是在babel6中，却不一样了。</p>
 <p>如果你这样写完，并没有任何作用，因为你缺少一个插件。</p>
-<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>如果想使用<code>es6</code>语法，必须安装一个插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-preset-es2015</span><br></pre></td></tr></table></figure></p>
-<p>然后在文件夹下面创建一个叫<code>.babelrc</code>的文件，并写入如下代码：<br><figure class="highlight plain"><figcaption><span>.babelrc</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;presets&quot;: [&quot;es2015&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>下面你就可以很优雅的书写你的es6代码了。<br><img src="install-es2015.gif" alt="安装es2015插件"></p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>如果想使用<code>es6</code>语法，必须安装一个插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-preset-es2015</span><br></pre></td></tr></table></figure>
+<p>然后在文件夹下面创建一个叫<code>.babelrc</code>的文件，并写入如下代码：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;presets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;es2015&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>下面你就可以很优雅的书写你的es6代码了。</p>
+<img src="/2015/11/13/use-babel6-in-nodejs/300c9275-13de-4924-aa58-fd7b4f8c0b47.gif" class="" title="安装es2015插件">
 <h2 id="书写优雅的ES6代码"><a href="#书写优雅的ES6代码" class="headerlink" title="书写优雅的ES6代码"></a>书写优雅的<code>ES6</code>代码</h2><p>下面我们写一段优雅的代码</p>
-<figure class="highlight plain"><figcaption><span>app.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let first = (size, ...args) =&gt; [...args].slice(0, size);</span><br><span class="line"></span><br><span class="line">export default first;</span><br><span class="line"></span><br><span class="line">console.log(first(2,1,2,3));</span><br></pre></td></tr></table></figure>
-<h2 id="Run-it"><a href="#Run-it" class="headerlink" title="Run it"></a>Run it</h2><p>直接运行，不说话~~~<br><img src="run-it.gif" alt="Run it"></p>
-<hr>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="title function_">first</span> = (<span class="params">size, ...args</span>) =&gt; [...args].<span class="title function_">slice</span>(<span class="number">0</span>, size);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> first;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">first</span>(<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="Run-it"><a href="#Run-it" class="headerlink" title="Run it"></a>Run it</h2><p>直接运行，不说话~~~</p>
+<img src="/2015/11/13/use-babel6-in-nodejs/c8250509-7d3d-4380-9412-6d1ed0b83b7e.gif" class="" title="Run it">
+<!-- unsupported divider -->
 <h1 id="内容解释"><a href="#内容解释" class="headerlink" title="内容解释"></a>内容解释</h1><h2 id="babelrc"><a href="#babelrc" class="headerlink" title=".babelrc"></a>.babelrc</h2><p>什么是<code>.babelrc</code>文件呢？熟悉linux的同学一定知道，rc结尾的文件通常代表运行时自动加载的文件，配置等等的，类似bashrc,zshrc。同样babelrc在这里也是有同样的作用的，而且在babel6中，这个文件必不可少。</p>
 <ul>
-<li>里面可以对babel命令进行配置，以后在使用babel的cli的时候，可以少写一些配置</li>
-<li>还有一个<code>env</code>字段，可以对<code>BABEL_ENV</code>或者<code>NODE_ENV</code>指定的不同的环境变量，进行不同的编译操作</li>
+<li><p>里面可以对babel命令进行配置，以后在使用babel的cli的时候，可以少写一些配置</p>
+</li>
+<li><p>还有一个<code>env</code>字段，可以对<code>BABEL_ENV</code>或者<code>NODE_ENV</code>指定的不同的环境变量，进行不同的编译操作</p>
+</li>
 </ul>
 <h3 id="“presets”"><a href="#“presets”" class="headerlink" title="“presets”"></a>“presets”</h3><p>这个是babel6新加的，就是代表需要启动什么样的预设转码，在babel6中，预设了6种，分别是</p>
 <ul>
-<li>es2015</li>
-<li>stage-0</li>
-<li>stage-1</li>
-<li>stage-2</li>
-<li>stage-3</li>
-<li>react</li>
+<li><p>es2015</p>
+</li>
+<li><p>stage-0</p>
+</li>
+<li><p>stage-1</p>
+</li>
+<li><p>stage-2</p>
+</li>
+<li><p>stage-3</p>
+</li>
+<li><p>react</p>
+</li>
 </ul>
-<p>至于如何安装，请查看<a href="http://babeljs.io/docs/plugins/" target="_blank" rel="noopener">balel官网</a></p>
+<p>至于如何安装，请查看<a target="_blank" rel="noopener" href="http://babeljs.io/docs/plugins/">balel官网</a></p>
 <p>而且，对<code>.babelrc</code>的设置，你可以存放在package.json中的。如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	&quot;babel&quot;: &#123;</span><br><span class="line">		&quot;presets&quot;: [&quot;es2015&quot;]</span><br><span class="line">	&#125;,</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="require-hook-1"><a href="#require-hook-1" class="headerlink" title="require hook"></a>require hook</h2><p>require hook 的作用就是替换原先的require，以便在加载自动对代码进行编译，运行。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="attr">&quot;babel&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;presets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;es2015&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="require-hook-1"><a href="#require-hook-1" class="headerlink" title="require hook"></a>require hook</h2><p>require hook<br>的作用就是替换原先的require，以便在加载自动对代码进行编译，运行。</p>
 <p>其实这个做的便是重写<code>require.extensions</code>中对应的扩展名的加载程序，并且默认会判断这个文件是否是<code>node_modules</code>中的模块，如果是的话，那么将不会进行转换。否则的话，会进行转换。</p>
 <h2 id="CLI"><a href="#CLI" class="headerlink" title="CLI"></a>CLI</h2><p>其实babel也可以当做全局变量来使用的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-cli -g</span><br></pre></td></tr></table></figure>
-<p>安装上后，会安装如下四个程序到全局环境中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-cli -g</span><br></pre></td></tr></table></figure>
+<p>安装上后，会安装如下四个程序到全局环境中： </p>
 <ul>
-<li>babel</li>
-<li>babel-node</li>
-<li>babel-doctor</li>
-<li>babel-external-helpers</li>
+<li><p>babel</p>
+</li>
+<li><p>babel-node</p>
+</li>
+<li><p>babel-doctor</p>
+</li>
+<li><p>babel-external-helpers</p>
+</li>
 </ul>
 <h3 id="babel"><a href="#babel" class="headerlink" title="babel"></a>babel</h3><p>这个就是编译js文件的全局变量，具体如何使用，大家请参照官网。使用方法和coffee，style，less了类似，就不多讲了</p>
 <h3 id="babel-node"><a href="#babel-node" class="headerlink" title="babel-node"></a>babel-node</h3><p>这里主要说一下这个东西，就是这个的作用就是提供一个<code>node</code>命令相同的REPL环境，不过这个环境会在执行之前讲代码进行编译。</p>
 <blockquote>
-<p>坑1：上文讲到，babel6默认是无法编译es6文件的，需要你手动安装<code>es2015</code>的preset，同样，全局模式下，也需要这个preset。</p>
+<p>坑1：上文讲到，babel6默认是无法编译es6文件的，需要你手动安装es2015的preset，同样，全局模式下，也需要这个preset。</p>
 </blockquote>
-<p>那么问题来了，我们怎么安装这个preset呢？global？所以这是一个坑，我在babel的<a href="https://github.com/babel/babel/issues/2816" target="_blank" rel="noopener">issue</a>中找到这样的一条。作者给出这样的回答：我们处理preset和plugin是依据于输入的文件，而你直接运行CLI是没有输入文件的，也就无法定位preset和plugin的位置。言下之意就是不要全局安装，虽然我们给你了你全局安装的方式。然后作者关闭了issue，表示很无奈。。。。</p>
+<p>那么问题来了，我们怎么安装这个preset呢？global？所以这是一个坑，我在babel的<a target="_blank" rel="noopener" href="https://github.com/babel/babel/issues/2816">issue</a>中找到这样的一条。作者给出这样的回答：我们处理preset和plugin是依据于输入的文件，而你直接运行CLI是没有输入文件的，也就无法定位preset和plugin的位置。言下之意就是不要全局安装，虽然我们给你了你全局安装的方式。然后作者关闭了issue，表示很无奈。。。。</p>
 <blockquote>
-<p>解决方案1： 经过寻找，找到一种解决方案，就是创建一个空项目，安装<code>babel-preset-es2015</code>，并写入对应的配置进入<code>.babelrc</code>，然后在这个目录下运行<code>babel-node</code>即可正常运行</p>
+<p>解决方案1：经过寻找，找到一种解决方案，就是创建一个空项目，安装babel-preset-es2015，并写入对应的配置进入.babelrc，然后在这个目录下运行babel-node即可正常运行</p>
 </blockquote>
 <p>不过这种方式太麻烦了，所以，如果大家想体验一下es6的REPL的话，建议安装babel5</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 -g</span><br></pre></td></tr></table></figure>
-<h3 id="babel-doctor"><a href="#babel-doctor" class="headerlink" title="babel-doctor"></a>babel-doctor</h3><p>就是检查babel状况的，<br>主要检查以下几个内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel@5 -g</span><br></pre></td></tr></table></figure>
+<h3 id="babel-doctor"><a href="#babel-doctor" class="headerlink" title="babel-doctor"></a>babel-doctor</h3><p>就是检查babel状况的，主要检查以下几个内容</p>
 <ul>
-<li>是否发现了<code>.babelrc</code>配置文件</li>
-<li>是否有重复的babel安装包，比如说安装了5和6</li>
-<li>所有的babel安装包是否已经升级到了最新版</li>
-<li>并且 npm &gt;= 3.3.0</li>
+<li><p>是否发现了<code>.babelrc</code>配置文件</p>
+</li>
+<li><p>是否有重复的babel安装包，比如说安装了5和6</p>
+</li>
+<li><p>所有的babel安装包是否已经升级到了最新版</p>
+</li>
+<li><p>并且 npm &gt;= 3.3.0</p>
+</li>
 </ul>
 <h3 id="babel-external-helpers"><a href="#babel-external-helpers" class="headerlink" title="babel-external-helpers"></a>babel-external-helpers</h3><p>就是讲一些公共的帮助函数提取成一个文件，其实就做了这一个作用。。。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这是我的第一篇关于es6的教程，如果大家有什么不好的地方，请及时想我反馈</p>
@@ -722,21 +902,21 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2015/08/29/http2%E5%9C%A8nodejs%E4%B8%AD%E7%9A%84%E5%88%9D%E5%B0%9D%E8%AF%95/">
-                            Http2 在 Nodejs 中的初尝试
+                        <a class="link-unstyled" href="/2015/10/04/nodejs-eventemitter/">
+                            Nodejs EventEmitter 解读
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sat Aug 29 2015 12:38:36 GMT+0800">
+    <time itemprop="datePublished" content="Sun Oct 04 2015 00:00:00 GMT+0800">
 	
-		    8月 29, 2015
+		    10月 04, 2015
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/HTTP2/">HTTP2</a>
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
 
 
     
@@ -745,53 +925,246 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
             
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP2-%E7%AE%80%E4%BB%8B"><span class="toc-text">HTTP2 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E7%BF%BB%E5%A2%99%E6%89%93%E5%BC%80Google-com%E6%B5%8B%E8%AF%95%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81http2"><span class="toc-text">通过翻墙打开Google.com测试浏览器是否支持http2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Chrome"><span class="toc-text">Chrome</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-net-intervals-%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81"><span class="toc-text">通过 net-intervals 查看是否支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E8%AF%B7%E5%B0%9D%E8%AF%95%E6%89%93%E5%BC%80http2%E5%BC%80%E5%85%B3"><span class="toc-text">如果不支持，请尝试打开http2开关</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%A6%E5%88%99%E7%9A%84%E8%AF%9D%EF%BC%8C%E6%88%91%E4%B9%9F%E4%B8%8D%E7%9F%A5%E9%81%93%E4%BA%86"><span class="toc-text">否则的话，我也不知道了</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#firefox"><span class="toc-text">firefox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-text">其他浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BNodejs%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95%EF%BC%8C%E5%B9%B6%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">建立Nodejs工作目录，并安装依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8openssl%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%92%8C%E8%AF%81%E4%B9%A6"><span class="toc-text">使用openssl生成密钥和证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8-start-server-%E5%88%86%E6%94%AF"><span class="toc-text">创建服务器(start-server 分支)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE-https-localhost"><span class="toc-text">访问 https:&#x2F;&#x2F;localhost&#x2F;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%EF%BC%88server-push-%E5%88%86%E6%94%AF%EF%BC%89"><span class="toc-text">尝试服务器推（server-push 分支）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E9%A6%96%E9%A1%B5-index-html"><span class="toc-text">建立一个首页 index.html</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E5%8A%A0%E5%85%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%8A%E9%9D%A2%E9%82%A3%E4%B8%AA%E4%B8%BB%E9%A1%B5"><span class="toc-text">在代码中加入服务器推的代码，并返回上面那个主页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E5%B9%B6%E8%AE%BF%E9%97%AE%E4%B9%8B"><span class="toc-text">启动服务器，并访问之</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GitHub-%E6%BA%90%E7%A0%81"><span class="toc-text">GitHub 源码</span></a></li></ol>
-<h2 id="HTTP2-简介"><a href="#HTTP2-简介" class="headerlink" title="HTTP2 简介"></a>HTTP2 简介</h2><p>请大家自行搜索百度 Or Google</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~</p>
-<p>如果本文章有问题的话，请及时进行评论，并和我联系</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="通过翻墙打开Google-com测试浏览器是否支持http2"><a href="#通过翻墙打开Google-com测试浏览器是否支持http2" class="headerlink" title="通过翻墙打开Google.com测试浏览器是否支持http2"></a>通过翻墙打开Google.com测试浏览器是否支持http2</h3><p>Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 <code>Network</code> 中查看 <code>Protocol</code> 使用的协议。<br><img src="see-google-network.jpg" alt="查看Google的网络"></p>
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#events-module"><span class="toc-text">events module</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Class-EventEmitter"><span class="toc-text">Class EventEmitter</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Static-Method-And-Property"><span class="toc-text">EventEmitter Static Method And Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#defaultMaxListeners"><span class="toc-text">defaultMaxListeners</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#usingDomains"><span class="toc-text">usingDomains</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init"><span class="toc-text">init()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-emitter-type"><span class="toc-text">listenerCount(emitter, type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%96%91%E9%97%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%A4%E6%96%AD%E5%8E%9F%E5%9E%8B%E4%B8%8A%E6%98%AF%E5%90%A6%E5%90%AB%E6%9C%89listenerCount%E6%96%B9%E6%B3%95%E5%91%A2%EF%BC%9F"><span class="toc-text">疑问：为什么要判断原型上是否含有listenerCount方法呢？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Property"><span class="toc-text">EventEmitter Property</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#events"><span class="toc-text">_events</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#eventsCount"><span class="toc-text">_eventsCount</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#maxListeners"><span class="toc-text">_maxListeners</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EventEmitter-Method"><span class="toc-text">EventEmitter Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#addListener-on"><span class="toc-text">addListener() &#x3D; on()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#newListener%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%9C%A8%E4%BA%8B%E4%BB%B6%E7%9C%9F%E6%AD%A3%E6%B7%BB%E5%8A%A0%E4%B9%8B%E5%89%8D%E8%A7%A6%E5%8F%91%E7%9A%84"><span class="toc-text">newListener事件是在事件真正添加之前触发的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#emit"><span class="toc-text">emit()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#handler%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-text">handler的执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E5%8F%82%E6%95%B0%E4%B8%AA%E6%95%B0%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-text">根据参数个数进行加速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#once"><span class="toc-text">once()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeListener-type-listener"><span class="toc-text">removeListener(type, listener)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#removeAllListeners-type"><span class="toc-text">removeAllListeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listeners-type"><span class="toc-text">listeners(type)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#listenerCount-type"><span class="toc-text">listenerCount(type)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#domain-%E9%83%A8%E5%88%86%E6%B2%A1%E6%9C%89%E8%BF%9B%E8%A1%8C%E8%A7%A3%E9%87%8A"><span class="toc-text">domain 部分没有进行解释</span></a></li></ol></li></ol>
+<h1 id="events-module"><a href="#events-module" class="headerlink" title="events module"></a><code>events</code> module</h1><p>先说一下网上似乎很多人提供的使用例子来看，都是如下的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventEmitter</span> = <span class="built_in">require</span>(<span class="string">&#x27;events&#x27;</span>).<span class="property">EventEmitter</span>;</span><br></pre></td></tr></table></figure>
+<p>然而在源码当中有这样的一句话</p>
+<figure class="highlight javascript"><figcaption><span>模块定义</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L5">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title class_">EventEmitter</span>;</span><br><span class="line"><span class="title class_">EventEmitter</span>.<span class="property">EventEmitter</span> = <span class="title class_">EventEmitter</span>;</span><br></pre></td></tr></table></figure>
+<p>所以<code>require(&#39;events&#39;).EventEmitter</code>和<code>require(&#39;events&#39;)</code>是一样的。所以以后大家可以直接写</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="title class_">EventEmitter</span> = <span class="built_in">require</span>(<span class="string">&#x27;events&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<h1 id="Class-EventEmitter"><a href="#Class-EventEmitter" class="headerlink" title="Class EventEmitter"></a>Class EventEmitter</h1><p>在源码中，构造函数极其的简单。</p>
+<figure class="highlight javascript"><figcaption><span>constructor</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L5">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">EventEmitter</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="title class_">EventEmitter</span>.<span class="property">init</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>思路很简单，就是直接调用<code>EventEmitter</code>上的静态方法<code>init</code>进行构造。之后我们会介绍<code>EventEmitter.init</code>方法</p>
+<h2 id="EventEmitter-Static-Method-And-Property"><a href="#EventEmitter-Static-Method-And-Property" class="headerlink" title="EventEmitter Static Method And Property"></a>EventEmitter Static Method And Property</h2><p>挂在到EventEmitter上的静态属性和方法还是很多的，先说明一下静态属性：</p>
+<ul>
+<li><p>defaultMaxListeners</p>
+</li>
+<li><p>usingDomains</p>
+</li>
+</ul>
+<h3 id="defaultMaxListeners"><a href="#defaultMaxListeners" class="headerlink" title="defaultMaxListeners"></a>defaultMaxListeners</h3><p>顾名思义，默认的最大callback数量，就是如果当前对象没有指定<code>_maxListeners</code>，默认使用的就是这个值，默认是10</p>
+<p>更多请看<a href="about:blank#_maxListeners">_maxListeners</a></p>
+<h3 id="usingDomains"><a href="#usingDomains" class="headerlink" title="usingDomains"></a>usingDomains</h3><p>待定</p>
+<h3 id="init"><a href="#init" class="headerlink" title="init()"></a>init()</h3><figure class="highlight javascript"><figcaption><span>EventEmitter.init</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L23">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">EventEmitter</span>.<span class="property">init</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">domain</span> = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title class_">EventEmitter</span>.<span class="property">usingDomains</span>) &#123;</span><br><span class="line">    <span class="comment">// if there is an active domain, then attach to it.</span></span><br><span class="line">    domain = domain || <span class="built_in">require</span>(<span class="string">&#x27;domain&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (domain.<span class="property">active</span> &amp;&amp; !(<span class="variable language_">this</span> <span class="keyword">instanceof</span> domain.<span class="property">Domain</span>)) &#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">domain</span> = domain.<span class="property">active</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">this</span>.<span class="property">_events</span> || <span class="variable language_">this</span>.<span class="property">_events</span> === <span class="title class_">Object</span>.<span class="title function_">getPrototypeOf</span>(<span class="variable language_">this</span>).<span class="property">_events</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_events</span> = &#123;&#125;;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">_eventsCount</span> = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">_maxListeners</span> = <span class="variable language_">this</span>.<span class="property">_maxListeners</span> || <span class="literal">undefined</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>先不管<code>domain</code>恨死干什么用的，总之<code>init</code>函数给<code>this</code>挂上了以下四个属性：</p>
+<ul>
+<li><p>domain</p>
+</li>
+<li><p><a href="about:blank#_events">_events</a></p>
+</li>
+<li><p><a href="about:blank#_eventsCount">_eventsCount</a></p>
+</li>
+<li><p><a href="about:blank#_maxListeners">_maxListeners</a></p>
+</li>
+</ul>
+<h3 id="listenerCount-emitter-type"><a href="#listenerCount-emitter-type" class="headerlink" title="listenerCount(emitter, type)"></a>listenerCount(emitter, type)</h3><p>获取<code>emitter</code>中指定类型的callback数量</p>
+<p>这里有一个比较特殊的地方，就是他对对象是否含有<code>listenerCount</code>方法进行了判断</p>
+<figure class="highlight javascript"><figcaption><span>listenerCount</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L397">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">EventEmitter</span>.<span class="property">listenerCount</span> = <span class="keyword">function</span>(<span class="params">emitter, type</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> emitter.<span class="property">listenerCount</span> === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> emitter.<span class="title function_">listenerCount</span>(type);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> listenerCount.<span class="title function_">call</span>(emitter, type);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="疑问：为什么要判断原型上是否含有listenerCount方法呢？"><a href="#疑问：为什么要判断原型上是否含有listenerCount方法呢？" class="headerlink" title="疑问：为什么要判断原型上是否含有listenerCount方法呢？"></a>疑问：为什么要判断原型上是否含有<code>listenerCount</code>方法呢？</h3><h2 id="EventEmitter-Property"><a href="#EventEmitter-Property" class="headerlink" title="EventEmitter Property"></a>EventEmitter Property</h2><h3 id="events"><a href="#events" class="headerlink" title="_events"></a>_events</h3><p>这个属性是一个事件的缓存列表，他的<code>key</code>就是事件名称，<code>value</code>就是事件的回调函数，有如下几种取值：</p>
+<ul>
+<li><p>Function</p>
+</li>
+<li><p>Array</p>
+</li>
+</ul>
+<p>当只有一个回调函数的时候，就直接存储为回调函数本身，否则包装成数组进行存储</p>
+<h3 id="eventsCount"><a href="#eventsCount" class="headerlink" title="_eventsCount"></a>_eventsCount</h3><p>顾名思义，就是事件的个数，这里有几个需要注意的就是，这个之有且仅在添加一个没有过的事件的时候才会加一，如果你给一个事件添加了多了callback的话，这个值并不会加一的。</p>
+<h3 id="maxListeners"><a href="#maxListeners" class="headerlink" title="_maxListeners"></a>_maxListeners</h3><p>这个就是可以表示一个event的最大callback的个数。如果小于等于这个个数，不会产生任何问题。但是如果大于这个限制，将会弹出警告，说可能会导致内存泄露。<br>我猜测可能是因为过多的callback会保存过多的context，从而导致内存泄露。<br>敬请更正</p>
+<h2 id="EventEmitter-Method"><a href="#EventEmitter-Method" class="headerlink" title="EventEmitter Method"></a>EventEmitter Method</h2><p>先从最常用的讲起，就是添加事件侦听喽</p>
+<h3 id="addListener-on"><a href="#addListener-on" class="headerlink" title="addListener() = on()"></a>addListener() = on()</h3><p>首先大家一定很熟悉<code>on</code>方法，大家一定想不到的是，竟然还有一个叫<code>addListener</code>方法。那么这两个方法有什么区别呢？</p>
+<p>答案就是什么区别都木有~</p>
+<p>而且在定义的时候，定义的是<code>addListener</code>而不是<code>on</code>，从源码中便可以看出来</p>
+<figure class="highlight javascript"><figcaption><span>addListener</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L191">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">EventEmitter</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">addListener</span> = <span class="keyword">function</span> <span class="title function_">addListener</span>(<span class="params">type, listener</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> m;</span><br><span class="line">  <span class="keyword">var</span> events;</span><br><span class="line">  <span class="keyword">var</span> existing;</span><br><span class="line">  <span class="comment">// .... 此处省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 就是这里，大家看到了么~~</span></span><br><span class="line"><span class="title class_">EventEmitter</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">on</span> = <span class="title class_">EventEmitter</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">addListener</span>;</span><br></pre></td></tr></table></figure>
+<p>所以<code>on</code>更多的是一种简化，而正统的却是<code>addListener</code>，但是虽然这个正统，相信也没有几个人来使用吧，毕竟实在是太那啥了，是吧-_-||</p>
+<p>好的下面言归正传，整个添加函数的流程可以看做是这样的（大家可以对照的源码看，我就不在这里把源码全部都粘贴过来了，并且我这里可能为了语句的通顺改变部分代码的执行顺序，大家请自行看出来。。。）：</p>
+<ol>
+<li><p>接受两个参数，分别是<code>type</code>表示事件，就是event，第二个是<code>listener</code>，侦听器，也就是callback</p>
+</li>
+<li><p>如果<code>listener</code>不是函数，很明显啊，抛出错误不解释</p>
+</li>
+<li><p>检测当前对象上是否存在<code>_events</code>属性，如果不存在创建之，并顺手初始化<code>_eventsCount</code>为0.</p>
+</li>
+<li><p>另<code>events</code>为<code>this._events</code></p>
+</li>
+<li><p>如果<code>events</code>中没有<code>type</code>的<code>listener</code>，那么不解释，添加之~即<code>events[type] = listener</code></p>
+</li>
+<li><p>如果<code>events</code>里面有的话，不解释，一个就数组包装一下，两个直接push</p>
+</li>
+<li><p>如果<code>type</code>类型的<code>listener</code>超过两个了，那么就检测一下有没有超过长度限制，具体的检测逻辑我就不在这里详细的说明了，总之就是给将检测结果挂到<code>events[type]</code>的<code>warned</code>属性上了。</p>
+</li>
+<li><p>如果有对应的<code>newListener</code>事件侦听的话，就直接用<code>type</code>和<code>listener.listener?listener.listener:listener</code>触发之</p>
+</li>
+<li><p>返回<code>this</code></p>
+</li>
+</ol>
+<p>至此函数执行完毕</p>
+<p>那么下一个就讲一下如果触发事件吧</p>
+<h3 id="newListener事件是在事件真正添加之前触发的"><a href="#newListener事件是在事件真正添加之前触发的" class="headerlink" title="newListener事件是在事件真正添加之前触发的"></a><code>newListener</code>事件是在事件真正添加之前触发的</h3><h3 id="emit"><a href="#emit" class="headerlink" title="emit()"></a>emit()</h3><p>很早以前我认为<code>emit</code>只能<code>emit</code>一个参数，到现在我猜明白，想几个就几个，没人限制你。</p>
+<p><code>emit</code>有一个很好玩的特性就是，如果你<code>emit</code>一个<code>&quot;error&quot;</code>，如果没有事件侦听这个error的话，就会直接throw出一个error来，而其他的事件不会又这种效果，这就意味着我们最好要侦听<code>error</code>事件，万一出了一点错误，那将是崩溃的节奏啊~</p>
+<p>源码在<a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L117">events.js:117</a></p>
+<ol>
+<li><p>检测<code>type</code>是否为<code>&quot;error&quot;</code></p>
+</li>
+<li><p>如果是，并且没有监听到<code>error</code>，throw出pass进来的错误或者构建一个未捕捉的错误弹出。</p>
+</li>
+<li><p>如果没有对应的回调函数的话，返回<code>false</code></p>
+</li>
+<li><p>获取构造函数并赋值给<code>handler</code>，这个值有可能是函数，或者是数组。</p>
+</li>
+<li><p>根据参数个数调用对应的函数，顺序依次运行<code>handler</code></p>
+</li>
+<li><p>返回<code>true</code></p>
+</li>
+</ol>
+<h3 id="handler的执行"><a href="#handler的执行" class="headerlink" title="handler的执行"></a><code>handler</code>的执行</h3><p>在<code>handler</code>执行的时候，会先将当前队列复制一份，然后再进行执行。并且根据参数个数用call或者apply执行函数。放置在某一次执行期间突然掺入了其他的callback或者删除了callback，从而引发错误。</p>
+<p>我原本以为会使用<code>process.nextTick</code>进行异步的执行，后来一想不对啊，肯定要按照添加的顺序进行执行，所以依次调用。</p>
+<h3 id="根据参数个数进行加速"><a href="#根据参数个数进行加速" class="headerlink" title="根据参数个数进行加速"></a>根据参数个数进行加速</h3><p>见</p>
+<figure class="highlight javascript"><figcaption><span>fastToRun</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L65">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 没有参数的调用</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">emitNone</span>(<span class="params">handler, isFn, self</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (isFn)</span><br><span class="line">    handler.<span class="title function_">call</span>(self);</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> len = handler.<span class="property">length</span>;</span><br><span class="line">    <span class="keyword">var</span> listeners = <span class="title function_">arrayClone</span>(handler, len);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; ++i)</span><br><span class="line">      listeners[i].<span class="title function_">call</span>(self);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一个参数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">emitOne</span>(<span class="params">handler, isFn, self</span>) &#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 两个参数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">emitTwo</span>(<span class="params">handler, isFn, self</span>) &#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 三个参数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">emitThree</span>(<span class="params">handler, isFn, self</span>) &#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 不定参数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">emitMore</span>(<span class="params">handler, isFn, self</span>) &#123;</span><br><span class="line">  <span class="comment">// ...... 此处继续省略10000行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>源码对不同的情况进行了加速，因为人们大部分情况都是使用0参数或者1参数的，所以对这几种情况进行处理是非常高效的。</p>
+<h3 id="once"><a href="#once" class="headerlink" title="once()"></a>once()</h3><p>这个最简单了，就是用一个函数封装一下传入的callback，然后将这个函数，<code>addListener</code>进入到事件中。关于这个封装函数的写法，如下</p>
+<figure class="highlight javascript"><figcaption><span>g()</span><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/blob/master/lib/events.js#L253">events.js</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fired = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">g</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">removeListener</span>(type, g);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!fired) &#123;</span><br><span class="line">    fired = <span class="literal">true</span>;</span><br><span class="line">    listener.<span class="title function_">apply</span>(<span class="variable language_">this</span>, <span class="variable language_">arguments</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">g.<span class="property">listener</span> = listener;</span><br><span class="line"><span class="comment">// 挂载原先的callback，用于remove的时候比较使用</span></span><br></pre></td></tr></table></figure>
+<p>具体的就不多说了，总之就是执行后，先删除这个包装过的callback。</p>
 <blockquote>
-<p>这里有一个问题，就是如果你的没有 <code>Protoccol</code> ，这个怎么办？<br>你可以在上面单击右键，就会弹出来有哪一些列可以让你选择，然后你选择 <code>Protocol</code> 即可。<br><img src="enable-protocol.jpg" alt="开启Protocol"></p>
+<p>我的疑问：这里我有一点不太理解的地方就是为什么还需要<code>fired</code>进行标记一下呢？</p>
 </blockquote>
-<h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><h4 id="通过-net-intervals-查看是否支持"><a href="#通过-net-intervals-查看是否支持" class="headerlink" title="通过 net-intervals 查看是否支持"></a>通过 net-intervals 查看是否支持</h4><p>对于Chrome浏览器，可以在地址栏上输入</p>
-<pre><code>chrome://net-internals
-</code></pre><p>并在左上角的下拉菜单中寻找 <code>HTTP/2</code> 的字样，如果有的话，说明你的浏览器就支持http2，否则就话可能是另外一种情况</p>
-<p><img src="net-internals-http2.jpg" alt="查看是否存在HTTP2"></p>
-<h4 id="如果不支持，请尝试打开http2开关"><a href="#如果不支持，请尝试打开http2开关" class="headerlink" title="如果不支持，请尝试打开http2开关"></a>如果不支持，请尝试打开http2开关</h4><p>在Chrome地址栏中输入</p>
-<pre><code>chrome://flags
-</code></pre><p>当前页面搜索 <code>http2</code> ，找到相应的内容，并开启。然后重启浏览器尝试</p>
-<h4 id="否则的话，我也不知道了"><a href="#否则的话，我也不知道了" class="headerlink" title="否则的话，我也不知道了"></a>否则的话，我也不知道了</h4><p>如果还是前面两种都不可以的话，那么就请自行百度吧。</p>
+<h3 id="removeListener-type-listener"><a href="#removeListener-type-listener" class="headerlink" title="removeListener(type, listener)"></a>removeListener(type, listener)</h3><p>删除指定类型的指定callback的事件 很简单，分为一下几步</p>
+<ol>
+<li><p>如果<code>listener</code>不是函数，抛出错误</p>
+</li>
+<li><p>如果<code>events</code>不存在或者对应的事件不存在，返回<code>this</code></p>
+</li>
+<li><p>另<code>list</code>为<code>events[type]</code></p>
+</li>
+<li><p>如果<code>list</code>就是那个callback或者<code>list.listener</code>是那个callback，删除</p>
+</li>
+<li><p>否则如果这是一个数组，那么找到对应的<code>listener</code>删除，否则返回<code>this</code></p>
+</li>
+<li><p>如果上面有任意一个删除之后<code>_eventsCount</code>为0了，直接重新赋值<code>this._events = &#123;&#125;</code>（其实并不知道这个意义何在）</p>
+</li>
+<li><p>如果有任何一个删除，并且有事件侦听到了<code>removeListener</code>，触发之，传递<code>type</code>和<code>listener</code></p>
+</li>
+<li><p>返回<code>this</code></p>
+</li>
+</ol>
+<blockquote>
+<p>在事件删除之后才调用<code>removeListener</code>事件</p>
+</blockquote>
+<h3 id="removeAllListeners-type"><a href="#removeAllListeners-type" class="headerlink" title="removeAllListeners(type)"></a>removeAllListeners(type)</h3><p>根据传递的参数来决定是删除全部的还是只删除指定事件的全部</p>
+<ol>
+<li><p>确保存在<code>this._events</code>，否则返回<code>this</code></p>
+</li>
+<li><p>如果没有侦听<code>removeListener</code></p>
+<ul>
+<li><p>如果没有传递<code>type</code>，重新赋值<code>this._events</code>和<code>this._eventsCount</code></p>
+</li>
+<li><p>如果传递了<code>type</code>，删除<code>type</code>对应的事件，根据情况重新赋值~~~</p>
+</li>
+</ul>
+</li>
+<li><p>如果侦听了<code>removeListener</code>，除了这个本身，依次调用<code>removeAllLiseners()</code>进行删除，最后删除<code>removeListener</code>这个事件</p>
+</li>
+<li><p>对于每一个callback，依次调用<code>removeListener</code>方法进行删除</p>
+</li>
+<li><p>返回<code>this</code></p>
+</li>
+</ol>
+<h3 id="listeners-type"><a href="#listeners-type" class="headerlink" title="listeners(type)"></a>listeners(type)</h3><p>获取指定类型的callback，否则为<code>[]</code></p>
+<h3 id="listenerCount-type"><a href="#listenerCount-type" class="headerlink" title="listenerCount(type)"></a>listenerCount(type)</h3><p>获取指定类型的callback的数量</p>
+<h1 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h1><h2 id="domain-部分没有进行解释"><a href="#domain-部分没有进行解释" class="headerlink" title="domain 部分没有进行解释"></a>domain 部分没有进行解释</h2>
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2015/10/04/nodejs-eventemitter/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2015/08/29/first-using-http2-in-nodejs/">
+                            Http2在nodejs中的初尝试
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Aug 29 2015 00:00:00 GMT+0800">
+	
+		    8月 29, 2015
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP2-%E7%AE%80%E4%BB%8B"><span class="toc-text">HTTP2 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E7%BF%BB%E5%A2%99%E6%89%93%E5%BC%80Google-com%E6%B5%8B%E8%AF%95%E6%B5%8F%E8%A7%88%E5%99%A8%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81http2"><span class="toc-text">通过翻墙打开Google.com测试浏览器是否支持http2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Chrome"><span class="toc-text">Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-net-intervals-%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81"><span class="toc-text">通过 net-intervals 查看是否支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%8D%E6%94%AF%E6%8C%81%EF%BC%8C%E8%AF%B7%E5%B0%9D%E8%AF%95%E6%89%93%E5%BC%80http2%E5%BC%80%E5%85%B3"><span class="toc-text">如果不支持，请尝试打开http2开关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%A6%E5%88%99%E7%9A%84%E8%AF%9D%EF%BC%8C%E6%88%91%E4%B9%9F%E4%B8%8D%E7%9F%A5%E9%81%93%E4%BA%86"><span class="toc-text">否则的话，我也不知道了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#firefox"><span class="toc-text">firefox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%B5%8F%E8%A7%88%E5%99%A8"><span class="toc-text">其他浏览器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8BNodejs%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95%EF%BC%8C%E5%B9%B6%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">建立Nodejs工作目录，并安装依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8openssl%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%92%8C%E8%AF%81%E4%B9%A6"><span class="toc-text">使用openssl生成密钥和证书</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%99%A8-start-server-%E5%88%86%E6%94%AF"><span class="toc-text">创建服务器(start-server 分支)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE-https-localhost"><span class="toc-text">访问 https:&#x2F;&#x2F;localhost&#x2F;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%EF%BC%88server-push-%E5%88%86%E6%94%AF%EF%BC%89"><span class="toc-text">尝试服务器推（server-push 分支）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E9%A6%96%E9%A1%B5-index-html"><span class="toc-text">建立一个首页 index.html</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E5%8A%A0%E5%85%A5%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%8E%A8%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%8A%E9%9D%A2%E9%82%A3%E4%B8%AA%E4%B8%BB%E9%A1%B5"><span class="toc-text">在代码中加入服务器推的代码，并返回上面那个主页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E5%B9%B6%E8%AE%BF%E9%97%AE%E4%B9%8B"><span class="toc-text">启动服务器，并访问之</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GitHub-%E6%BA%90%E7%A0%81"><span class="toc-text">GitHub 源码</span></a></li></ol>
+<h1 id="HTTP2-简介"><a href="#HTTP2-简介" class="headerlink" title="HTTP2 简介"></a>HTTP2 简介</h1><p>请大家自行搜索百度 Or Google</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文章内部的术语，我不进行大篇幅的解释，如果你不了解的话，请自行搜索，不要说自己懒~</p>
+<p>如果本文章有问题的话，请及时进行评论，并和我联系</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="通过翻墙打开Google-com测试浏览器是否支持http2"><a href="#通过翻墙打开Google-com测试浏览器是否支持http2" class="headerlink" title="通过翻墙打开Google.com测试浏览器是否支持http2"></a>通过翻墙打开Google.com测试浏览器是否支持http2</h2><p>Google的官网通过我的观察，几乎已经全部使用了http2，你可以在开发者工具中的 <code>Network</code> 中查看 <code>Protocol</code> 使用的协议。</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/a2ed80a5-375e-47ac-a607-0cdd7406e54b.jpg" class="" title="查看Google的网络">
+<p>这里有一个问题，就是如果你的没有 <code>Protocol</code> ，这个怎么办？你可以在上面单击右键，就会弹出来有哪一些列可以让你选择，然后你选择 <code>Protocol</code> 即可。 </p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/0cac562d-f182-4736-9c62-77715e0ea434.jpg" class="" title="开启Protocol">
+<h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><h3 id="通过-net-intervals-查看是否支持"><a href="#通过-net-intervals-查看是否支持" class="headerlink" title="通过 net-intervals 查看是否支持"></a>通过 net-intervals 查看是否支持</h3><p>对于Chrome浏览器，可以在地址栏上输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://net-internals</span><br></pre></td></tr></table></figure>
+<p>并在左上角的下拉菜单中寻找 <code>HTTP/2</code> 的字样，如果有的话，说明你的浏览器就支持http2，否则就话可能是另外一种情况</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/48d9ba4d-99af-43c7-a12c-4ad17e7deb42.jpg" class="" title="查看是否存在HTTP2">
+<h3 id="如果不支持，请尝试打开http2开关"><a href="#如果不支持，请尝试打开http2开关" class="headerlink" title="如果不支持，请尝试打开http2开关"></a>如果不支持，请尝试打开http2开关</h3><p>在Chrome地址栏中输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome://flags</span><br></pre></td></tr></table></figure>
+<p>当前页面搜索 <code>http2</code> ，找到相应的内容，并开启。然后重启浏览器尝试</p>
+<h3 id="否则的话，我也不知道了"><a href="#否则的话，我也不知道了" class="headerlink" title="否则的话，我也不知道了"></a>否则的话，我也不知道了</h3><p>如果还是前面两种都不可以的话，那么就请自行百度吧。</p>
 <h3 id="firefox"><a href="#firefox" class="headerlink" title="firefox"></a>firefox</h3><p>这个由于我没有firefox的浏览器，就留给读者自行百度了。</p>
 <h3 id="其他浏览器"><a href="#其他浏览器" class="headerlink" title="其他浏览器"></a>其他浏览器</h3><p>同样自行百度吧</p>
 <h3 id="建立Nodejs工作目录，并安装依赖"><a href="#建立Nodejs工作目录，并安装依赖" class="headerlink" title="建立Nodejs工作目录，并安装依赖"></a>建立Nodejs工作目录，并安装依赖</h3><p>浏览器都支持之后，那么就是开始准备我们的工作目录了。创建一个目录，我这里就叫做 <code>try-http2</code>。并安装<code>http2</code>包。</p>
-<p><img src="prepare-work.gif" alt="准备工作"></p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/58556875-af12-46b8-a133-ec0eb81894e9.gif" class="" title="准备工作">
 <h3 id="使用openssl生成密钥和证书"><a href="#使用openssl生成密钥和证书" class="headerlink" title="使用openssl生成密钥和证书"></a>使用openssl生成密钥和证书</h3><p>这里不再重复，请尝试百度，并将证书和密钥拷贝到目录下面</p>
 <p>准备工作结束</p>
-<h2 id="创建服务器-start-server-分支"><a href="#创建服务器-start-server-分支" class="headerlink" title="创建服务器(start-server 分支)"></a>创建服务器(start-server 分支)</h2><p>使用http2服务创建服务器和使用https是基本一样的<br><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</span><br><span class="line">	key: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</span><br><span class="line">	cert: fs.readFileSync(<span class="string">'certificate.pem'</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">	res.end(<span class="string">'hello world'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><br>此时在terminal中启动服务器即可</p>
-<p><img src="start-server.gif" alt="启动服务器"></p>
+<h2 id="创建服务器-start-server-分支"><a href="#创建服务器-start-server-分支" class="headerlink" title="创建服务器(start-server 分支)"></a>创建服务器(start-server 分支)</h2><p>使用http2服务创建服务器和使用https是基本一样的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.<span class="title function_">createServer</span>(&#123;</span><br><span class="line">    <span class="attr">key</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;privatekey.pem&#x27;</span>),</span><br><span class="line">    <span class="attr">cert</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;certificate.pem&#x27;</span>)</span><br><span class="line">&#125;, <span class="keyword">function</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">    res.<span class="title function_">end</span>(<span class="string">&#x27;hello world&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">443</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listen on 443&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>此时在terminal中启动服务器即可</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/ebdcb7a8-a9c1-466e-ba09-b934fd054506.gif" class="" title="启动服务器">
 <blockquote>
-<p>记住，这里一定要用<code>sudo</code>来启动，因为在Linux的系统中（Mac也是和Linux相同祖先），普通用户是无法监听到1024端口一下的端口，所以要用<code>sudo</code>来让程序监听443端口，因为https服务就是监听在443端口的</p>
+<p>记住，这里一定要用sudo来启动，因为在Linux的系统中（Mac也是和Linux相同祖先），普通用户是无法监听到1024端口一下的端口，所以要用sudo来让程序监听443端口，因为https服务就是监听在443端口的</p>
 </blockquote>
-<h2 id="访问-https-localhost"><a href="#访问-https-localhost" class="headerlink" title="访问 https://localhost/"></a>访问 <em><a href="https://localhost/" target="_blank" rel="noopener">https://localhost/</a></em></h2><p>在浏览器中访问上面那个地址，然后在<code>Network</code>中查看<code>Protocol</code>是否为h2</p>
-<p><img src="through-localhost.jpg" alt="浏览localhost"></p>
+<h2 id="访问-https-localhost"><a href="#访问-https-localhost" class="headerlink" title="访问 https://localhost/"></a>访问 <em><a target="_blank" rel="noopener" href="https://localhost/">https://localhost/</a></em></h2><p>在浏览器中访问上面那个地址，然后在<code>Network</code>中查看<code>Protocol</code>是否为h2</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/667942ce-e174-47cd-aaab-78316e4440c4.jpg" class="" title="浏览localhost">
 <p>看成功了，已经成功通过http2协议打开了这个网页。</p>
-<blockquote>
-<p><img src="invalid-https.jpg" alt="https error"><br>你会发现在地址栏上https证书出现了错误，这是因为证书是你自己发布的，Chrome自然是不认识了</p>
-</blockquote>
+<p>你会发现在地址栏上https证书出现了错误，这是因为证书是你自己发布的，Chrome自然是不认识了</p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/a720374c-99b5-490d-9059-b7db63dc76f3.jpg" class="" title="https error">
 <h2 id="尝试服务器推（server-push-分支）"><a href="#尝试服务器推（server-push-分支）" class="headerlink" title="尝试服务器推（server-push 分支）"></a>尝试服务器推（server-push 分支）</h2><p>说到服务器推，大家一定第一个想到的是<code>WebSocket</code>，但是相比于<code>WebSocket</code>来说，服务器推的东西不是数据，而是网络请求。</p>
 <p>其实他的正规说法是，服务器会推测你需要的东西，在解析HTML前将你需要的文件或者数据给你请求回来。这样，你请求了一次数据，返回了好几个资源</p>
-<h3 id="建立一个首页-index-html"><a href="#建立一个首页-index-html" class="headerlink" title="建立一个首页 index.html"></a>建立一个首页 <em>index.html</em></h3><figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">title</span>&gt;</span>haha<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/client.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">	Hello world</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="在代码中加入服务器推的代码，并返回上面那个主页"><a href="#在代码中加入服务器推的代码，并返回上面那个主页" class="headerlink" title="在代码中加入服务器推的代码，并返回上面那个主页"></a>在代码中加入服务器推的代码，并返回上面那个主页</h3><figure class="highlight javascript"><figcaption><span>index.js</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">'http2'</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.createServer(&#123;</span><br><span class="line">	key: fs.readFileSync(<span class="string">'privatekey.pem'</span>),</span><br><span class="line">	cert: fs.readFileSync(<span class="string">'certificate.pem'</span>)</span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> push = res.push(<span class="string">'/client.js'</span>)</span><br><span class="line">	push.end(<span class="string">'alert("this is a server push");'</span>);</span><br><span class="line">	fs.createReadStream(<span class="string">'index.html'</span>).pipe(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">443</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'listen on 443'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="启动服务器，并访问之"><a href="#启动服务器，并访问之" class="headerlink" title="启动服务器，并访问之"></a>启动服务器，并访问之</h3><p><img src="server-push-alert.jpg" alt></p>
+<h3 id="建立一个首页-index-html"><a href="#建立一个首页-index-html" class="headerlink" title="建立一个首页 index.html"></a>建立一个首页 <em>index.html</em></h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>haha<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;/client.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    Hello world</span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="在代码中加入服务器推的代码，并返回上面那个主页"><a href="#在代码中加入服务器推的代码，并返回上面那个主页" class="headerlink" title="在代码中加入服务器推的代码，并返回上面那个主页"></a>在代码中加入服务器推的代码，并返回上面那个主页</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http2 = <span class="built_in">require</span>(<span class="string">&#x27;http2&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = http2.<span class="title function_">createServer</span>(&#123;</span><br><span class="line">    <span class="attr">key</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;privatekey.pem&#x27;</span>),</span><br><span class="line">    <span class="attr">cert</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;certificate.pem&#x27;</span>)</span><br><span class="line">&#125;, <span class="keyword">function</span>(<span class="params">req, res</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> push = res.<span class="title function_">push</span>(<span class="string">&#x27;/client.js&#x27;</span>)</span><br><span class="line">    push.<span class="title function_">end</span>(<span class="string">&#x27;alert(&quot;this is a server push&quot;);&#x27;</span>);</span><br><span class="line">    fs.<span class="title function_">createReadStream</span>(<span class="string">&#x27;index.html&#x27;</span>).<span class="title function_">pipe</span>(res);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.<span class="title function_">listen</span>(<span class="number">443</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;listen on 443&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="启动服务器，并访问之"><a href="#启动服务器，并访问之" class="headerlink" title="启动服务器，并访问之"></a>启动服务器，并访问之</h3><img src="/2015/08/29/first-using-http2-in-nodejs/dc35cb3a-06f1-43c1-8eb5-3b3575723304.jpg" class="">
 <p>看成功执行了client.js中的代码。</p>
 <p>下面我们来看看<code>Network</code>中的请求</p>
-<p><img src="server-push-network.jpg" alt="服务推送"></p>
+<img src="/2015/08/29/first-using-http2-in-nodejs/ebf78a40-0a4f-4332-bde1-b1b8cb0443de.jpg" class="" title="服务推送">
 <p>你会发现虽然是请求了两次，但是<code>client.js</code>是服务器推送过来的请求，并不是浏览器去请求的。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>虽然服务器推跟我们的心里落差较大，但是这并不影响这个技术的实施。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>虽然服务器推跟我们的心里落差较大，但是这并不影响这个技术的实施。</p>
 <p>有了服务器推，可以很好的加快网站的加载速度，完全可以不需要等待整张页面加载完成之后再加载相关的数据。像一些script，CSS之类的可以在渲染页面之前就加载完成。</p>
 <p>但是这个服务器推仍然无法替代WebSocket的地位，因为两个东西本质和目的都是不同的。而且服务器推相比来说，我们能控制的能力更少。</p>
 <p>但是服务器推也有缺点，就是会无故增加浏览网页的流量，对于移动端来说，这将是致命的！</p>
-<h2 id="GitHub-源码"><a href="#GitHub-源码" class="headerlink" title="GitHub 源码"></a>GitHub 源码</h2><p><a href="https://github.com/XGHeaven/try-http2" target="_blank" rel="noopener">GitHub</a></p>
+<h1 id="GitHub-源码"><a href="#GitHub-源码" class="headerlink" title="GitHub 源码"></a>GitHub 源码</h1><p><a target="_blank" rel="noopener" href="https://github.com/XGHeaven/try-http2">GitHub</a></p>
 
                     
                         
@@ -799,7 +1172,7 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
                     
                     
                         <p>
-                            <a href="/2015/08/29/http2%E5%9C%A8nodejs%E4%B8%AD%E7%9A%84%E5%88%9D%E5%B0%9D%E8%AF%95/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2015/08/29/first-using-http2-in-nodejs/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -823,7 +1196,7 @@ lass="literal">true</span> ],</span><br><span class="line">  <span class="string
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

@@ -25,7 +25,7 @@
 <meta property="og:image" content="https://blog.xgheaven.com/2020/02/06/how-much-slow-about-react-hooks/c9566ca6-24bf-4afa-a39a-3af55953b1d9.png">
 <meta property="og:image" content="https://blog.xgheaven.com/2020/02/06/how-much-slow-about-react-hooks/94335857-9c76-43a7-8067-503032ae5511.png">
 <meta property="article:published_time" content="2020-02-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:51:09.755Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.596Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="React">
 <meta property="article:tag" content="React Hooks">
@@ -305,7 +305,7 @@
 <p>很多人都觉得既然官方都这么说了，那我们这么用也就好了，不需要过分担心性能的问题。我一开始也是这样想的。但是直到最近有一次我尝试对公司项目里面一个比较复杂的组件用 Hooks 重写，我惊奇的发现重渲染时间竟然从 2ms 增长到了 4ms。业务逻辑没有任何变化，唯一的变的是从 Class 变成了 Hooks。这让我有点难以相信，我一直觉得就算是慢也不至于慢了一倍多吧，怎么着两者差不多吧。于是我开始无差别对比两个写法的性能区别。</p>
 <h2 id="懒人阅读指南"><a href="#懒人阅读指南" class="headerlink" title="懒人阅读指南"></a>懒人阅读指南</h2><p>我相信肯定很多懒人不想看下面的分析，想直接看结果。没问题，满足你们，直接通过目录找到最后看「总结」就好了，如果你觉得有问题或者觉得我说的不对，可以重新仔细阅读一下文章，帮我指出哪里有问题。</p>
 <h2 id="为什么有这篇文章"><a href="#为什么有这篇文章" class="headerlink" title="为什么有这篇文章"></a>为什么有这篇文章</h2><p>其实我原本不是很想写一篇文章的，因为我觉得这个只是很简单的一个对比。于是我只是在掘金的沸点上随口吐槽了两句，结果……我决定写一篇文章。主要是觉得这群人好 two，就算是质疑也应该先质疑我的测量方式，而不是说我的使用方式。都用了这么多年了，还能用错）滑稽脸</p>
-<img src="/2020/02/06/how-much-slow-about-react-hooks/d2226e34-5a04-4bef-a525-129141b5dc8b.jpg">
+<img src="/2020/02/06/how-much-slow-about-react-hooks/d2226e34-5a04-4bef-a525-129141b5dc8b.jpg" class="">
 <p>不过既然要写，就写的完备一些，尽量把一些可能的情况都覆盖了，顺便问问大家是否有问题。如果大家对下面的测试方法或者内容有任何问题的话，请大家正常交流哦，千万不要有一些过激或者偏激的言论。因为性能测试这东西，一人一个方法，一人一个想法。</p>
 <p>既然说道这里，其实有一点我要说，沸点里面说到的 50% 这个测量数据确实有些问题。主要有这么几个原因，第一，我当初只是想抱着试试的心态，于是就直接在开发模式下运行的。第二，平时写代码写习惯了，就直接用了 <code>Date.now()</code> 而没有使用精度更高 <code>performance.now()</code> 从而导致了误差略微有点大。虽然误差略大，但是大方向还是没错的</p>
 <p>后文的测试中，我也将这些问题修复了，尽量给大家一个正确的数据。</p>
@@ -323,7 +323,7 @@
 <li><p>另外为了消除误差，额外添加一个按钮，用于触发 100 次的 render，并 log 出平均的渲染时间。</p>
 </li>
 </ul>
-<img src="/2020/02/06/how-much-slow-about-react-hooks/3936f68c-543c-42b6-854e-3bf13a868c66.png" title="DEMO">
+<img src="/2020/02/06/how-much-slow-about-react-hooks/3936f68c-543c-42b6-854e-3bf13a868c66.png" class="" title="DEMO">
 <p>具体的业务逻辑的实现，请看后面的 DEMO 地址。</p>
 <p>另外因为 Class 组件有 setState 可以自动实现 batch 更新，但是 Hook 不行，所以这里实现的时候把所有的更新操作都放在 React 事件中同步更新，众所周知，React 的事件是自带 batch 更新的，从而保证只有一次渲染。保证两者功能效果一致。</p>
 <h3 id="对比常量"><a href="#对比常量" class="headerlink" title="对比常量"></a>对比常量</h3><ul>
@@ -345,7 +345,7 @@
 <li><p>使用 <code>useLayoutEffect</code> 的回调作为结束时间。该 Hook 会在组件挂载或者更新 DOM 之后同步调用。而 <code>useEffect</code> 会在下一个 tick 调用，如果使用该 hook 就会导致最终测量出来的结果普遍慢一些。</p>
 </li>
 </ul>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Hooks</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> now = performance.now()</span><br><span class="line">	useLayoutEffect(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(performance.now() - now))</span><br><span class="line">	<span class="keyword">return</span> (<span class="comment">/* ui */</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Hooks</span>(<span class="params"></span>) &#123;</span><br><span class="line">	<span class="keyword">const</span> now = performance.<span class="title function_">now</span>()</span><br><span class="line">	<span class="title function_">useLayoutEffect</span>(<span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(performance.<span class="title function_">now</span>() - now))</span><br><span class="line">	<span class="keyword">return</span> (<span class="comment">/* ui */</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>针对 CC 来说</p>
 <ul>
 <li><p>当运行 render 方法的时候，记录时间</p>
@@ -353,7 +353,7 @@
 <li><p>当运行 <code>componentDidUpdate</code> 或者 <code>componentDidMount</code> 的时候，打印耗时。这两个钩子都是在组件挂载或者更新 DOM 之后同步调用，与 <code>useLayoutEffect</code> 调用时机一致。</p>
 </li>
 </ul>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Class <span class="keyword">extends</span> Component &#123;</span><br><span class="line">	componentDidMount = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.log()</span><br><span class="line">	componentDidUpdate = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">this</span>.log()</span><br><span class="line">	log = <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(performance.now() - <span class="keyword">this</span>.now)</span><br><span class="line">	render() &#123;</span><br><span class="line">		<span class="keyword">this</span>.now = performance.now()</span><br><span class="line">		<span class="keyword">return</span> (<span class="comment">/* ui */</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Class</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Component</span> &#123;</span><br><span class="line">	componentDidMount = <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="title function_">log</span>()</span><br><span class="line">	componentDidUpdate = <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="title function_">log</span>()</span><br><span class="line">	log = <span class="function">() =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(performance.<span class="title function_">now</span>() - <span class="variable language_">this</span>.<span class="property">now</span>)</span><br><span class="line">	<span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">		<span class="variable language_">this</span>.<span class="property">now</span> = performance.<span class="title function_">now</span>()</span><br><span class="line">		<span class="keyword">return</span> (<span class="comment">/* ui */</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="测试流程和结果计算"><a href="#测试流程和结果计算" class="headerlink" title="测试流程和结果计算"></a>测试流程和结果计算</h3><ul>
 <li><p>页面刷新，此时要针对测试内容先进行 5 轮预热测试。目的是为了让 Chrome 对热区代码进行优化，达到最高的性能。</p>
 </li>
@@ -365,9 +365,9 @@
 </li>
 </ul>
 <h3 id="DEMO-地址"><a href="#DEMO-地址" class="headerlink" title="DEMO 地址"></a>DEMO 地址</h3><ul>
-<li><p>代码：<a href="https://codesandbox.io/s/how-much-hooks-slow-hso28" target="_blank" rel="noopener">CodeSandBox</a> </p>
+<li><p>代码：<a target="_blank" rel="noopener" href="https://codesandbox.io/s/how-much-hooks-slow-hso28">CodeSandBox</a> </p>
 </li>
-<li><p>展示地址：<a href="https://csb-hso28.netlify.com/" target="_blank" rel="noopener">https://csb-hso28.netlify.com/</a></p>
+<li><p>展示地址：<a target="_blank" rel="noopener" href="https://csb-hso28.netlify.com/">https://csb-hso28.netlify.com/</a></p>
 </li>
 </ul>
 <p>PS: CodeSandBox 似乎不能以生产模式运行，不过你可以将它一键部署到 ZEIT 或者 netlify 上面，查看生产环境的效果。</p>
@@ -392,7 +392,7 @@
 <td>0.1941208809532307</td>
 <td>0.024725271102327567</td>
 <td>0.22747252228577713</td>
-<td>0.6688898374583169</td>
+<td>0.668889837468</td>
 </tr>
 <tr>
 <td>第四次平均时间</td>
@@ -401,7 +401,7 @@
 <td>0.18879122377096952</td>
 <td>0.02120880942259516</td>
 <td>0.22082417118516598</td>
-<td>0.9248688730306829</td>
+<td>0.924868873031</td>
 </tr>
 <tr>
 <td>第三次平均时间</td>
@@ -410,7 +410,7 @@
 <td>0.1931868181410399</td>
 <td>0.022967028748858104</td>
 <td>0.22417582970644748</td>
-<td>0.7894734907224213</td>
+<td>0.789473490728</td>
 </tr>
 <tr>
 <td>第二次平均时间</td>
@@ -419,7 +419,7 @@
 <td>0.2072527365001676</td>
 <td>0.02346153545019391</td>
 <td>0.23439560331158585</td>
-<td>0.953161884168321</td>
+<td>0.95316188416</td>
 </tr>
 <tr>
 <td>第一次平均时间</td>
@@ -428,7 +428,7 @@
 <td>0.20939560484263922</td>
 <td>0.02357143663115554</td>
 <td>0.2546703217776267</td>
-<td>0.9300694214990858</td>
+<td>0.93006942148</td>
 </tr>
 </tbody>
 </table>
@@ -437,8 +437,8 @@
 <p>等等？？？ 16%，emmm……乍一听这是一个多么惊人的数字，5 % 的性能降低都很难接受了，何况是 16%。如果你的页面中有上百个这样组件，想想都知道……咦~~~那酸爽</p>
 <p>Wait!!! 或许有人会说了，抛开数值大小谈相对值，这根本就是耍流氓么。每个组件组件都是毫秒级别的渲染，这么小的级别作比较误差也会很大。而且你的测试的测量方式真的很对么？为啥看到很多文章说 Hooks 性能甚至比 Class 组件还高啊。而且你这个测量真的准确么？</p>
 <p>这里先回答一下测量的问题，上面也说了，useLayoutEffect 和 CDU/CDM 基本是一致的，而且为了佐证，这里直接上 Performance 面板的数据，虽然只能在开发模式下才能看到这部分数据，但依旧具有参考意义</p>
-<img src="/2020/02/06/how-much-slow-about-react-hooks/c9566ca6-24bf-4afa-a39a-3af55953b1d9.png" title="Hooks">
-<img src="/2020/02/06/how-much-slow-about-react-hooks/94335857-9c76-43a7-8067-503032ae5511.png" title="Class">
+<img src="/2020/02/06/how-much-slow-about-react-hooks/c9566ca6-24bf-4afa-a39a-3af55953b1d9.png" class="" title="Hooks">
+<img src="/2020/02/06/how-much-slow-about-react-hooks/94335857-9c76-43a7-8067-503032ae5511.png" class="" title="Class">
 <p>当然因为我这里只是截取了一个样例，没法给大家一个平均的值，但是如果大家多次尝试可以发现就算是 React 自己打的标记点，Class 也会比 Hook 快那么一点点。</p>
 <p>而针对更多的疑问，这里我们就基于这个比较结果，引申出更多的比较内容，来逐步完善：</p>
 <ul>
@@ -607,9 +607,9 @@
 <h2 id="量化娱乐一下？"><a href="#量化娱乐一下？" class="headerlink" title="量化娱乐一下？"></a>量化娱乐一下？</h2><p>有了上面的数据，来做一个有意思的事情，将数据进行量化。</p>
 <p>假设有如下常数，<code>r</code> 表示 React 内核以及其他和组件数无关的常数，<code>h</code> 表示 hook 组件的常数，而 <code>c</code> 表示 Class 组件的常数，<code>T</code> 表示最终所消耗的时间。可以得知这四个参数肯定不为负数。</p>
 <p>通过简单的假设，可以得到如下等式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T(n,m) = hn + cm + r</span><br><span class="line">// n 表示 hook 组件的数量</span><br><span class="line">// m 表示 class 组件的数量</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T(n,m) = hn + cm + r</span><br><span class="line">// n 表示 hook 组件的数量</span><br><span class="line">// m 表示 class 组件的数量</span><br></pre></td></tr></table></figure>
 <p>想要计算得到 <code>r</code> <code>h</code> <code>c</code>  参数也很–简单–，简单个鬼，因为数据不是准确的，不能直接通过求解三元一次方程组的方式，而是要通过多元一次拟合的方式求得，而我又不想装 matlab，于是千辛万苦找到一个支持在线计算多元一次方程的网站算了下，结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">h = 0.0184907294</span><br><span class="line">c = 0.01674766395</span><br><span class="line">r = 0.4146159332</span><br><span class="line">RSS = 0.249625719</span><br><span class="line">R^2 = 0.9971412136</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">h = 0.0184907294</span><br><span class="line">c = 0.01674766395</span><br><span class="line">r = 0.4146159332</span><br><span class="line">RSS = 0.249625719</span><br><span class="line">R^2 = 0.9971412136</span><br></pre></td></tr></table></figure>
 <p>这个拟合的结果有那么一点点差强人意，因为如果你把单个 Class 或者 Hook 的结果代入的话，会发现偏差了有一倍多。所以我上面也说道只是娱乐娱乐，时间不够也没法细究原因了。不过从拟合的结果上来看，也能发现一个现象，那就是 h 比 c 要大。</p>
 <p>另外观察最后的拟合度，看起来 0.99 很大了，但实际上并没有什么意义。而且这里数据选取的也不是很好，做拟合最好还是等距取样，这样做出来的数据会更加准确。这里只是突然奇想想要玩玩看，所以就随便做了下。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>不管你是空降过来的还是一点点阅读到这里的，我这边先直接说基于上面的结论：</p>
@@ -635,7 +635,7 @@
 </ul>
 <p>所以 Hook 确实慢，慢的有理有据。但究竟用不用 Hooks 就全看，我不做定夺。凡事都有两面，Hooks 解决了 Class 一些短板，但是也引入了一些不足。如果一定要我推荐的话，我推荐 Hooks+Mobx。</p>
 <h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><ul>
-<li><a href="http://www.xuru.org/rt/MLR.asp" target="_blank" rel="noopener">多元一次方程在线拟合</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.xuru.org/rt/MLR.asp">多元一次方程在线拟合</a></li>
 </ul>
 <h2 id="One-More"><a href="#One-More" class="headerlink" title="One More"></a>One More</h2><p>以上内容是我花了快一个月一点点整理出来的，甚至还跨了个与众不同的「年」。性能测试本身就是一个很有争议的东西，不同的写法不同的测试方式都会带来不同的结果。我也是在这期间一点点修改我的测试内容，从最开始只有单组件测试，到后来添加了组件列表的测试，以及挂载的测试。另外对数据收集也修改了很多，比如多次取平均值，代码预热等等。每一次修改都意味着所有测试数据要重新测试，但我只是想做到一个公平的对比。</p>
 <p>就在现在，我依旧会觉得测试里面有很多内容依旧值得去改进，但是我觉得拖的时间太长了，而且我认为把时间花在从源码角度分析为什么 Hook 比 Class 慢上远比用数据证明要有意义的多。</p>
@@ -660,7 +660,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2020/05/07/hooks-mobx-is-a-very-good/"  data-tooltip="Hooks &amp; Mobx 只需额外知道两个 Hook，便能体验到如此简单的开发方式">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/02/the-core-of-how-to-implement-resize-observer-polyfill/"  data-tooltip="实现 Resize Observer Polyfill 的有趣之处">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -729,7 +729,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
@@ -741,7 +741,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2020/05/07/hooks-mobx-is-a-very-good/"  data-tooltip="Hooks &amp; Mobx 只需额外知道两个 Hook，便能体验到如此简单的开发方式">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/02/the-core-of-how-to-implement-resize-observer-polyfill/"  data-tooltip="实现 Resize Observer Polyfill 的有趣之处">
                 
                     <i class="fa fa-angle-left"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>

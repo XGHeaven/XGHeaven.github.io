@@ -272,6 +272,131 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/02/06/how-to-live-in-macos/">
+                            如何在 Macos 系统中开启直播~适用于支持 RTMP 协议的直播
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Feb 06 2017 00:00:00 GMT+0800">
+	
+		    2月 06, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/%E7%B3%BB%E7%BB%9F%E6%8A%80%E5%B7%A7/">系统技巧</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7"><span class="toc-text">工具</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%B4%E6%92%AD%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-text">直播过程详解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%B4%E6%92%AD%E6%BA%90%E4%B8%8E-OBS"><span class="toc-text">直播源与 OBS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#OBS"><span class="toc-text">OBS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD-%E5%AE%89%E8%A3%85%EF%BC%88%E8%87%AA%E8%A1%8C%E8%A7%A3%E5%86%B3%EF%BC%89"><span class="toc-text">下载&#x2F;安装（自行解决）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-amp-%E6%9D%A5%E6%BA%90"><span class="toc-text">场景 &amp; 来源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E9%9F%B3%E5%99%A8"><span class="toc-text">混音器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B4%E6%92%AD%E6%BA%90"><span class="toc-text">直播源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91"><span class="toc-text">音频</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-1%EF%BC%9A-Install-iShowU-Audio-Capture"><span class="toc-text">Step 1： Install iShowU Audio Capture</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-2%EF%BC%9ASetup-Multi-Output-Device"><span class="toc-text">Step 2：Setup Multi-Output Device</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-3%EF%BC%9A-Switch-to-New-Output"><span class="toc-text">Step 3： Switch to New Output</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Step-4%EF%BC%9ASet-New-Audio-Input-In-OBS"><span class="toc-text">Step 4：Set New Audio Input In OBS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BUG"><span class="toc-text">BUG</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%96%E7%A0%81-%E8%BD%AC%E5%8C%96-%E5%8E%8B%E7%BC%A9-%E9%85%8D%E7%BD%AE"><span class="toc-text">编码&#x2F;转化&#x2F;压缩 配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RTMP-%E5%8D%8F%E8%AE%AE%E4%BC%A0%E9%80%81%E6%95%B0%E6%8D%AE"><span class="toc-text">RTMP 协议传送数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%82%E7%9C%8B"><span class="toc-text">观看</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>随着现在互联网的发展，直播行业也是越来越火了，但是有一个现象就是大部分的直播客户端都是面向的 Window 系统，大部分的教程也是针对 Window 的，但我是一枚 Macer，所以我再这里将我使用 Macos 开启直播中重要的一些事情记录一下。</p>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><ul>
+<li><p><a target="_blank" rel="noopener" href="https://obsproject.com/">OBS</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://support.shinywhitebox.com/hc/en-us/articles/204161459-Installing-iShowU-Audio-Capture">iShowU Audio Capture</a></p>
+</li>
+<li><p>Audio MIDI Setup (Macos Buildin)</p>
+</li>
+</ul>
+<h1 id="直播过程详解"><a href="#直播过程详解" class="headerlink" title="直播过程详解"></a>直播过程详解</h1><p>首先如果我们想要直播，那么首先要搞清楚直播的整个流程：</p>
+<ol>
+<li><p>在不同的直播平台开启直播，然后获取 RTMP 地址和密钥</p>
+</li>
+<li><p>将 RTMP 地址和密钥填写到 OBS 的串流配置中</p>
+</li>
+<li><p>配置 OBS 直播界面，比如录制整个屏幕，录制某个应用程序，录制一个区域，添加字幕，添加本地影片等等内容</p>
+</li>
+<li><p>在 OBS 中开启直播，整个直播就开始了，其他人就可以在直播平台看到你的直播内容了</p>
+</li>
+</ol>
+<p>也就是说整个直播流的流动是这样的：</p>
+<p><code>直播源</code> -&gt; <code>OBS 录制</code> -&gt; <code>编码/转换/压缩</code> -&gt; <code>通过 RTMP 协议将数据发送到直播平台</code> -&gt; <code>用户打开直播平台</code> -&gt; <code>获取数据</code> -&gt; <code>直播播放</code></p>
+<p>那么我们就针对整个直播流进行说明：</p>
+<h1 id="直播源与-OBS"><a href="#直播源与-OBS" class="headerlink" title="直播源与 OBS"></a>直播源与 OBS</h1><p>由于这两部分可以在一起讲解，我们主要是讲解 OBS。</p>
+<h2 id="OBS"><a href="#OBS" class="headerlink" title="OBS"></a>OBS</h2><p>官网是这样描述这个软件的：</p>
+<blockquote>
+<p>Open Broadcaster Software. Free and open source software for video recording and live streaming.</p>
+</blockquote>
+<p>所以这款软件主要是面向的是视频录制和直播流，但是我不得不说用这个软件还是直播用的多。视频录制简单来说就是类似于 B 站的游戏视频似得，或者相关的视频教程。不过不得不说，如果是游戏录制的话，还是使用 navida 自带的视频录制好一些，那个对性能的影响不是很高。这个 obs 真占用 CPU &gt;__&gt;（后面会有相应的测试）。</p>
+<h2 id="下载-安装（自行解决）"><a href="#下载-安装（自行解决）" class="headerlink" title="下载/安装（自行解决）"></a>下载/安装（自行解决）</h2><p>在官网一个硕大的 Download，请自行点击，并选择合适的版本下载。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="场景-amp-来源"><a href="#场景-amp-来源" class="headerlink" title="场景 &amp; 来源"></a>场景 &amp; 来源</h3><p>如果是学过导播的同学，或许对这个并不陌生。那么我简单来说，用电视台举个例子，一个场景对应的是一个电视台的画面，而一个来源对应的电视台中的一个图层。比如说山东卫视是一个场景，但是山东卫视画面当中的台标是一个来源，电视剧画面是一个来源，底部滚动信息是一个来源，右下角广告是一个来源，这些来源共同组成了这个场景，也就是山东卫视的画面。</p>
+<h3 id="混音器"><a href="#混音器" class="headerlink" title="混音器"></a>混音器</h3><p>主要是针对输出的音频进行合成的</p>
+<h2 id="直播源"><a href="#直播源" class="headerlink" title="直播源"></a>直播源</h2><p>在 obs 启动之后，默认只有一个场景，但是场景里面是空的，那么我们需要添加自己需要录制或直播的内容：</p>
+<p>在下方的<code>来源</code>中的右下角有一个加号，点击之后会有一个菜单让我们选择添加什么样的来源，有如下：</p>
+<ul>
+<li><p>图像 添加一个图像，类似于电视台添加台标</p>
+</li>
+<li><p>图像幻灯片放映 添加图像幻灯片，不多解释</p>
+</li>
+<li><p>场景可以在一个场景中嵌入另一个场景的内容，类似在山东卫视里面播放了浙江卫视的内容</p>
+</li>
+<li><p>媒体源 添加一个媒体，一般是视频</p>
+</li>
+<li><p>文本 添加文字</p>
+</li>
+<li><p>显示捕获 捕获屏幕</p>
+</li>
+<li><p>窗口捕获 捕获一个窗口的内容</p>
+</li>
+<li><p>游戏录制(Syphon) 相当于窗口捕获，不过他是利用 Syphon 直接从 GPU<br>中获取画面，而且没有窗口边框的，这点对于游戏直播来说还是不错的。</p>
+</li>
+<li><p>BrowserSource 嵌入一个网页</p>
+</li>
+</ul>
+<p>上面就是平时用到的一些内容，具体操作我就不讲解了，不同的来源有不同的配置内容，不过整体相对来说还是简单的，如果有需要的话，大家可以留言，我再详细讲解一下，当然还有音频的来源，这个我们后面再讲。</p>
+<h2 id="音频"><a href="#音频" class="headerlink" title="音频"></a>音频</h2><p>在解决了画面的问题之后，那么我们剩下的问题就剩下音频了。大家或许想了，添加音频不是很简单的事情么，有啥复杂的。不过我想说的是，在 Window 上面或许确实简单，但是在 Macos 上面，由于 Apple 在 OSX10.11 加入的新的安全机制，导致无法正常的获取系统声音，麦克风的声音还是可以正常获取的。也就是说无法录制游戏内部的声音，但是可以录制你说话的声音。那么如果是 Linux 思维用户的话，那么就会直接把 SIP 关掉，哈哈哈。简单就是智慧，复杂就是愚蠢，😂</p>
+<p>不过对于不想关闭的用户来说，还是有办法的。那么我们可以换个思路来思考，我们可以将音频输出到一个虚拟的输出设备，然后这个设备再虚拟成输入设备，在 OBS 从这个虚拟的输入设备中获取输入，就可以成功解决无法录制系统音频的问题了。</p>
+<p>不过也有人问了，那这样的话，我不就听不到声音了么？？？解决办法就是：用另一台设备打开自己的直播网站，播放自己的直播视频，然后放在旁边，只不过可能会有几十秒的延迟而已 ^_^</p>
+<p>不闹了，其实是用到了 Mac 自带的 <code>Audio MIDI Setup</code> ，需要这个软件先虚拟一个多输出设备，然后将音频输出到这个多输出设备上，然后由多输出设备将输出一部分送到扬声器，另一部分送到虚拟的输出设备，剩下的照常。</p>
+<p>这样我们就解决了因为系统权限问题而无法获取系统声音的问题。</p>
+<p>具体数据流见如下图：</p>
+<img src="/2017/02/06/how-to-live-in-macos/78b45f4d-68f4-41c8-8682-5a4c7d9111d7.png" class="">
+<h3 id="Step-1：-Install-iShowU-Audio-Capture"><a href="#Step-1：-Install-iShowU-Audio-Capture" class="headerlink" title="Step 1： Install iShowU Audio Capture"></a>Step 1： Install iShowU Audio Capture</h3><p>首先解释一下 <code>iShowU Audio Capture</code> 是干什么用的，其实主要作用就是生成一个虚拟的输入输出设备。在这里，有很多的替代品，不过我觉得这个是比较纯粹的一个，只有这一个功能。</p>
+<p>首先这里<a href="about:blank#%E5%B7%A5%E5%85%B7">工具</a>有官网链接，下载后安装即可。然后打开系统偏好设置 -&gt; 声音，选择输出选项卡，会有一个叫做 <code>iShowU Audio Capure</code> 的选项，并且切换到输入选项卡，也可以看到一个叫做 <code>iShowU Audio Capture</code> 的选项，那么说明你已经安装成功了。</p>
+<h3 id="Step-2：Setup-Multi-Output-Device"><a href="#Step-2：Setup-Multi-Output-Device" class="headerlink" title="Step 2：Setup Multi-Output Device"></a>Step 2：Setup Multi-Output Device</h3><p>打开 <code>Audio MIDI Setup</code> ，点击左下角的加号，选择创建多输出设备，分别在 <code>iShowU Audio Capture</code> 和 <code>Built-in Output</code> 前面勾选使用。</p>
+<h3 id="Step-3：-Switch-to-New-Output"><a href="#Step-3：-Switch-to-New-Output" class="headerlink" title="Step 3： Switch to New Output"></a>Step 3： Switch to New Output</h3><p>打开系统偏好设置 -&gt; 声音 -&gt; 输出选项卡，选择我们刚刚添加的多输出设备，将输出定向到这个新的多输出设备上。</p>
+<h3 id="Step-4：Set-New-Audio-Input-In-OBS"><a href="#Step-4：Set-New-Audio-Input-In-OBS" class="headerlink" title="Step 4：Set New Audio Input In OBS"></a>Step 4：Set New Audio Input In OBS</h3><p>打开 OBS，选择添加音频输入来源，选择我们刚刚添加的 <code>iShowU Audio Capture</code> 即可。</p>
+<p>下面我们可以进行一下测试，打开一个音乐播放，可以在混音器中看到有音频信号传入，并且扬声器中也有声音发出，那么说明你已经成功了！！！</p>
+<p>赶紧打开一瓶饮料庆祝一下吧，不过且慢。🐛来了</p>
+<h2 id="BUG"><a href="#BUG" class="headerlink" title="BUG"></a>BUG</h2><p>此时如果你带着耳机你会发现麦克风不管用了，麦克风传入的信号也是系统声音，这是什么原因呢？不知。。。不过这里有一个解决方案。</p>
+<p>创建一个输入聚合设备，跟创建多输出设备类似，不过这次我们选择创建聚合设备(aggregate device)，在 <code>Built-in Microphone</code> 和 <code>iShowU Audio Capture</code> 前面选中使用即可。然后再试一下，发现这个 BUG 是不是就解决了。如果还是不行，请在下方留言。</p>
+<h1 id="编码-转化-压缩-配置"><a href="#编码-转化-压缩-配置" class="headerlink" title="编码/转化/压缩 配置"></a>编码/转化/压缩 配置</h1><p>这里主要说一下推荐的配置，针对 Macbook Pro 来说，建议使用 1280*800 的配置，码率选择 2000Kbps，帧速率 30 即可，这个配置下面可以达到较高的画质，而且 CPU 占用也不是很高。</p>
+<h1 id="RTMP-协议传送数据"><a href="#RTMP-协议传送数据" class="headerlink" title="RTMP 协议传送数据"></a>RTMP 协议传送数据</h1><p>在这里我就不详细解释 RTMP 了，也不解释 RTMP 和 HLS 的区别和联系了，这个大家可以自行 Google。</p>
+<p>OBS 配置 RTMP 的位置是在设置 -&gt; 串流里面，填写入地址和密钥即可。</p>
+<p>保存之后，点击开始串流就可以进行直播了。</p>
+<h1 id="观看"><a href="#观看" class="headerlink" title="观看"></a>观看</h1><p>这里顺便打个广告，我的 <a target="_blank" rel="noopener" href="https://live.bilibili.com/3388074">B 站直播间</a>，主要是直播 Minecraft 和 Dota，纯属娱乐直播，没有什么意义。有时候可能还是直播 Coding。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章算不上什么教程，也没有什么通俗易懂的图片之类的，因为大部分的内容都可以 Google 到，我这里只是针对一些可能出现问题的地方记录了一下，方便大家。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/02/06/how-to-live-in-macos/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2016/01/09/osx-save-dialog-without-favorites/">
                             OSX 在保存对话框中没有收藏(Favorites)分类
                         </a>
@@ -329,13 +454,13 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
-                        <a class="link-unstyled" href="/2015/08/28/Mac-%E6%98%AF%E5%90%A6%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99/">
+                        <a class="link-unstyled" href="/2015/08/28/mac-is-case-sensitive/">
                             Mac 是否区分大小写
                         </a>
                     
                 </h1>
                 <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Aug 28 2015 13:18:18 GMT+0800">
+    <time itemprop="datePublished" content="Fri Aug 28 2015 00:00:00 GMT+0800">
 	
 		    8月 28, 2015
     	
@@ -343,7 +468,7 @@
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/Mac/">Mac</a>
+    <a class="category-link" href="/categories/%E7%B3%BB%E7%BB%9F%E6%8A%80%E5%B7%A7/">系统技巧</a>
 
 
     
@@ -352,19 +477,18 @@
             
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%9F%E7%9A%84%E6%98%AF%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E4%B9%88%EF%BC%9F"><span class="toc-text">真的是区分大小写么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%91%E6%83%B3%E8%A6%81%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">我想要区分大小写怎么办？</span></a></li></ol>
-<h3 id="真的是区分大小写么？"><a href="#真的是区分大小写么？" class="headerlink" title="真的是区分大小写么？"></a>真的是区分大小写么？</h3><p>熟悉过Linux的同学一定知道，在Linux中，文件是区分大小写的。<br>而对于相同祖先的Mac OS来说，应该也是如此。大家想当然的认为是这样的。</p>
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9C%9F%E7%9A%84%E6%98%AF%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E4%B9%88%EF%BC%9F"><span class="toc-text">真的是区分大小写么？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%91%E6%83%B3%E8%A6%81%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-text">我想要区分大小写怎么办？</span></a></li></ol>
+<h1 id="真的是区分大小写么？"><a href="#真的是区分大小写么？" class="headerlink" title="真的是区分大小写么？"></a>真的是区分大小写么？</h1><p>熟悉过Linux的同学一定知道，在Linux中，文件是区分大小写的。而对于相同祖先的Mac OS来说，应该也是如此。大家想当然的认为是这样的。</p>
 <p>可是，事实却不是这样的。</p>
-<p>在Mac OS中，默认是不区分大小写的。<br>这个大家可以进行如下的实验</p>
-<pre><code>$ echo a &gt; a
-$ echo A &gt; A
-$ ls
-</code></pre><p>大家可以看一下结果，是不是</p>
-<pre><code>a
-</code></pre><p>这样的么？</p>
+<p>在Mac OS中，默认是不区分大小写的。 这个大家可以进行如下的实验</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> a &gt; a</span><br><span class="line">$ <span class="built_in">echo</span> A &gt; A</span><br><span class="line">$ <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+<p>大家可以看一下结果，是不是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a</span><br></pre></td></tr></table></figure>
+<p>这样的么？</p>
 <p>说明Mac OS确实是不区分大小写的。</p>
-<h3 id="我想要区分大小写怎么办？"><a href="#我想要区分大小写怎么办？" class="headerlink" title="我想要区分大小写怎么办？"></a>我想要区分大小写怎么办？</h3><p>前面我说过了，默认是不区分，但是我们可以更改文件分区来区分大小写。</p>
-<p><img src="mac-partition.jpg" alt="Mac 分区"><br><em>我是用的我的一个移动硬盘来看的分区，所以会在window的格式上有对勾，请不要在意😂</em></p>
+<h1 id="我想要区分大小写怎么办？"><a href="#我想要区分大小写怎么办？" class="headerlink" title="我想要区分大小写怎么办？"></a>我想要区分大小写怎么办？</h1><p>前面我说过了，默认是不区分，但是我们可以更改文件分区来区分大小写。</p>
+<img src="/2015/08/28/mac-is-case-sensitive/d80361b2-4bb2-4b97-835c-72dc4a4c4067.jpg" class="">
+<p><em>我是用的我的一个移动硬盘来看的分区，所以会在window的格式上有对勾，请不要在意😂</em></p>
 <p>如图，默认是<strong>日志式</strong>，你可以选择<strong>区分大小写，日志式</strong>就可以了</p>
 
                     
@@ -373,7 +497,7 @@ $ ls
                     
                     
                         <p>
-                            <a href="/2015/08/28/Mac-%E6%98%AF%E5%90%A6%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99/#post-footer" class="postShorten-excerpt_link link">
+                            <a href="/2015/08/28/mac-is-case-sensitive/#post-footer" class="postShorten-excerpt_link link">
                                 注释和共享
                             </a>
                         </p>
@@ -397,7 +521,7 @@ $ ls
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

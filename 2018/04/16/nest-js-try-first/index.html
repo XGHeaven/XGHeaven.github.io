@@ -13,21 +13,18 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async&#x2F;Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。  框架简介因为我这">
+    <meta name="description" content="本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async&#x2F;Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。  框架简介因为我">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Nest.js 入手以及企业化的思考">
 <meta property="og:url" content="https://blog.xgheaven.com/2018/04/16/nest-js-try-first/index.html">
 <meta property="og:site_name" content="XGHeaven&#39;s Blog">
-<meta property="og:description" content="本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async&#x2F;Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。  框架简介因为我这">
+<meta property="og:description" content="本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async&#x2F;Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。  框架简介因为我">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2018-04-15T17:18:00.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:48:05.163Z">
+<meta property="article:published_time" content="2018-04-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.585Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="Node.js">
 <meta property="article:tag" content="Nest.js">
-<meta property="article:tag" content="Express">
-<meta property="article:tag" content="TypeScript">
-<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:creator" content="@XGHeaven">
     
@@ -281,61 +278,96 @@
         </h1>
     
     <div class="post-meta">
-    <time itemprop="datePublished" content="Mon Apr 16 2018 01:18:00 GMT+0800">
+    <time itemprop="datePublished" content="Mon Apr 16 2018 00:00:00 GMT+0800">
 	
 		    4月 16, 2018
     	
     </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
     
 </div>
 </div>
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <blockquote>
+            <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="toc-text">框架简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nest-js-%E4%BC%81%E4%B8%9A%E5%8C%96%E5%BD%93%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">Nest.js 企业化当中的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nest-js-%E4%BC%81%E4%B8%9A%E5%8C%96%E7%9A%84%E5%B0%9D%E8%AF%95"><span class="toc-text">Nest.js 企业化的尝试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">目录结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-text">配置管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86"><span class="toc-text">进程管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Iron-js"><span class="toc-text">Iron.js</span></a></li></ol>
+<blockquote>
 <p>本人是一名 Node.js 实习生，在进入大搜车之后，有幸见识到 Akyuu.js 这个框架。但是这个框架是使用 Express + Callback 的方式，我不是很喜欢。在我的推荐以及社区的发展下，组长决定用 TS + Async/Await 来试一试。于是我也去了解了一下 TS 的后端框架有哪些，结果经过别人推荐，找到了 Nest.js 这个想法几乎和我一模一样的框架。</p>
 </blockquote>
-<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a href="https://nestjs.com/" target="_blank" rel="noopener">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
+<h2 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h2><p>因为我这个不是教程向，所以就不细讲，可以查看 <a target="_blank" rel="noopener" href="https://nestjs.com/">Nest.js</a> 官网。从我的感性角度来讲，简单说一下以下几个特点：</p>
 <ul>
-<li>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</li>
-<li>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</li>
-<li>依赖注入。从 Angular 那里学习而来，但是进行了一些简化，但是完全够用。比如说简化掉了 deps。</li>
-<li>模块思想。Node 社区的后端框架，其实都被 Express 导向到了中间件的模式。而 Nest.js 却从 Angular 当中吸取到了模块的思想。不同的 Service、Controller、Component 组成不同的模块。模块之间可以相互依赖，也可以独立存在，这大大减少了测试和逻辑的复杂度。</li>
-<li>易于扩展。以往的框架，你能做的就是编写业务逻辑，而其他的你都很难去做到。于是传统的后端框架不得不引入了一套插件机制来增强框架的扩展性。但是 Nest.js 将插件的功能直接内置到了框架当中。传统的插件在这里可以认为就是一个模块，通过加载不同的模块来添加不同的功能。</li>
-<li>Express 基石。有人会说，不是现在 Koa 才是更好的模型么？洋葱模型可以解决更多复杂的问题。没错，我不反对这个言论。但是我想说的是，Express 还是最简单最通用的方式，因为他不赖 Generator/Promise，只需要你又一个 Node.js 运行环境，支持 Callback 就可以了。（话说应该没有不支持 Callback 的 Node.js 环境吧，哈哈哈）不管怎么样，Express 的覆盖面还是比 Koa 要广不少。</li>
-<li>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</li>
-<li>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</li>
-<li>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</li>
-<li>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a href="https://docs.nestjs.com/pipes" target="_blank" rel="noopener">教程</a></li>
-<li>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</li>
-<li>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</li>
+<li><p>去中心化路由。所有的路由通过装饰器与 Controller 绑定。简单、明了，学习成本低。</p>
+</li>
+<li><p>TypeScript/Rx.js 加持。智能补全，代码分析，静态类型等等优点。如果你只是个人用用的话，可能会觉得很全。但是放在企业当中使用，是非常大的优点。</p>
+</li>
+<li><p>依赖注入。从 Angular 那里学习而来，但是进行了一些简化，但是完全够用。比如说简化掉了 deps。</p>
+</li>
+<li><p>模块思想。Node 社区的后端框架，其实都被 Express 导向到了中间件的模式。而 Nest.js 却从 Angular 当中吸取到了模块的思想。不同的 Service、Controller、Component 组成不同的模块。模块之间可以相互依赖，也可以独立存在，这大大减少了测试和逻辑的复杂度。</p>
+</li>
+<li><p>易于扩展。以往的框架，你能做的就是编写业务逻辑，而其他的你都很难去做到。于是传统的后端框架不得不引入了一套插件机制来增强框架的扩展性。但是 Nest.js 将插件的功能直接内置到了框架当中。传统的插件在这里可以认为就是一个模块，通过加载不同的模块来添加不同的功能。</p>
+</li>
+<li><p>Express 基石。有人会说，不是现在 Koa 才是更好的模型么？洋葱模型可以解决更多复杂的问题。没错，我不反对这个言论。但是我想说的是，Express 还是最简单最通用的方式，因为他不赖 Generator/Promise，只需要你又一个 Node.js 运行环境，支持 Callback 就可以了。（话说应该没有不支持 Callback 的 Node.js 环境吧，哈哈哈）不管怎么样，Express 的覆盖面还是比 Koa 要广不少。</p>
+</li>
+<li><p>条条大路通罗马。那么有人就问了，那我要实现洋葱模型怎么办呢？我想说，办法总是会有的。而在 Nest.js 当中，通过 Interceptor ，可以很好的实现洋葱模型。也就是说你可以通过 Interceptor 来记录请求的耗时。</p>
+</li>
+<li><p>同步代码。这里所说的同步代码并不是单单指的是 async/await。在很多支持 async/await 的框架中，如果你想返回值，如果是 Express ，你还是需要调用 <code>resp.send(await getValue())</code>，而 koa 也是需要调用 <code>ctx.body = await getValue()</code>。但是在 Nest.js 中，只需要 <code>return await getValue()</code> 即可。实现真正的同步编写业务逻辑代码。</p>
+</li>
+<li><p>逻辑分层。其实很多功能，都是可以通过中间件来实现的。但是不同类型的功能有不同的需求，如果只是通过中间件来实现，势必会导致有一些重复的代码。于是 Nest.js 里面引入了 Pipe/Interceptor/Guard/ExceptionFilter 等逻辑层。不同的层里面处理相似的事情，比如说 Pipe 处理的是输入数据的转换。而 Interceptor 来实现洋葱模型。Guard 用于权限校验等拦截任务。ExceptionFilter 用来处理错误数据。这种分层带来的好处就是可以让代码更加清晰，主需要思考这个层需要做的事情，而不需要站在中间件的层面去考虑这个事情。</p>
+</li>
+<li><p>Validation。自带校验，而且和 TS 结合的非常完美，使用起来很舒服，请看<a target="_blank" rel="noopener" href="https://docs.nestjs.com/pipes">教程</a></p>
+</li>
+<li><p>输入参数的转换。这个其实是一个很方便的方面。有的时候你需要将输入的参数转换成一个类，这个时候你就可以通过 Validation 进行转换。你要是不想用自动转换，可以通过传统的手动转换的方式。</p>
+</li>
+<li><p>测试功能完美。由于采用了依赖注入，所以测试简直简单的不得了。而且官方也提供了一系列测试工具，也能很好的解决单元测试的问题。</p>
+</li>
 </ul>
 <h2 id="Nest-js-企业化当中的问题"><a href="#Nest-js-企业化当中的问题" class="headerlink" title="Nest.js 企业化当中的问题"></a>Nest.js 企业化当中的问题</h2><ul>
-<li>目录无约束。在企业当中，不对目录进行约束会导致代码越来越乱。从而降低了代码可维护性。</li>
-<li>没有配置管理功能。在框架开发中，配置往往是一个很重要的功能。比如说配置数据库的连接，配置监听的端口。</li>
-<li>没有进程管理。虽然有提供 <code>@nestjs/cli</code>，但是这个提供的仅仅是一个项目的创建的能力。</li>
-<li>部分文档讲解不详细，会提高入门的门槛。</li>
+<li><p>目录无约束。在企业当中，不对目录进行约束会导致代码越来越乱。从而降低了代码可维护性。</p>
+</li>
+<li><p>没有配置管理功能。在框架开发中，配置往往是一个很重要的功能。比如说配置数据库的连接，配置监听的端口。</p>
+</li>
+<li><p>没有进程管理。虽然有提供 <code>@nestjs/cli</code>，但是这个提供的仅仅是一个项目的创建的能力。</p>
+</li>
+<li><p>部分文档讲解不详细，会提高入门的门槛。</p>
+</li>
 </ul>
 <p>不过总的来说，前面几点也正是 Nest.js 灵活性的保证。但是我们真正在开发当中，还是需要一种合理的约束来保证开发的统一。</p>
 <h2 id="Nest-js-企业化的尝试"><a href="#Nest-js-企业化的尝试" class="headerlink" title="Nest.js 企业化的尝试"></a>Nest.js 企业化的尝试</h2><p>那么我们这里针对上面的几个问题，尝试采用一些方式来进行约束。</p>
 <h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p>我们对项目指定如下的规则：</p>
 <ul>
-<li>全部通过 TypeScript 书写，并且全部位于 <code>src</code> 目录下</li>
-<li>入口文件是 <code>main.ts</code> 如果没有特殊情况，不动这个文件</li>
-<li>配置放在 <code>src/config</code> 文件夹下</li>
-<li>所有的 Service/Controller/Logic/Component 等都挂载到 <code>MainModule</code> 下。</li>
-<li>其中 <code>module</code> 文件夹存放自定义的 Module，或者说希望独立成模块但是还没有完全独立出来的。其中目录结构和这个项目目录结构类似</li>
-<li><code>boot</code> 文件夹是项目启动代码的时候执行的，这部分在 Nest.js 当中没有给出。我这里打算添加这个功能，但是还没有想好具体的实现形式，所以待定。</li>
-<li><code>interface</code>/<code>enum</code> 等数据随着对应的 service 导出。不另做说明。比如说 <code>car.service.ts</code> 除了可以导出 <code>CarService</code> 类以外，还可以导出 <code>CarType</code> enum。</li>
-<li><code>dest</code> 文件夹是编译之后的文件，可以直接输入 <code>node dest/main.js</code> 运行。</li>
-<li>命名规则<ul>
-<li>所有的文件除了 main.ts 和类文件以外，都要添加类型后缀，比如说 <code>user.model.ts</code> <code>car.controller.ts</code> <code>google.logic.ts</code>。但是比如说只是一个 <code>Car</code> 类，那么可以直接命名成 <code>car.ts</code></li>
-<li>不允许通过 <code>export default</code> 导出数据。一方面是为了方便导入的时候保证命名的统一，另一方面可以随时导出 interface/enum 等内容。</li>
-<li>所有的测试文件后缀名都以 <code>.spec.ts</code> 或 <code>.test.ts</code> 结尾。</li>
+<li><p>全部通过 TypeScript 书写，并且全部位于 <code>src</code> 目录下</p>
+</li>
+<li><p>入口文件是 <code>main.ts</code> 如果没有特殊情况，不动这个文件</p>
+</li>
+<li><p>配置放在 <code>src/config</code> 文件夹下</p>
+</li>
+<li><p>所有的 Service/Controller/Logic/Component 等都挂载到 <code>MainModule</code> 下。</p>
+</li>
+<li><p>其中 <code>module</code> 文件夹存放自定义的 Module，或者说希望独立成模块但是还没有完全独立出来的。其中目录结构和这个项目目录结构类似</p>
+</li>
+<li><p><code>boot</code> 文件夹是项目启动代码的时候执行的，这部分在 Nest.js 当中没有给出。我这里打算添加这个功能，但是还没有想好具体的实现形式，所以待定。</p>
+</li>
+<li><p><code>interface</code>/<code>enum</code> 等数据随着对应的 service 导出。不另做说明。比如说 <code>car.service.ts</code> 除了可以导出 <code>CarService</code> 类以外，还可以导出 <code>CarType</code> enum。</p>
+</li>
+<li><p><code>dest</code> 文件夹是编译之后的文件，可以直接输入 <code>node dest/main.js</code> 运行。</p>
+</li>
+<li><p>命名规则</p>
+<ul>
+<li><p>所有的文件除了 main.ts 和类文件以外，都要添加类型后缀，比如说 <code>user.model.ts</code> <code>car.controller.ts</code> <code>google.logic.ts</code>。但是比如说只是一个 <code>Car</code> 类，那么可以直接命名成 <code>car.ts</code></p>
+</li>
+<li><p>不允许通过 <code>export default</code> 导出数据。一方面是为了方便导入的时候保证命名的统一，另一方面可以随时导出 interface/enum 等内容。</p>
+</li>
+<li><p>所有的测试文件后缀名都以 <code>.spec.ts</code> 或 <code>.test.ts</code> 结尾。</p>
+</li>
 </ul>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">|-- dest</span><br><span class="line">    |--- ...</span><br><span class="line">|-- src</span><br><span class="line">    |-- config</span><br><span class="line">    |-- controller</span><br><span class="line">    |-- model</span><br><span class="line">    |-- service</span><br><span class="line">    |-- logic</span><br><span class="line">    |-- component</span><br><span class="line">    |-- boot</span><br><span class="line">    |-- module</span><br><span class="line">        |-- module-name</span><br><span class="line">            |-- config</span><br><span class="line">            |-- index.ts</span><br><span class="line">            |-- module-name.module.ts</span><br><span class="line">    |-- main.ts</span><br><span class="line">    |-- main.module.ts</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">|-- dest</span><br><span class="line">    |--- ...</span><br><span class="line">|-- src</span><br><span class="line">    |-- config</span><br><span class="line">    |-- controller</span><br><span class="line">    |-- model</span><br><span class="line">    |-- service</span><br><span class="line">    |-- logic</span><br><span class="line">    |-- component</span><br><span class="line">    |-- boot</span><br><span class="line">    |-- module</span><br><span class="line">        |-- module-name</span><br><span class="line">            |-- config</span><br><span class="line">            |-- index.ts</span><br><span class="line">            |-- module-name.module.ts</span><br><span class="line">    |-- main.ts</span><br><span class="line">    |-- main.module.ts</span><br></pre></td></tr></table></figure>
 <h3 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h3><p>我目前初步的想法是通过提供一个 <code>ConfigModule</code> 暴露出一个 <code>ConfigService</code> 来提供配置的获取和查看。</p>
 <p>在某些情况下，可能需要多级配置，模块级别的配置，应用级别的配置。那么 <code>ConfigService</code> 可以在获取配置的时候自动合并这些规则。</p>
 <h3 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h3><p>现在已经是 18 年了，不用 Docker 你真的对得起自己么？很明显是对不起的。所以进程管理这一块，我们就交给 Docker 来处理。包括启动、停止、重启、日志等，都交给 Docker。</p>
@@ -358,7 +390,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br/>
                 
-    <a class="tag tag--primary tag--small t-none-link" href="/tags/Docker/" rel="tag">Docker</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Express/" rel="tag">Express</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Nest-js/" rel="tag">Nest.js</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Node-js/" rel="tag">Node.js</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/TypeScript/" rel="tag">TypeScript</a>
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/Nest-js/" rel="tag">Nest.js</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/Node-js/" rel="tag">Node.js</a>
 
             </div>
         
@@ -413,7 +445,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
             
                 <i class="fa fa-list"></i>
             </a>
@@ -436,7 +468,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
@@ -494,7 +526,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#">
+                <a class="post-action-btn btn btn--default" href="#table-of-contents">
             
                 <i class="fa fa-list"></i>
             </a>

@@ -25,7 +25,7 @@
 <meta property="og:image" content="https://blog.xgheaven.com/2019/10/13/use-self-signed-ca-to-protect-your-self-content/971d1090-103f-405c-9982-1017a28996dc.png">
 <meta property="og:image" content="https://blog.xgheaven.com/2019/10/13/use-self-signed-ca-to-protect-your-self-content/a28b3a21-4688-4133-adae-df2f1c74457b.png">
 <meta property="article:published_time" content="2019-10-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-16T15:51:09.750Z">
+<meta property="article:modified_time" content="2024-03-17T08:34:42.594Z">
 <meta property="article:author" content="XGHeaven">
 <meta property="article:tag" content="SelfHost">
 <meta property="article:tag" content="TLS">
@@ -365,42 +365,42 @@
 <h3 id="使用-CA-对-CSR-签名"><a href="#使用-CA-对-CSR-签名" class="headerlink" title="使用 CA 对 CSR 签名"></a>使用 CA 对 CSR 签名</h3><p>在 Chrome 58 之前，Chrome 会根据 CN 来检查访问的域名是不是和证书的域名一致，但是在 Chrome 58 之后，改为使用 SAN(Subject Alternative Name) 而不是 CN 检查域名的一致性。</p>
 <p>而 SAN 属于 x509 扩展里面的内容，所以我们需要通过 <code>-extfile</code> 参数来指定存放扩展内容的文件。</p>
 <p>所以我们需要额外创建一个 <code>your-domain.com.ext</code> 文件用来保存 SAN 信息，通过指定多个 DNS 从而可以实现多域名证书。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1 = your-domain.com</span><br><span class="line">DNS.2 = *.your-domain.com</span><br><span class="line">DNS.3 = *.api.your-domain.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">subjectAltName = @alt_names</span><br><span class="line"></span><br><span class="line">[alt_names]</span><br><span class="line">DNS.1 = your-domain.com</span><br><span class="line">DNS.2 = *.your-domain.com</span><br><span class="line">DNS.3 = *.api.your-domain.com</span><br></pre></td></tr></table></figure>
 <p>以此类推，如果域名较少，还可以用另外一种简写方案。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">subjectAltName = DNS: your-domain.com, DNS: *.your-domain.com</span><br></pre></td></tr></table></figure>
-<p>关于语法的更多内容请查看<a href="https://www.openssl.org/docs/manmaster/man5/x509v3_config.html" target="_blank" rel="noopener">官方文档</a>。在有了 ext 文件之后就直接可以开始签名了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">subjectAltName = DNS: your-domain.com, DNS: *.your-domain.com</span><br></pre></td></tr></table></figure>
+<p>关于语法的更多内容请查看<a target="_blank" rel="noopener" href="https://www.openssl.org/docs/manmaster/man5/x509v3_config.html">官方文档</a>。在有了 ext 文件之后就直接可以开始签名了。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -req -sha256 -<span class="keyword">in</span> your-domain.com.csr -CA root.crt -CAkey root.key -CAcreateserial -out your-domain.com.crt -days 365 -extfile your-domain.com.ext</span><br></pre></td></tr></table></figure>
 <p><code>CAcreateserial</code> 这个参数是比较有意思的，意思是如果证书没有 serial number 就创建一个，因为我们是签名，所以肯定会创建一个。序列号在这里的作用就是唯一标识一个证书，当有两个证书的时候，只有给这两个证书签名的 CA 和序列号都一样的情况下，我们才认为这两个证书是一致的。除了自定生成，还可以通过 <code>-set_serial</code> 手动指定一个序列号。</p>
 <p>当使用 <code>-CAcreateserial</code> 参数之后，会自动创建一个和 CA 文件名相同的，但是后缀是 <code>.srl</code> 的文件。这里存储了上一次生成的序列号，每次调用的时候都会读取并 +1 。也就是说每一次生成的证书的序列号都比上一次的加了一。</p>
 <p>现在，只需要将 <code>your-domain.com.crt</code> 和 <code>your-domain.com.key</code> 放到服务端就可以使用了。别忘了将 CA 添加系统当中，要不然浏览器访问会出现问题。</p>
 <h2 id="客户端证书生成"><a href="#客户端证书生成" class="headerlink" title="客户端证书生成"></a>客户端证书生成</h2><p>服务端有了之后，就需要生成客户端的证书，步骤和服务端基本一致，但是不需要 SAN 信息了。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out client.key 2048</span><br><span class="line"><span class="comment"># 这里也可以采用非交互形式，方便制作成命令行工具</span></span><br><span class="line">openssl req -new \</span><br><span class="line">	-key client.key \</span><br><span class="line">	-subj <span class="string">"/C=CN/ST=Zhejiang/O=X/CN=*.your-domain.com"</span> \ <span class="comment"># 这里的缩写就是文章一开始所说的那些缩写</span></span><br><span class="line">	-out client.csr</span><br><span class="line">openssl x509 -req -<span class="keyword">in</span> client.csr -CA root.crt -CAkey root.key -out client.crt -days 365</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out client.key 2048</span><br><span class="line"><span class="comment"># 这里也可以采用非交互形式，方便制作成命令行工具</span></span><br><span class="line">openssl req -new \</span><br><span class="line">	-key client.key \</span><br><span class="line">	-subj <span class="string">&quot;/C=CN/ST=Zhejiang/O=X/CN=*.your-domain.com&quot;</span> \ <span class="comment"># 这里的缩写就是文章一开始所说的那些缩写</span></span><br><span class="line">	-out client.csr</span><br><span class="line">openssl x509 -req -<span class="keyword">in</span> client.csr -CA root.crt -CAkey root.key -out client.crt -days 365</span><br></pre></td></tr></table></figure>
 <p>只不过客户端验证需要的是 PKCS#12 格式，这种格式是将证书和私钥打包在了一起。因为系统需要知道一个证书的私钥和公钥，而证书只包含公钥和签名，不包含私钥，所以需要这种格式的温江将私钥和公钥都包含进来。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -<span class="built_in">export</span> -clcerts -<span class="keyword">in</span> client.crt -inkey client.key -out client.p12</span><br></pre></td></tr></table></figure>
 <p>这期间会提示你输入密码，用于安装的时候使用。也就是说不是什么人都可以安装客户端证书的，要有密码才行，这无疑又增加了一定的安全性。当然了，我试过不输入密码，但是好像有点问题，有兴趣的同学可以自己尝试下。</p>
 <h2 id="客户端校验证书的使用"><a href="#客户端校验证书的使用" class="headerlink" title="客户端校验证书的使用"></a>客户端校验证书的使用</h2><p>这里以 Node.js 举例。使用 <code>https</code> 模块，在创建的时候和普通的创建方式基本一致，但是需要额外指定 <code>requestCert</code> 和 <code>ca</code> 参数来开启客户端校验。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">https.createServer(&#123;</span><br><span class="line">	key: fs.readFileSync(<span class="string">'your-domain.com.key'</span>),</span><br><span class="line">	cert: fs.readFileSync(<span class="string">'your-domain.com.crt'</span>),</span><br><span class="line">	requestCert: <span class="literal">true</span>,</span><br><span class="line">	ca: [fs.readFileSync(<span class="string">'root.crt'</span>)], <span class="comment">// 校验客户端证书的 CA</span></span><br><span class="line">&#125;, (req, resp) =&gt; &#123;</span><br><span class="line">	<span class="comment">// blahblah</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">https.<span class="title function_">createServer</span>(&#123;</span><br><span class="line">	<span class="attr">key</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;your-domain.com.key&#x27;</span>),</span><br><span class="line">	<span class="attr">cert</span>: fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;your-domain.com.crt&#x27;</span>),</span><br><span class="line">	<span class="attr">requestCert</span>: <span class="literal">true</span>,</span><br><span class="line">	<span class="attr">ca</span>: [fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;root.crt&#x27;</span>)], <span class="comment">// 校验客户端证书的 CA</span></span><br><span class="line">&#125;, <span class="function">(<span class="params">req, resp</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="comment">// blahblah</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>这样只要客户端没有安装合法的证书，那么整个请求就是失败的。而且根本不会进入请求处理的回调函数中，这也意味着显示的错误是浏览器的默认错误。那么这对用户来讲其实不太友好。</p>
 <p>那么我们可以通过在参数中添加 <code>rejectUnauthorized: false</code> 来关闭这个功能，也就是说不管客户端证书校验是正确还是失败，都可以进入正常的回调流程。此时我们只需要通过 <code>req.client.authorized</code> 来判断这个请求是否通过了客户端证书的校验，可以给予用户更详尽的错误提示。</p>
 <p>另外我们还可以通过 <code>resp.connection.getPeerCertificate()</code> 获取客户端证书的信息，甚至可以根据不同的信息选择给予不同的用户权限。</p>
-<p>这里有一个 DEMO: <a href="https://www.xgheaven.net.cn:3443/" target="_blank" rel="noopener">https://www.xgheaven.net.cn:3443</a>，大家打开之后应该会看到一个证书校验失败的提示。这里要说下，我这里的 DEMO 没有使用自签名的服务端证书，只是使用了自签名的 CA 去检查客户端证书。因为用自己签名的服务端证书的话，浏览器会提示不安全，因为用户么有安装自签名的 CA。</p>
-<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/41f19dae-c1c5-42ac-9f4d-004d654a1de5.png">
+<p>这里有一个 DEMO: <a target="_blank" rel="noopener" href="https://www.xgheaven.net.cn:3443/">https://www.xgheaven.net.cn:3443</a>，大家打开之后应该会看到一个证书校验失败的提示。这里要说下，我这里的 DEMO 没有使用自签名的服务端证书，只是使用了自签名的 CA 去检查客户端证书。因为用自己签名的服务端证书的话，浏览器会提示不安全，因为用户么有安装自签名的 CA。</p>
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/41f19dae-c1c5-42ac-9f4d-004d654a1de5.png" class="">
 <p>可以点击下载客户端证书按钮，安装客户端证书。因为客户端证书是有密码保护的，请输入页面上提示的密码。</p>
 <p>再次刷新，如果是 Mac 系统，会提示你要使用哪个客户端证书登录，此时就说明安装成功了。</p>
-<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/ecf1b91c-a04f-4989-93a2-a78f871a75bc.png">
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/ecf1b91c-a04f-4989-93a2-a78f871a75bc.png" class="">
 <p>点击确认，可能还要输入一个系统密码允许 Chrome 访问 Keychain，一劳永逸的话在输入密码之后选择 Always Allow，从此就不需要再输入密码了。</p>
-<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/971d1090-103f-405c-9982-1017a28996dc.png">
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/971d1090-103f-405c-9982-1017a28996dc.png" class="">
 <p>按照道理，你就可以看到这个页面了。</p>
-<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/a28b3a21-4688-4133-adae-df2f1c74457b.png">
+<img src="/2019/10/13/use-self-signed-ca-to-protect-your-self-content/a28b3a21-4688-4133-adae-df2f1c74457b.png" class="">
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有了这个功能，我就可以将我的所有内容全盘私有化而且还能直接暴露在公网中。配合之前毕设搞的微服务化，简直不要美滋滋。如果之前是使用账号密码登录的，也可以接入这个方案。就是将登录页面替换成证书校验就可以了。</p>
 <h2 id="Refs"><a href="#Refs" class="headerlink" title="Refs"></a>Refs</h2><ul>
-<li><p><a href="https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326" target="_blank" rel="noopener">Authentication using HTTPS client certificates</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://medium.com/@sevcsik/authentication-using-https-client-certificates-3c9d270e8326">Authentication using HTTPS client certificates</a></p>
 </li>
-<li><p><a href="https://alexanderzeitler.com/articles/Fixing-Chrome-missing_subjectAltName-selfsigned-cert-openssl/" target="_blank" rel="noopener">Fixing Chrome 58+ [missing_subjectAltName] with openssl when using self signed certificates</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://alexanderzeitler.com/articles/Fixing-Chrome-missing_subjectAltName-selfsigned-cert-openssl/">Fixing Chrome 58+ [missing_subjectAltName] with openssl when using self signed certificates</a></p>
 </li>
-<li><p><a href="https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309" target="_blank" rel="noopener">Self Signed Certificate with custom CA</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309">Self Signed Certificate with custom CA</a></p>
 </li>
-<li><p><a href="https://www.jianshu.com/p/68c664b663f4" target="_blank" rel="noopener">散列算法：SHA-1，SHA-2和SHA-256之间的区别（下）</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/68c664b663f4">散列算法：SHA-1，SHA-2和SHA-256之间的区别（下）</a></p>
 </li>
 </ul>
 
@@ -493,7 +493,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2023 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
