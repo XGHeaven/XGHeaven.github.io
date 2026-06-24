@@ -272,6 +272,184 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2017/12/30/Reflect-metadata/">
+                            Reflect-Metadata 详解
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Dec 30 2017 00:00:00 GMT+0800">
+	
+		    12月 30, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Frontend/">Frontend</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metadata"><span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reflect-Metadata"><span class="toc-text">Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-%E4%BD%BF%E7%94%A8"><span class="toc-text">安装&#x2F;使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB-%E5%B1%9E%E6%80%A7-%E6%96%B9%E6%B3%95-%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-text">类&#x2F;属性&#x2F;方法 装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%9F%A5%E6%89%BE"><span class="toc-text">原型链查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E9%80%94"><span class="toc-text">用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#API"><span class="toc-text">API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5-Reflect-Metadata"><span class="toc-text">深入 Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">实现原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#End"><span class="toc-text">End</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="toc-text">题外话</span></a></li></ol>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在 ES6 的规范当中，就已经存在 <code>Reflect</code> API 了。简单来说这个 API 的作用就是可以实现对变量操作的函数化，也就是反射。具体的关于这个 API 的内容，可以查看这个<a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/#docs/reflect">教程</a></p>
+<p>然而我们在这里讲到的，却是 <code>Reflect</code> 里面还没有的一个规范，那么就是 <code>Reflect Metadata</code>。</p>
+<h2 id="Metadata"><a href="#Metadata" class="headerlink" title="Metadata"></a>Metadata</h2><p>想必对于其他语言的 Coder 来说，比如说 Java 或者 C#，Metadata 是很熟悉的。最简单的莫过于通过反射来获取类属性上面的批注（在 JS 当中，也就是所谓的装饰器）。从而可以更加优雅的对代码进行控制。</p>
+<p>而 JS 现在有<a target="_blank" rel="noopener" href="https://github.com/tc39/proposal-decorators">装饰器</a>，虽然现在还在 <code>Stage2</code> 阶段。但是 JS 的装饰器更多的是存在于对函数或者属性进行一些操作，比如修改他们的值，代理变量，自动绑定 this 等等功能。</p>
+<blockquote>
+<p>所以，后文当中我就使用 TypeScript 来进行讲解，因为 TypeScript 已经完整的实现了装饰器。<br>虽然 Babel 也可以，但是需要各种配置，人懒，不想配置那么多。</p>
+</blockquote>
+<p>但是却无法实现通过反射来获取究竟有哪些装饰器添加到这个类/方法上。</p>
+<p>于是 <code>Reflect Metadata</code> 应运而生。</p>
+<h2 id="Reflect-Metadata"><a href="#Reflect-Metadata" class="headerlink" title="Reflect Metadata"></a>Reflect Metadata</h2><p>Relfect Metadata，简单来说，你可以通过装饰器来给类添加一些自定义的信息。然后通过反射将这些信息提取出来。当然你也可以通过反射来添加这些信息。<br>就像是下面这个例子所示。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">hello</span>(): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, A) <span class="comment">// &#x27;A&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="keyword">new</span> <span class="title function_">A</span>()) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="comment">// 这里为什么要用 new A()，用 A 不行么？后文会讲到</span></span><br></pre></td></tr></table></figure>
+<p>是不是很简单，那么我简单来介绍一下~</p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>首先，在这里有四个概念要区分一下：</p>
+<ol>
+<li><p><code>Metadata Key</code> {Any} 后文简写 <code>k</code>。元数据的 Key，对于一个对象来说，他可以有很多元数据，每一个元数据都对应有一个 Key。一个很简单的例子就是说，你可以在一个对象上面设置一个叫做 <code>&#39;name&#39;</code> 的 Key 用来设置他的名字，用一个 <code>&#39;created time&#39;</code> 的 Key 来表示他创建的时间。这个 Key 可以是任意类型。在后面会讲到内部本质就是一个 <code>Map</code> 对象。</p>
+</li>
+<li><p><code>Metadata Value</code> {Any} 后文简写 <code>v</code>。元数据的类型，任意类型都行。</p>
+</li>
+<li><p><code>Target</code> {Object} 后文简写 <code>o</code>。表示要在这个对象上面添加元数据</p>
+</li>
+<li><p><code>Property</code> {String|Symbol} 后文简写 <code>p</code>。用于设置在那个属性上面添加元数据。大家可能会想，这个是干什么用的，不是可以在对象上面添加元数据了么？其实不仅仅可以在对象上面添加元数据，甚至还可以在对象的属性上面添加元数据。其实大家可以这样理解，当你给一个对象定义元数据的时候，相当于你是默认指定了 <code>undefined</code> 作为 Property。下面有一个例子大家可以看一下。</p>
+</li>
+</ol>
+<p>大家明白了上面的概念之后，我之前给的那个例子就很简单了~不用我多说了。</p>
+<h3 id="安装-使用"><a href="#安装-使用" class="headerlink" title="安装/使用"></a>安装/使用</h3><p>下面不如正题，我们怎么开始使用 <code>Reflect Metadata</code> 呢？<br>首先，你需要安装 <code>reflect-metadata</code> polyfill，然后引入之后就可以看到在 <code>Reflect</code> 对象下面有很多关于 Metadata 的函数了。因为这个还没有进入正式的协议，所以需要安装垫片使用。</p>
+<blockquote>
+<p>啥，Reflect 是啥，一个全局变量而已。</p>
+</blockquote>
+<p>你不需要担心这个垫片的质量，因为连 Angular 都在使用呢，你怕啥。</p>
+<p>之后你就可以安装我上面写的示例，在 TypeScript 当中去跑了。</p>
+<h3 id="类-属性-方法-装饰器"><a href="#类-属性-方法-装饰器" class="headerlink" title="类/属性/方法 装饰器"></a>类/属性/方法 装饰器</h3><p>看这个例子。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> objs = [A, <span class="keyword">new</span> A, A.<span class="property"><span class="keyword">prototype</span></span>]</span><br><span class="line"><span class="keyword">const</span> res = objs.<span class="title function_">map</span>(<span class="function"><span class="params">obj</span> =&gt;</span> [</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj, <span class="string">&#x27;hello&#x27;</span>),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj ,<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">])</span><br><span class="line"><span class="comment">// 大家猜测一下 res 的值会是多少？</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>想好了么？再给你 10 秒钟</p>
+</blockquote>
+<blockquote>
+<p>10<br>9<br>8<br>7<br>6<br>5<br>4<br>3<br>2<br>1</p>
+</blockquote>
+<p>res</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [<span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>],</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>那么我来解释一下为什么回是这样的结果。</p>
+<p>首先所有的对类的修饰，都是定义在类这个对象上面的，而所有的对类的属性或者方法的修饰，都是定义在类的原型上面的，并且以属性或者方法的 key 作为 property，这也就是为什么 <code>getMetadata</code> 会产生这样的效果了。</p>
+<p>那么带 <code>Own</code> 的又是什么情况呢？</p>
+<p>这就要从元数据的查找规则开始讲起了</p>
+<h3 id="原型链查找"><a href="#原型链查找" class="headerlink" title="原型链查找"></a>原型链查找</h3><p>类似于类的继承，查找元数据的方式也是通过原型链进行的。</p>
+<p>就像是上面那个例子，我实例化了一个 <code>new A()</code>，但是我依旧可以找到他原型链上的元数据。</p>
+<p>举个例子</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> t1 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="keyword">const</span> t2 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">defineMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t1, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// undefined</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>其实所有的用途都是一个目的，给对象添加额外的信息，但是不影响对象的结构。这一点很重要，当你给对象添加了一个原信息的时候，对象是不会有任何的变化的，不会多 property，也不会有的 property 被修改了。<br>但是可以衍生出很多其他的用途。</p>
+<ul>
+<li><p>Anuglar 中对特殊字段进行修饰 (Input)，从而提升代码的可读性。</p>
+</li>
+<li><p>可以让装饰器拥有真正装饰对象而不改变对象的能力。让对象拥有更多语义上的功能。</p>
+</li>
+</ul>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title class_">Reflect</span> &#123;</span><br><span class="line">  <span class="comment">// 用于装饰器</span></span><br><span class="line">  <span class="title function_">metadata</span>(k, v): <span class="function">(<span class="params">target, property?</span>) =&gt;</span> <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 在对象上面定义元数据</span></span><br><span class="line">  <span class="title function_">defineMetadata</span>(k, v, o, p?): <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 是否存在元数据</span></span><br><span class="line">  <span class="title function_">hasMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="title function_">hasOwnMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="comment">// 获取元数据</span></span><br><span class="line">  <span class="title function_">getMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="title function_">getOwnMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="comment">// 获取所有元数据的 Key</span></span><br><span class="line">  <span class="title function_">getMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="title function_">getOwnMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="comment">// 删除元数据</span></span><br><span class="line">  <span class="title function_">deleteMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>大家可能注意到，针对某些操作，会有 <code>Own</code> 的函数。这是因为有的操作是可以通过原型链进行操作的。这个后文讲解。</p>
+</blockquote>
+<h2 id="深入-Reflect-Metadata"><a href="#深入-Reflect-Metadata" class="headerlink" title="深入 Reflect Metadata"></a>深入 Reflect Metadata</h2><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>如果你去翻看官网的文档，他会和你说，所有的元数据都是存在于对象下面的 <code>[[Metadata]]</code> 属性下面。一开始我也是这样认为的，新建一个 <code>Symbol(&#39;Metadata&#39;)</code>，然后将元数据放到这个 Symbol 对应的 Property 当中。直到我看了源码才发现并不是这样。请看例子</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;&#125;</span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">getOwnPropertySymbols</span>(A) <span class="comment">// []</span></span><br></pre></td></tr></table></figure>
+<p>哈哈，并没有所谓的 Symbol，那么这些元数据都存在在哪里呢？</p>
+<p>其实是内部的一个 WeakMap 中。他正是利用了 WeakMap 不增加引用计数的特点，将对象作为 Key，元数据集合作为 Value，存到 WeakMap 中去。</p>
+<p>如果你认真探寻的话，你会发现其内部的数据结构其实是这样的</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">WeakMap</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="built_in">any</span>&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>是不是超级绕，但是我们从调用的角度来思考，这就一点都不绕了。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">weakMap.<span class="title function_">get</span>(o).<span class="title function_">get</span>(p).<span class="title function_">get</span>(k)</span><br></pre></td></tr></table></figure>
+<p>先根据对象获取，然后在根据属性，最后根据元数据的 Key 获取最终要的数据。</p>
+<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>因为 Reflect Metadata 实在是比较简单，这里就不多讲解了。更多内容请查看 <a target="_blank" rel="noopener" href="https://rbuckton.github.io/reflect-metadata">Spec</a></p>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>其实看了源码之后还是挺惊讶的，按照一般的套路，很多 polyfill 会让你提供一些前置的 polyfill 之后，当前的 polyfill 才能使用。但是 <code>reflect-metadata</code> 竟然内部自己实现了很多的 polyfill 和算法。比如 Map, Set, WeakMap, UUID。最惊讶的莫过于 WeakMap 了。不是很仔细的阅读了一下，好像还是会增加引用计数。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/12/30/Reflect-metadata/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2017/09/09/boostnote-is-an-open-source-note-taking-app-designed-for-programmers/">
+                            Boostnote 一个专门为程序员设计的笔记应用
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Sep 09 2017 22:40:27 GMT+0800">
+	
+		    9月 09, 2017
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Software/">Software</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    
+<blockquote>
+<p>Boostnote 是一款通过 Electron 构建的桌面笔记应用。它支持离线存储，无需注册、Markdown 编辑、像 Github Gist 的代码片段的管理等等内容。全球 198 个国家和地区的程序员们在使用这款应用。</p>
+</blockquote>
+<p><a href="https://boostnote.io/" target="_blank" rel="noopener">Boostnote</a> 就如同器名字一般，最主要的一个用途便是 Markdown 笔记编辑器。你所有的 Markdown 笔记拥有自动保存的功能，并且支持多种展示格式。拥有半实时的预览，所以你可以及时的检查最后的格式是否是和你所输入的一致。</p>
+<p>Latex 公式编辑器也内置在 Boostnote 当中，你可以很轻松的插入各种公式在你的笔记中。</p>
+<p>不管是笔记还是代码片段都可以通过标签的方式进行管理。</p>
+<p>对于代码片段来说，他支持高达 100 多种语言的高亮，其中包括 JavaScript, Python, HTML 和 CSS。当然你也可以在一份代码片段当中存储多段代码，比如说你可以同时存储 HTML，CSS，JS 代码在一份当中。而且不管你是用什么样子的缩进（tab/空格）或者缩进的程度（2个字符，4个字符，8个字符）都可以在文档中进行配置。</p>
+<p>最后，将笔记导出成普通文本（.txt） 或者 Markdown(.md) 也是支持的功能。</p>
+<h2 id="外观（UI）"><a href="#外观（UI）" class="headerlink" title="外观（UI）"></a>外观（UI）</h2><p>丰富的快捷键可以让你让更快的浏览、搜索笔记，以及更快的执行一些重要操作。</p>
+<p>对于 Boostnote 的外观来说，你有很多种不同的主题可以选择。当然，编辑器的高亮也是有很多种可以选择的，你可以根据你自己的喜好自由搭配。你可以在 <code>Preferences</code> &gt; <code>UI</code> &gt; <code>Theme</code> 查看支持的主题。</p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>Boostnote 目前是开源的，你可以通过<a href="https://boostnote.io/#download" target="_blank" rel="noopener">官网</a>下载。不过要注意的是，存储使用的是亚马逊的 s3，所以你需要能够翻墙，否则无法下载。</p>
+<p>它目前是支持全平台（Windows, MacOS, Linux，IOS，Android）</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2017/09/09/boostnote-is-an-open-source-note-taking-app-designed-for-programmers/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2017/08/17/vue-lever-a-plugin-help-you-to-manager-true-false-state/">
                             Vue-Lever 一个使用装饰器模式的插件帮你管理 True/false 状态
                         </a>
@@ -1122,215 +1300,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/02/05/my-blog-of-0-1-0/">
-                            My Blog of 0.1.0
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Feb 05 2016 03:35:51 GMT+0800">
-	
-		    2月 05, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Blog-Event/">Blog Event</a>
-
-
-    
-</div>
-            </div>
-            
-                <div class="postShorten-thumbnailimg postShorten-thumbnailimg--bottom">
-                    <img alt="" itemprop="image" src="https://blog.xgheaven.com/2016/02/05/my-blog-of-0-1-0/cover.jpg"/>
-                </div>
-                
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E5%A2%9E"><span class="toc-text">新增</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0"><span class="toc-text">更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-text">修复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%97%E7%95%99"><span class="toc-text">遗留</span></a></li></ol>
-<p>经过长时间的进展，几乎没有写过什么博客，就这样迎来了 <code>0.1.0</code> 版本。</p>
-<h3 id="新增"><a href="#新增" class="headerlink" title="新增"></a>新增</h3><ol>
-<li>友情链接</li>
-<li>链接 hover 动画</li>
-<li>Changelog 页面，以后的所有的 Changelog 都在这个页面下展示</li>
-</ol>
-<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><ol>
-<li>更新主题(<a href="https://github.com/LouisBarranqueiro/tranquilpeak-hexo-theme" target="_blank" rel="noopener">tranquilpeak</a>)更新至 <code>1.6.2</code></li>
-<li>跟随潮流，使用《功夫熊猫3》海报背景</li>
-<li>在列表页面，更新为全文显示，以前是只显示部分内容</li>
-</ol>
-<h3 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h3><ol>
-<li>disqus 无法通过 http 获取到对应的脚本，只能通过 https</li>
-</ol>
-<h3 id="遗留"><a href="#遗留" class="headerlink" title="遗留"></a>遗留</h3><ol>
-<li>disqus 的 css 依旧受到上面问题的困扰</li>
-</ol>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2016/02/05/my-blog-of-0-1-0/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2016/01/15/lodash-v4-0-0-changelog/">
-                            Lodash v4.0.0 简易更新日志
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Fri Jan 15 2016 00:00:00 GMT+0800">
-	
-		    1月 15, 2016
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Changelog/">Changelog</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%9B%B4%E6%96%B0"><span class="toc-text">主要更新</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A7%BB%E9%99%A4%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">移除的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E5%91%BD%E5%90%8D%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">重命名的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E7%A6%BB%E5%87%BA%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">分离出的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84%E5%B0%8F%E4%BF%AE%E6%94%B9"><span class="toc-text">其他的小修改</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
-<p>在 2016 年 1 月 12 日，Lo-Dash 迎来了半年来第一次大更新，也就是 <code>4.0</code>，这次更新了很多的内容，包括了<code>不兼容更新</code>，<code>方法分离</code>，<code>函数重命名</code>等等操作，下面我们来一一分析一下。</p>
-<p>简单的翻译了一下官方的更新日志。</p>
-<h1 id="主要更新"><a href="#主要更新" class="headerlink" title="主要更新"></a>主要更新</h1><ul>
-<li><p>不再支持 <code>Bower</code> &amp; <code>Component</code>，而是使用 <code>npm</code>，到发稿为止，已经无法在 <code>bower</code> 找到相关 Lo-Dash 的内容</p>
-</li>
-<li><p>移除了对 <code>[IE6-8](https://www.microsoft.com/en-us/WindowsForBusiness/End-of-IE-support)</code> 的支持</p>
-</li>
-<li><p>使用了 <code>[es5-shim](https://github.com/es-shims/es5-shim)</code> 或者 <code>[es6-shim](https://github.com/es-shims/es6-shim)</code></p>
-</li>
-<li><p>移除了大部分的 <code>thisArg</code> 参数</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> objects = [&#123; <span class="string">&#x27;a&#x27;</span>: <span class="number">1</span> &#125;, &#123; <span class="string">&#x27;a&#x27;</span>: <span class="number">2</span> &#125;];</span><br><span class="line"><span class="keyword">var</span> context = &#123; <span class="string">&#x27;b&#x27;</span>: <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">callback</span>(<span class="params">item</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> item.<span class="property">a</span> + <span class="variable language_">this</span>.<span class="property">b</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 3.10.1</span></span><br><span class="line">_.<span class="title function_">map</span>(objects, callback, context);</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 4.0.0</span></span><br><span class="line">_.<span class="title function_">map</span>(objects, _.<span class="title function_">bind</span>(callback, context));</span><br></pre></td></tr></table></figure>
-<ul>
-<li>在 <code>node</code> 中引用包的时候去除了类别的二级目录</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// in 3.10.1</span></span><br><span class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">&#x27;lodash/array/chunk&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// in 4.0.0</span></span><br><span class="line"><span class="keyword">var</span> chunk = <span class="built_in">require</span>(<span class="string">&#x27;lodash/chunk&#x27;</span>);</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>拆分出 <code>_.max</code> &amp; <code>_.min</code> 为 <a target="_blank" rel="noopener" href="https://lodash.com/docs#maxBy">_.maxBy</a> &amp; <a target="_blank" rel="noopener" href="https://lodash.com/docs#minBy">_.minBy</a></p>
-</li>
-<li><p>添加了足足 80 个方法</p>
-</li>
-</ul>
-<h1 id="移除的方法"><a href="#移除的方法" class="headerlink" title="移除的方法"></a>移除的方法</h1><ul>
-<li><p>移除了 <code>_.support</code></p>
-</li>
-<li><p>移除了 <code>_.findWhere</code> ，用 <code>_.find</code> 来替代(with iteratee shorthand)</p>
-</li>
-<li><p>移除了 <code>_.where</code> ，用 <code>_.filter</code> 来替代(with iteratee shorthand)</p>
-</li>
-<li><p>移除了 <code>_.pluck</code> ，用 <code>_.map</code> 来替代(with iteratee shorthand)</p>
-</li>
-</ul>
-<h1 id="重命名的方法"><a href="#重命名的方法" class="headerlink" title="重命名的方法"></a>重命名的方法</h1><ul>
-<li><p>重命名 <code>_.first</code> 为 <code>_.head</code></p>
-</li>
-<li><p>重命名 <code>_.indexBy</code> 为 <code>_.keyBy</code></p>
-</li>
-<li><p>重命名 <code>_.invoke</code> 为 <code>_.invokeMap</code></p>
-</li>
-<li><p>重命名 <code>_.modArgs</code> 为 <code>_.overArgs</code></p>
-</li>
-<li><p>重命名 <code>_.padLeft</code> &amp; <code>_.padRight</code> 为 <code>_.padStart</code> &amp; <code>_.padEnd</code></p>
-</li>
-<li><p>重命名 <code>_.pairs</code> 为 <code>_.为Pairs</code></p>
-</li>
-<li><p>重命名 <code>_.rest</code> 为 <code>_.tail</code></p>
-</li>
-<li><p>重命名 <code>_.restParam</code> 为 <code>_.rest</code></p>
-</li>
-<li><p>重命名 <code>_.sortByOrder</code> 为 <code>_.orderBy</code></p>
-</li>
-<li><p>重命名 <code>_.trimLeft</code> &amp; <code>_.trimRight</code> 为 <code>_.trimStart</code> &amp; <code>_.trimEnd</code></p>
-</li>
-<li><p>重命名 <code>_.trunc</code> 为 <code>_.truncate</code></p>
-</li>
-</ul>
-<h1 id="分离出的方法"><a href="#分离出的方法" class="headerlink" title="分离出的方法"></a>分离出的方法</h1><p>也就是说从原来的方法中，将部分功能分离出来，成为一个新的方法。</p>
-<ul>
-<li><p>分离出 <code>_.indexOf</code> &amp; <code>_.lastIndexOf</code> 为 <code>_.sortedIndexOf</code> &amp; <code>_.sortedLastIndexOf</code></p>
-</li>
-<li><p>分离出 <code>_.max</code> &amp; <code>_.min</code> 为 <code>_.maxBy</code> &amp; <code>_.minBy</code></p>
-</li>
-<li><p>分离出 <code>_.omit</code> &amp; <code>_.pick</code> 为 <code>_.omitBy</code> &amp; <code>_.pickBy</code></p>
-</li>
-<li><p>分离出 <code>_.sample</code> 为 <code>_.sampleSize</code></p>
-</li>
-<li><p>分离出 <code>_.sortedIndex</code> 为 <code>_.sortedIndexBy</code></p>
-</li>
-<li><p>分离出 <code>_.sortedLastIndex</code> 为 <code>_.sortedLastIndexBy</code></p>
-</li>
-<li><p>分离出 <code>_.uniq</code> 为 <code>_.sortedUniq</code>, <code>_.sortedUniqBy</code>, &amp; <code>_.uniqBy</code></p>
-</li>
-</ul>
-<h1 id="其他的小修改"><a href="#其他的小修改" class="headerlink" title="其他的小修改"></a>其他的小修改</h1><ul>
-<li><p>将 <code>_.sortByAll</code> 融合到了 <code>_.sortBy</code></p>
-</li>
-<li><p>改变这个类别 <code>_.at</code> 为 <em>“Object”</em></p>
-</li>
-<li><p>改变这个类别 <code>_.bindAll</code> 为 <em>“Utility”</em></p>
-</li>
-<li><p>在 <code>master</code> 分支下，将 <code>./lodash.js</code> 移动到 <code>./dist/lodash.js</code></p>
-</li>
-<li><p>在 <code>npm</code> 分支下，将 <code>./index.js</code> 移动到 <code>./lodash.js</code></p>
-</li>
-<li><p>将 <code>_.clone</code> &amp; <code>_.flatten</code> 函数的参数中删除了 <code>isDeep</code> 参数</p>
-</li>
-<li><p><code>_.bindAll</code> 将不再支持绑定所有的函数，当没有名字传入的时候</p>
-</li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总之这次更新来的挺突然，感觉改动了好多东西，如果你的代码用了较多的话，暂时不建议去更新的。<br>更多内容呢详情请看官方 <a target="_blank" rel="noopener" href="https://github.com/lodash/lodash/wiki/Changelog">changelog</a></p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2016/01/15/lodash-v4-0-0-changelog/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1361,7 +1330,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2026 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 

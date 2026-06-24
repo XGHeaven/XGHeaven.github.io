@@ -272,6 +272,273 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2019/10/07/make-your-react-to-slow/">
+                            如何让你的 React 『变慢』？探析 Array Diff 的一些边角特性
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Mon Oct 07 2019 00:00:00 GMT+0800">
+	
+		    10月 07, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Frontend/">Frontend</a>
+
+
+    
+</div>
+            </div>
+            
+                <div class="postShorten-thumbnailimg postShorten-thumbnailimg--bottom">
+                    <img alt="" itemprop="image" src="https://blog.xgheaven.com/2019/10/07/make-your-react-to-slow/cover.jpeg"/>
+                </div>
+                
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>当你看到这个标题的时候，一定很好奇，React 不是很快么？为啥会变慢呢？在写这篇文章之前，我也是这么认为的，但是当我去看了一下 React 有关 Array 的 Diff 之后，我才认识到其实 React 如果你用的不正确，那么是会变慢的。</p>
+<h2 id="React-Diff-算法"><a href="#React-Diff-算法" class="headerlink" title="React Diff 算法"></a>React Diff 算法</h2><p>React Diff 算法相信大家不是很陌生吧，这里就不具体展开讲了。不过有一点要补充下，Diff 算法针对的是整个 React 组件树，而不仅仅是 DOM 树，虽然这样性能会比较低一些，但是实现起来却很方便。</p>
+<p>而在 Diff 算法中，针对数组的 diff 其实是比较有意思的一个地方。在开始讲解方面，我希望你能对 React 有一定的了解和使用。</p>
+<h2 id="试一试有什么区别？"><a href="#试一试有什么区别？" class="headerlink" title="试一试有什么区别？"></a>试一试有什么区别？</h2><p>首先我们创建 3 个组件，分别渲染 10000 个 DOM 元素，从 <code>[1...10000]</code> ，渲染成如下。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> e10000 = <span class="keyword">new</span> <span class="title class_">Array</span>(<span class="number">10000</span>).<span class="title function_">fill</span>(<span class="number">0</span>).<span class="title function_">map</span>(<span class="function">(<span class="params">_, i</span>) =&gt;</span> i + <span class="number">1</span>)</span><br><span class="line">element10000.<span class="title function_">map</span>(<span class="function"><span class="params">i</span> =&gt;</span> <span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">key</span>=<span class="string">&#123;</span>`$&#123;<span class="attr">i</span>&#125;`&#125;&gt;</span>&#123;i&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br></pre></td></tr></table></figure>
+<p>每个组件有两个状态，会切换数据的顺序</p>
+<ul>
+<li><p>组件 A 在 <code>[1...10000]</code> 和 <code>[2,1,3...10000]</code> 之间切换。</p>
+</li>
+<li><p>组件 B 在 <code>[1...10000]</code> 和 <code>[10000,1...9999]</code> 之间切换</p>
+</li>
+<li><p>组件 C 在 <code>[1...10000]</code> 和 <code>[10000...1]</code> 之间切换，也就是正序和倒序之间切换。</p>
+</li>
+</ul>
+<p>我们简单命名下，默认的初始状态为 <code>S1</code> 而切换之后的状态为 <code>S2</code> 。大家可以思考一下，同一个组件状态切换的时候，所耗费的时间是不是都是一样的？可以直接使用这个 <a target="_blank" rel="noopener" href="https://codesandbox.io/s/react-slow-array-diff-example-kw112?fontsize=14">DEMO</a>。</p>
+<img src="/2019/10/07/make-your-react-to-slow/d859191a-15f6-4fa6-945f-7c895d22399c.png" class="">
+<p>可以直接点击上方的 toggle 来切换两者之间的状态，并在控制台中查看渲染的时间。因为每次时间都不是绝对准确的，所以取了多次平均值，直接揭晓答案：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>S2 ⇒ S1</th>
+<th>S1 ⇒ S2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>102ms</td>
+<td>103ms</td>
+</tr>
+<tr>
+<td>B</td>
+<td>129ms</td>
+<td>546ms</td>
+</tr>
+<tr>
+<td>C</td>
+<td>556ms</td>
+<td>585ms</td>
+</tr>
+</tbody>
+</table>
+<p>有么有觉得很奇怪，为什么同样是 S1 ⇒ S2 ，同样是只改变了一个元素的位置，为什么 A 和 B 的时间差距有这么多的差距。这个具体原理就要从 Diff 算法开始讲起了。</p>
+<h2 id="Array-Diff-的原理"><a href="#Array-Diff-的原理" class="headerlink" title="Array Diff 的原理"></a>Array Diff 的原理</h2><p>在讲 React 的实现之前，我们先来抛开 React 的实现独立思考一下。但是如果直接从 React 的组件角度下手会比较麻烦，首先简化一下问题。</p>
+<p>存在两个数组 A 和 B，数组中每一个值必须要保证在对应数组内是唯一的，类型可以是字符串或者数字。那么这个问题就转变成了如何从数组 A 通过<strong>最少的</strong>变换<strong>步骤</strong>到数组 B。</p>
+<blockquote>
+<p>其实每个元素的值对应的就是 React 当中的 key。如果一个元素没有 key 的话，index 就是那个元素默认的 key。为什么要强调<strong>最少</strong>？因为我们希望的是能够用最少的步数完成，但是实际上这会造成计算量的加大，而 React 的实现并没有计算出最优解，而是一个较快解。</p>
+</blockquote>
+<p>顺便定义一下操作的类型有：<code>删除元素</code>，<code>插入元素</code>，<code>移动元素</code>。</p>
+<p>这里又要引申一个特殊点，React 充分利用了 DOM 的特性，在 DOM 操作中，你是可以不使用 index 来索引数据的。简单来讲，如果用数组表示，删除需要指定删除元素的索引，插入需要指定插入的位置，而移动元素需要指定从哪个索引移动到另一个索引。而利用 DOM，我们就可以简化这些操作，可以直接删除某个元素的实例，在某个元素前插入或者移动到这里（利用 <code>insertBefore</code> API，如果是要在添加或者移动到最后，可以利用 <code>append</code> ）。这样最大的好处是我们不需要记录下移动到的位置，只需要记录下那些元素移动了即可，而且这部分操作正好可以由 Fiber 来承担。</p>
+<p>举个例子说，从 <code>A=[1,2,3]</code> 变化到 <code>B=[2,3,4,1]</code>，那么只需要记录如下操作即可：</p>
+<img src="/2019/10/07/make-your-react-to-slow/0a8fb847-d652-48bc-ae59-5dbd06ed1169.png" class="">
+<p>有人好奇，不需要记录移动插入到那个元素前面么？其实不需要的，这是因为你有了操作列表和 B 数组之后，就可以知道目标元素在哪里了。而且采用这种方式就根本不需要关心每次操作之后索引的变化。</p>
+<p>回到上面的简化后的问题，首先通过对比 A、B 数组，可以得到哪些元素是删除的，哪些元素是添加的，而不管采用什么样子的策略，添加删除元素的操作次数是无法减少的。因为你不能凭空产生或者消失一个元素。那么我们问题就可以再简化一下，把所有的添加删除的元素剔除后分别得到数组 A’ 和 B’，也就是 A’ 中不包含被删除的元素，B’ 中不包含被添加的元素，此时 A’ 和 B’ 的长度一定是一样长的。也就是求解出最少移动次数使得数组 A’ 能够转化成数组 B’。</p>
+<p>如果只是简单的求解一下最少移动步数的话，答案很简单，就是<strong>最长上升子序列（LIS，Longest Increasing Subsequence）</strong>。关于如何证明为什么是最长不下降子序列这个算法，可以通过简单的反证法得到。关于这个算法的内容我就不具体讲解了，有兴趣的可以自行 Google。在这里我们只需要知道这个算法的时间复杂度是 <code>O(n^2)</code> 。</p>
+<p>但是现在我们还无法直接应用这个算法，因为每个元素的类型可能是字符串或者数字，无法比较大小。定义数组 T 为 <strong>B’ 内元素在 A’ 的位置</strong>。举个例子，如果 <code>A&#39; = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]</code> <code>B&#39; = [&#39;b&#39;, &#39;c&#39;, &#39;a&#39;]</code>，那么 <code>T = [2, 3, 1]</code>。本文约定位置是从 1 开始，索引从 0 开始。</p>
+<p>此时便可以对 T 求解 LIS，可以得到 <code>[2, 3]</code>，我们将剩下不在 LIS 中的元素标记为移动元素，在这里就是 <code>1</code>，最后补上被剔除的删除和插入的元素的操作动作。这样 Diff 算法就可以结束了。</p>
+<p>上面讲解的是一个<strong>个人认为</strong>完整的 Array Diff 算法，但是还是可以在保证正确性上继续优化。但是不管优化，这个复杂度对于 React 来讲还是偏高的，而如何<strong>平衡效率和最优解</strong>成为了最头疼的问题，好在 React 采用了一个混合算法，在牺牲掉一定正确性的前提下，将复杂度降低为 <code>O(n)</code>。下面我们来讲解下。</p>
+<h2 id="React-简化之后的-Array-Diff"><a href="#React-简化之后的-Array-Diff" class="headerlink" title="React 简化之后的 Array Diff"></a>React 简化之后的 Array Diff</h2><p>大家有过 React 开发经验的人很清楚，大部分情况下，我们通常是这样使用的：</p>
+<ul>
+<li><p><strong>情形1</strong>：一个标签的的直接子子标签数量类型顺序不变，通常用于静态内容或者对子组件的更新</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 比如每次渲染都是这样的，里面的直接子元素的类型和数量是不变的，在这种情况下，其实是可以省略 key</span></span><br><span class="line">&lt;div&gt;</span><br><span class="line">	<span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">key</span>=<span class="string">&quot;header&quot;</span>&gt;</span>header<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	<span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">key</span>=<span class="string">&quot;content&quot;</span>&gt;</span>content<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	<span class="language-xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">key</span>=<span class="string">&quot;footer&quot;</span>&gt;</span>footer<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">	<span class="language-xml"><span class="tag">&lt;<span class="name">SubCmp</span> <span class="attr">time</span>=<span class="string">&#123;Date.now()&#125;/</span>&gt;</span></span></span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>情形2</strong>：一个标签有多个子标签，但是一般只改变其中的少数几个子标签。最常见的场景就是规则编辑器，每次只在最后添加新规则，或者删除其中某个规则。当然了，滚动加载也算是这种。</p>
+</li>
+<li><p><strong>情形3</strong>：交换某几个子标签之间的顺序</p>
+</li>
+<li><p><strong>情形4</strong>：翻页操作，几乎重置了整个子元素</p>
+</li>
+</ul>
+<p>上面只是简单举了几个常见的例子，大家可以发现，大部分情况下子标签变动的其实并不多，React 利用了这个，所以将 LIS 简化成以第一个元素开始，找到最近上升子序列。简单来来讲就是从头开始遍历，只要这个元素不小于前的元素，那么就加入队列。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Q = [<span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="comment">// 标准算法</span></span><br><span class="line"><span class="variable constant_">LIS</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="comment">// 简化后的算法，从第一个开始，找到最近的不下降子序列即可。</span></span><br><span class="line">LIS_React = [<span class="number">4</span>, <span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+<p>我们乍一看，这个算法不对呀，随便就能举出一个例子让这个算法错成狗，但是我们要结合实际情况来看。如果我们套回前面说的几种情况，可以看到对于情况 1,2,3 来讲，几乎和简化前效果是一样。而这样做之后，时间复杂度降低为 <code>O(n)</code> ，空间复杂度降低为 <code>O(1)</code>。我们给简化后的算法叫做 <code>LIS&#39;</code> 方便后面区分。</p>
+<p>我们将 LIS 算法简化后，配合上之前一样的流程就可以得出 React 的 Array Diff 算法的核心流程了。（为什么叫核心流程，因为还有很多优化的地方没有讲）</p>
+<h2 id="变慢的原因？"><a href="#变慢的原因？" class="headerlink" title="变慢的原因？"></a>变慢的原因？</h2><p>当我们在了解了 React 的实现之后，我们再回过来头来看看前面给出的三个例子为啥会有这么大的时间差距？</p>
+<ul>
+<li><p>组件 A 从 <code>[1...10000]</code> 变化到 <code>[2,1,3...10000]</code> 。此时我们先求解一下 <code>LIS&#39;</code> 可以得到 <code>[2,3,4...10000]</code>，那么我们只需要移动 <code>1</code> 这个元素就可以了，将移动到元素 <code>3</code> 前面。同理反过来也是如此，也就是说 S1 ⇒ S2 和 S2 ⇒ S1 的所需要移动的次数是一致的，理论上时间上也就是相同的。</p>
+</li>
+<li><p>组件 B 从 <code>[1...10000]</code> 变化到 <code>[10000,1,2...9999]</code> 。同理，先计算 <code>LIS&#39;</code> 可以得到 <code>[10000]</code>，没错，你没看错，就是只有一次元素，那么我需要将剩下的所有元素全都移动到 <code>10000</code> 的后面去，换句话要进行 9999 次移动。这也就是为啥 <code>S1 =&gt; S2</code> 的时间会这么慢。但是反过来却不需要这个样子，将状态反过来，并重新计算索引，那么也就是从 <code>[1...10000]</code> 到 <code>[2,3....10000,1]</code>，在计算一次 <code>LIS&#39;</code> 得到 <code>[2,3...10000]</code> ，此时只需要移动一次即可，<code>S2 ⇒ S1</code> 的时间也就自然恢复的和组件 A 一致。</p>
+</li>
+<li><p>组件 C 是完全倒序操作，所以只分析其中一个过程即可。首先计算 <code>LIS&#39;</code> 可以得到，<code>[10000]</code> ，也就是说要移动 9999 次，反过来也是要 9999 次，所以时间状态是一致的。</p>
+</li>
+</ul>
+<p>经过这样的分析大家是不是就明白为啥会变慢了吧？</p>
+<h2 id="优化细节"><a href="#优化细节" class="headerlink" title="优化细节"></a>优化细节</h2><h3 id="降低-Map-的生成操作次数"><a href="#降低-Map-的生成操作次数" class="headerlink" title="降低 Map 的生成操作次数"></a>降低 Map 的生成操作次数</h3><p>上面有一点没有讲到，不知道大家有没有思考到，我怎么知道某个元素是该添加函数删除呢？大家第一反应就是构建一个 Set，将数组元素全放进去，然后进行判断就可以了。但是在 React 中，其实用的是 Map，因为要存储对应的 Fiber，具体细节大家可以不用关注，只需要知道这里用 Map 实现了这个功能。</p>
+<p>不管怎么样，根据算法，一开始肯定要构建一遍 Map，但是我们来看下上面的 <code>情形1</code>。发现内容是根本不会发生变化的，而且对于 <code>情形2</code> 来讲，有很大的概率前面的大部分是相同的。</p>
+<p>于是 React 一开始不构建 Map，而是假设前面的内容都是一致的，对这些元素直接执行普通的更新 Fiber 操作，直到碰到第一个 key 不相同的元素才开始构建 Map 走正常的 Diff 流程。按照这个方式，<strong>情形1</strong>根本不会创建 Map，而且对于<strong>情形2、3</strong>来讲也会减少很多 Map 元素的操作（set、get、has）。</p>
+<h3 id="降低循环次数"><a href="#降低循环次数" class="headerlink" title="降低循环次数"></a>降低循环次数</h3><p>按照上面的算法，我们需要至少 3 遍循环：第一遍构建 Map，第二遍剔除添加删除的元素生成 A’ 和 B’，第三遍计算 LIS 并得到哪些元素需要移动或者删除。而我们发现第二遍和第三遍是可以合并在一起的。也即是说我们在有了 Map 的情况下，不需要剔除元素，当遍历发现这个元素是新增的时候，直接记录下来。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>关于 Diff 算法其实还有很多的细节，我这边没有过多讲解，因为比较简单，比较符合直觉。大家有兴趣的可以自己去看下。另外有人应该会注意到，上面的例子中，为什么切换同样的次数，有的时间长，有的时间短了。日后有时间再分析下补充了。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2019/10/07/make-your-react-to-slow/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2019/09/07/some-tips-for-create-npm-cli/">
+                            Node Cli 设计上的几点建议
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Sat Sep 07 2019 00:00:00 GMT+0800">
+	
+		    9月 07, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/Node-js/">Node.js</a>
+
+
+    
+</div>
+            </div>
+            
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%99%E4%B9%8B%E5%89%8D%E8%AF%B7%E6%80%9D%E8%80%83"><span class="toc-text">写之前请思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%97%B6%E8%AF%B7%E9%81%B5%E5%BE%AA%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%82%B9"><span class="toc-text">开发时请遵循以下几点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E8%AE%BE%E8%AE%A1%E4%B8%8A%E8%AF%B7%E9%81%B5%E5%BE%AA%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%82%B9"><span class="toc-text">交互设计上请遵循以下几点</span></a></li></ol>
+<p>在平时的开发中，我发现大家特别喜欢将很多自己常用或者公司常用的脚本封装成一个 cli，这虽然无可厚非，但是作为一个有强迫症的患者来说，我认为这其实做不好会导致 cli 非常不好用的。所以这里总结了下平时写 cli 的经验希望和大家分享下。</p>
+<h3 id="写之前请思考"><a href="#写之前请思考" class="headerlink" title="写之前请思考"></a>写之前请思考</h3><ol>
+<li><p>我是不是为了 cli 而去写 cli，换句话我觉得这样比较 cool。如果是，那么请放弃这种想法。</p>
+</li>
+<li><p>这个 cli 一定会减轻工作量么？</p>
+<ul>
+<li><p>有很多公司喜欢将各种 webpack/eslint/babel 工具封装成一个 cli，那么这真的会降低使用者的工作量么？如果你封装的不好，相反会增加很大的工作量。最神奇的是，封装了这么多工具，配置文件却一个都没少，babelrc/eslintrc/prettierrc，那封装了有何用。</p>
+</li>
+<li><p>cli 的不透明性就会导致使用者永远都是有使用成本的，不论这个 cli 有多简单。他不会知道你是干了什么。所以能避免写一个 cli 就避免写一个 cli。那如果真的要写，有其他方案么？请看第三条</p>
+</li>
+</ul>
+</li>
+<li><p>除了写 node cli 真的没有其他方案了么？</p>
+<ul>
+<li><p>大部分情况下，写 shell 的效率远远高于写 cli，将一个命令拆分成多个 shell，然后配合简单的帮助文档即可。如果用户不知道是做什么的，那么直接就可以去看源码。</p>
+</li>
+<li><p>而且使用 git 管理 shell 也同样高效，比如将个人的一些脚本放到 private github 上，然后直接 clone 下来就可以用了。这样不需要每次都 npm publish，进而污染 npm。</p>
+</li>
+<li><p>大部分情况下，去写 Makefile/Rakefile 同样可行。当然，Node 生态也有 Jake，不过不推荐用，因为要装 <code>jake</code> 包。</p>
+</li>
+<li><p>如果你这个 cli 是作为一个项目的脚手架工具，那么是不是用 <code>yeoman</code> 或者 <code>degit</code> 这类工具更好？除非你的项目非常热门，功能自定义程度高，否则完全不需要自己去写一个脚手架。如果你只是觉得好玩，想写一个脚手架的话，那么请去看第一条，问问自己。</p>
+</li>
+<li><p>如果是一个团队使用，那么除非有很大的普世性，那么用 git 管理同样比 npm 管理要强的多。</p>
+</li>
+</ul>
+</li>
+<li><p>最后如果决定一定要写 cli 的话，有必要发布到 npm 么？</p>
+<ul>
+<li><p>是不是发布到自己的 scope 下也是一个不错的选择？</p>
+</li>
+<li><p>是不是直接让别人通过 <code>npm install [github.com/user/package](http://github.com/user/package)</code> 也是一个不错的选择？</p>
+</li>
+<li><p>是不是上传到公司 or 个人的私有 npm 更好？</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="开发时请遵循以下几点"><a href="#开发时请遵循以下几点" class="headerlink" title="开发时请遵循以下几点"></a>开发时请遵循以下几点</h3><ol>
+<li><p>请使用 npm</p>
+</li>
+<li><p>不要写死版本号，优先使用 <code>^</code></p>
+<ul>
+<li>这是因为有可能你的 cli 会被直接当做依赖安装到项目中，如果你写死了版本号，那么可能会装多分依赖。比如项目依赖了 <code>yargs@^13.2.0</code> ，但是你锁死了 <a href="mailto:`yargs@13.1.0">`yargs@13.1.0</a>`，就会导致安装两个 yargs。</li>
+</ul>
+</li>
+<li><p>避免引入一些功能很大，而自己只用其中一部分的包</p>
+<ul>
+<li>因为没有 webpack 工具，无法进行 tree shaking，所以导致安装了很多比较大的包。比如你只是用了 <code>lodash</code> 的 <code>cloneDepp</code> 却安装了整个包。优先使用 <code>[lodash.xxx](http://lodash.xxx)</code> 子包。</li>
+</ul>
+</li>
+<li><p>如果你使用了某些构建工具(babel,webpack,typescript,flow)，那么请将构建之后的文件也加入代码仓库。</p>
+<ul>
+<li><p>比如有一个 <code>src</code> 目录存放了 ts 源文件，而 <code>dist</code> 存放了构建之后的 js 文件。那么很多人的选择往往是将这 <code>dist</code> 文件夹加入 gitignore。这样其实是不太好的，原因如下：</p>
+</li>
+<li><p>第一，方便追踪变化，比如你自己添加了一些 debug 代码，这个时候构建之后发现没有问题。又把 debug 代码删除，当你提交的时候就可以很清楚的看到自己修改了之后没有构建代码</p>
+</li>
+<li><p>第二，方便通过 <a target="_blank" rel="noopener" href="http://unpkg.com/">unpkg.com</a> 等工具访问</p>
+</li>
+<li><p>第三，在版本开发依赖升级之后，可以很方便的看到改变的内容。一般使用者会放心升级 cli 之类的开发工具，所以这部分的质量需要我们自己来保证。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="交互设计上请遵循以下几点"><a href="#交互设计上请遵循以下几点" class="headerlink" title="交互设计上请遵循以下几点"></a>交互设计上请遵循以下几点</h3><ol>
+<li><p>Throw as possible，将可能的所有报错向上抛出，是一个好系统所必备的能力。但是在错误展示的时候，可以向用户隐藏部分调用栈信息等，只保留关键信息即可。</p>
+</li>
+<li><p>尽可能遵循 linux 下的 cli 规范。</p>
+</li>
+<li><p>不要让用户产生无畏的等待，通过添加进度条或者输出完成列表等告诉用户你依旧是在工作中的。</p>
+</li>
+<li><p>给予用户想查看所有日志的能力。可以通过 <code>vvv</code> <code>vvv</code> 或者 <code>-log-level debug</code> 来控制显示级别</p>
+</li>
+<li><p>对所有命令的描述都不要超过一行。不论屏幕宽度如何（一般默认 80），最好不要超过 70。如果需要大量描述，请尝试通过 man 或者单独的页面。</p>
+</li>
+<li><p>帮助是最好的文档，写好 cli 的 help 远比去写好一个文档网站要关键</p>
+</li>
+</ol>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2019/09/07/some-tips-for-create-npm-cli/#post-footer" class="postShorten-excerpt_link link">
+                                注释和共享
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2019/03/12/257-days-in-netease/">
                             一个 18 届前端校招生在网易的 257 天
                         </a>
@@ -1289,184 +1556,6 @@
         
     </article>
     
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/12/30/Reflect-metadata/">
-                            Reflect-Metadata 详解
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sat Dec 30 2017 00:00:00 GMT+0800">
-	
-		    12月 30, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Frontend/">Frontend</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    <h1 id="table-of-contents">目录</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Metadata"><span class="toc-text">Metadata</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reflect-Metadata"><span class="toc-text">Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-%E4%BD%BF%E7%94%A8"><span class="toc-text">安装&#x2F;使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB-%E5%B1%9E%E6%80%A7-%E6%96%B9%E6%B3%95-%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-text">类&#x2F;属性&#x2F;方法 装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%9F%A5%E6%89%BE"><span class="toc-text">原型链查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E9%80%94"><span class="toc-text">用途</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#API"><span class="toc-text">API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5-Reflect-Metadata"><span class="toc-text">深入 Reflect Metadata</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">实现原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#End"><span class="toc-text">End</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="toc-text">题外话</span></a></li></ol>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在 ES6 的规范当中，就已经存在 <code>Reflect</code> API 了。简单来说这个 API 的作用就是可以实现对变量操作的函数化，也就是反射。具体的关于这个 API 的内容，可以查看这个<a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/#docs/reflect">教程</a></p>
-<p>然而我们在这里讲到的，却是 <code>Reflect</code> 里面还没有的一个规范，那么就是 <code>Reflect Metadata</code>。</p>
-<h2 id="Metadata"><a href="#Metadata" class="headerlink" title="Metadata"></a>Metadata</h2><p>想必对于其他语言的 Coder 来说，比如说 Java 或者 C#，Metadata 是很熟悉的。最简单的莫过于通过反射来获取类属性上面的批注（在 JS 当中，也就是所谓的装饰器）。从而可以更加优雅的对代码进行控制。</p>
-<p>而 JS 现在有<a target="_blank" rel="noopener" href="https://github.com/tc39/proposal-decorators">装饰器</a>，虽然现在还在 <code>Stage2</code> 阶段。但是 JS 的装饰器更多的是存在于对函数或者属性进行一些操作，比如修改他们的值，代理变量，自动绑定 this 等等功能。</p>
-<blockquote>
-<p>所以，后文当中我就使用 TypeScript 来进行讲解，因为 TypeScript 已经完整的实现了装饰器。<br>虽然 Babel 也可以，但是需要各种配置，人懒，不想配置那么多。</p>
-</blockquote>
-<p>但是却无法实现通过反射来获取究竟有哪些装饰器添加到这个类/方法上。</p>
-<p>于是 <code>Reflect Metadata</code> 应运而生。</p>
-<h2 id="Reflect-Metadata"><a href="#Reflect-Metadata" class="headerlink" title="Reflect Metadata"></a>Reflect Metadata</h2><p>Relfect Metadata，简单来说，你可以通过装饰器来给类添加一些自定义的信息。然后通过反射将这些信息提取出来。当然你也可以通过反射来添加这些信息。<br>就像是下面这个例子所示。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>)</span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">hello</span>(): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, A) <span class="comment">// &#x27;A&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;hello&#x27;</span>, <span class="keyword">new</span> <span class="title function_">A</span>()) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="comment">// 这里为什么要用 new A()，用 A 不行么？后文会讲到</span></span><br></pre></td></tr></table></figure>
-<p>是不是很简单，那么我简单来介绍一下~</p>
-<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>首先，在这里有四个概念要区分一下：</p>
-<ol>
-<li><p><code>Metadata Key</code> {Any} 后文简写 <code>k</code>。元数据的 Key，对于一个对象来说，他可以有很多元数据，每一个元数据都对应有一个 Key。一个很简单的例子就是说，你可以在一个对象上面设置一个叫做 <code>&#39;name&#39;</code> 的 Key 用来设置他的名字，用一个 <code>&#39;created time&#39;</code> 的 Key 来表示他创建的时间。这个 Key 可以是任意类型。在后面会讲到内部本质就是一个 <code>Map</code> 对象。</p>
-</li>
-<li><p><code>Metadata Value</code> {Any} 后文简写 <code>v</code>。元数据的类型，任意类型都行。</p>
-</li>
-<li><p><code>Target</code> {Object} 后文简写 <code>o</code>。表示要在这个对象上面添加元数据</p>
-</li>
-<li><p><code>Property</code> {String|Symbol} 后文简写 <code>p</code>。用于设置在那个属性上面添加元数据。大家可能会想，这个是干什么用的，不是可以在对象上面添加元数据了么？其实不仅仅可以在对象上面添加元数据，甚至还可以在对象的属性上面添加元数据。其实大家可以这样理解，当你给一个对象定义元数据的时候，相当于你是默认指定了 <code>undefined</code> 作为 Property。下面有一个例子大家可以看一下。</p>
-</li>
-</ol>
-<p>大家明白了上面的概念之后，我之前给的那个例子就很简单了~不用我多说了。</p>
-<h3 id="安装-使用"><a href="#安装-使用" class="headerlink" title="安装/使用"></a>安装/使用</h3><p>下面不如正题，我们怎么开始使用 <code>Reflect Metadata</code> 呢？<br>首先，你需要安装 <code>reflect-metadata</code> polyfill，然后引入之后就可以看到在 <code>Reflect</code> 对象下面有很多关于 Metadata 的函数了。因为这个还没有进入正式的协议，所以需要安装垫片使用。</p>
-<blockquote>
-<p>啥，Reflect 是啥，一个全局变量而已。</p>
-</blockquote>
-<p>你不需要担心这个垫片的质量，因为连 Angular 都在使用呢，你怕啥。</p>
-<p>之后你就可以安装我上面写的示例，在 TypeScript 当中去跑了。</p>
-<h3 id="类-属性-方法-装饰器"><a href="#类-属性-方法-装饰器" class="headerlink" title="类/属性/方法 装饰器"></a>类/属性/方法 装饰器</h3><p>看这个例子。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> objs = [A, <span class="keyword">new</span> A, A.<span class="property"><span class="keyword">prototype</span></span>]</span><br><span class="line"><span class="keyword">const</span> res = objs.<span class="title function_">map</span>(<span class="function"><span class="params">obj</span> =&gt;</span> [</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj, <span class="string">&#x27;hello&#x27;</span>),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj),</span><br><span class="line">  <span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, obj ,<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">])</span><br><span class="line"><span class="comment">// 大家猜测一下 res 的值会是多少？</span></span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>想好了么？再给你 10 秒钟</p>
-</blockquote>
-<blockquote>
-<p>10<br>9<br>8<br>7<br>6<br>5<br>4<br>3<br>2<br>1</p>
-</blockquote>
-<p>res</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  [<span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;A&#x27;</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="literal">undefined</span>],</span><br><span class="line">  [<span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="literal">undefined</span>, <span class="string">&#x27;hello&#x27;</span>],</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<p>那么我来解释一下为什么回是这样的结果。</p>
-<p>首先所有的对类的修饰，都是定义在类这个对象上面的，而所有的对类的属性或者方法的修饰，都是定义在类的原型上面的，并且以属性或者方法的 key 作为 property，这也就是为什么 <code>getMetadata</code> 会产生这样的效果了。</p>
-<p>那么带 <code>Own</code> 的又是什么情况呢？</p>
-<p>这就要从元数据的查找规则开始讲起了</p>
-<h3 id="原型链查找"><a href="#原型链查找" class="headerlink" title="原型链查找"></a>原型链查找</h3><p>类似于类的继承，查找元数据的方式也是通过原型链进行的。</p>
-<p>就像是上面那个例子，我实例化了一个 <code>new A()</code>，但是我依旧可以找到他原型链上的元数据。</p>
-<p>举个例子</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  <span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">  <span class="title function_">hello</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> t1 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="keyword">const</span> t2 = <span class="keyword">new</span> <span class="title function_">A</span>()</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">defineMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t1, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;hello&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;name&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// undefined</span></span><br><span class="line"><span class="title class_">Reflect</span>.<span class="title function_">getOwnMetadata</span>(<span class="string">&#x27;otherName&#x27;</span>, t2, <span class="string">&#x27;hello&#x27;</span>) <span class="comment">// &#x27;world&#x27;</span></span><br></pre></td></tr></table></figure>
-<h3 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h3><p>其实所有的用途都是一个目的，给对象添加额外的信息，但是不影响对象的结构。这一点很重要，当你给对象添加了一个原信息的时候，对象是不会有任何的变化的，不会多 property，也不会有的 property 被修改了。<br>但是可以衍生出很多其他的用途。</p>
-<ul>
-<li><p>Anuglar 中对特殊字段进行修饰 (Input)，从而提升代码的可读性。</p>
-</li>
-<li><p>可以让装饰器拥有真正装饰对象而不改变对象的能力。让对象拥有更多语义上的功能。</p>
-</li>
-</ul>
-<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title class_">Reflect</span> &#123;</span><br><span class="line">  <span class="comment">// 用于装饰器</span></span><br><span class="line">  <span class="title function_">metadata</span>(k, v): <span class="function">(<span class="params">target, property?</span>) =&gt;</span> <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 在对象上面定义元数据</span></span><br><span class="line">  <span class="title function_">defineMetadata</span>(k, v, o, p?): <span class="built_in">void</span></span><br><span class="line">  <span class="comment">// 是否存在元数据</span></span><br><span class="line">  <span class="title function_">hasMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="title function_">hasOwnMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">  <span class="comment">// 获取元数据</span></span><br><span class="line">  <span class="title function_">getMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="title function_">getOwnMetadata</span>(k, o, p?): <span class="built_in">any</span></span><br><span class="line">  <span class="comment">// 获取所有元数据的 Key</span></span><br><span class="line">  <span class="title function_">getMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="title function_">getOwnMetadataKeys</span>(o, p?): <span class="built_in">any</span>[]</span><br><span class="line">  <span class="comment">// 删除元数据</span></span><br><span class="line">  <span class="title function_">deleteMetadata</span>(k, o, p?): <span class="built_in">boolean</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>大家可能注意到，针对某些操作，会有 <code>Own</code> 的函数。这是因为有的操作是可以通过原型链进行操作的。这个后文讲解。</p>
-</blockquote>
-<h2 id="深入-Reflect-Metadata"><a href="#深入-Reflect-Metadata" class="headerlink" title="深入 Reflect Metadata"></a>深入 Reflect Metadata</h2><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>如果你去翻看官网的文档，他会和你说，所有的元数据都是存在于对象下面的 <code>[[Metadata]]</code> 属性下面。一开始我也是这样认为的，新建一个 <code>Symbol(&#39;Metadata&#39;)</code>，然后将元数据放到这个 Symbol 对应的 Property 当中。直到我看了源码才发现并不是这样。请看例子</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Reflect</span>.<span class="title function_">metadata</span>(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;&#125;</span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">getOwnPropertySymbols</span>(A) <span class="comment">// []</span></span><br></pre></td></tr></table></figure>
-<p>哈哈，并没有所谓的 Symbol，那么这些元数据都存在在哪里呢？</p>
-<p>其实是内部的一个 WeakMap 中。他正是利用了 WeakMap 不增加引用计数的特点，将对象作为 Key，元数据集合作为 Value，存到 WeakMap 中去。</p>
-<p>如果你认真探寻的话，你会发现其内部的数据结构其实是这样的</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">WeakMap</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="title class_">Map</span>&lt;<span class="built_in">any</span>, <span class="built_in">any</span>&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
-<p>是不是超级绕，但是我们从调用的角度来思考，这就一点都不绕了。</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">weakMap.<span class="title function_">get</span>(o).<span class="title function_">get</span>(p).<span class="title function_">get</span>(k)</span><br></pre></td></tr></table></figure>
-<p>先根据对象获取，然后在根据属性，最后根据元数据的 Key 获取最终要的数据。</p>
-<h2 id="End"><a href="#End" class="headerlink" title="End"></a>End</h2><p>因为 Reflect Metadata 实在是比较简单，这里就不多讲解了。更多内容请查看 <a target="_blank" rel="noopener" href="https://rbuckton.github.io/reflect-metadata">Spec</a></p>
-<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>其实看了源码之后还是挺惊讶的，按照一般的套路，很多 polyfill 会让你提供一些前置的 polyfill 之后，当前的 polyfill 才能使用。但是 <code>reflect-metadata</code> 竟然内部自己实现了很多的 polyfill 和算法。比如 Map, Set, WeakMap, UUID。最惊讶的莫过于 WeakMap 了。不是很仔细的阅读了一下，好像还是会增加引用计数。</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2017/12/30/Reflect-metadata/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
-    
-    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-        <div class="postShorten-wrap">
-            <div class="postShorten-header">
-                <h1 class="postShorten-title" itemprop="headline">
-                    
-                        <a class="link-unstyled" href="/2017/09/09/boostnote-is-an-open-source-note-taking-app-designed-for-programmers/">
-                            Boostnote 一个专门为程序员设计的笔记应用
-                        </a>
-                    
-                </h1>
-                <div class="postShorten-meta">
-    <time itemprop="datePublished" content="Sat Sep 09 2017 22:40:27 GMT+0800">
-	
-		    9月 09, 2017
-    	
-    </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/Software/">Software</a>
-
-
-    
-</div>
-            </div>
-            
-            
-                <div class="postShorten-content" itemprop="articleBody">
-                    
-<blockquote>
-<p>Boostnote 是一款通过 Electron 构建的桌面笔记应用。它支持离线存储，无需注册、Markdown 编辑、像 Github Gist 的代码片段的管理等等内容。全球 198 个国家和地区的程序员们在使用这款应用。</p>
-</blockquote>
-<p><a href="https://boostnote.io/" target="_blank" rel="noopener">Boostnote</a> 就如同器名字一般，最主要的一个用途便是 Markdown 笔记编辑器。你所有的 Markdown 笔记拥有自动保存的功能，并且支持多种展示格式。拥有半实时的预览，所以你可以及时的检查最后的格式是否是和你所输入的一致。</p>
-<p>Latex 公式编辑器也内置在 Boostnote 当中，你可以很轻松的插入各种公式在你的笔记中。</p>
-<p>不管是笔记还是代码片段都可以通过标签的方式进行管理。</p>
-<p>对于代码片段来说，他支持高达 100 多种语言的高亮，其中包括 JavaScript, Python, HTML 和 CSS。当然你也可以在一份代码片段当中存储多段代码，比如说你可以同时存储 HTML，CSS，JS 代码在一份当中。而且不管你是用什么样子的缩进（tab/空格）或者缩进的程度（2个字符，4个字符，8个字符）都可以在文档中进行配置。</p>
-<p>最后，将笔记导出成普通文本（.txt） 或者 Markdown(.md) 也是支持的功能。</p>
-<h2 id="外观（UI）"><a href="#外观（UI）" class="headerlink" title="外观（UI）"></a>外观（UI）</h2><p>丰富的快捷键可以让你让更快的浏览、搜索笔记，以及更快的执行一些重要操作。</p>
-<p>对于 Boostnote 的外观来说，你有很多种不同的主题可以选择。当然，编辑器的高亮也是有很多种可以选择的，你可以根据你自己的喜好自由搭配。你可以在 <code>Preferences</code> &gt; <code>UI</code> &gt; <code>Theme</code> 查看支持的主题。</p>
-<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>Boostnote 目前是开源的，你可以通过<a href="https://boostnote.io/#download" target="_blank" rel="noopener">官网</a>下载。不过要注意的是，存储使用的是亚马逊的 s3，所以你需要能够翻墙，否则无法下载。</p>
-<p>它目前是支持全平台（Windows, MacOS, Linux，IOS，Android）</p>
-
-                    
-                        
-
-                    
-                    
-                        <p>
-                            <a href="/2017/09/09/boostnote-is-an-open-source-note-taking-app-designed-for-programmers/#post-footer" class="postShorten-excerpt_link link">
-                                注释和共享
-                            </a>
-                        </p>
-                    
-                </div>
-            
-        </div>
-        
-    </article>
-    
     <div class="pagination-bar">
     <ul class="pagination">
         
@@ -1497,7 +1586,7 @@
 
                 <footer id="footer" class="main-content-wrap">
     <span class="copyrights">
-        Copyrights &copy; 2024 XGHeaven. All Rights Reserved.
+        Copyrights &copy; 2026 XGHeaven. All Rights Reserved.
     </span>
 </footer>
 
